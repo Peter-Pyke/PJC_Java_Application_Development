@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginController">
+   <children>
+      <VBox alignment="CENTER" layoutX="81.0" layoutY="25.0" prefHeight="200.0" prefWidth="214.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="214.0" spacing="10.0">
+               <children>
+                  <Label text="User ID: " />
+                  <TextField fx:id="userIdTxt" prefHeight="25.0" prefWidth="149.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="214.0">
+               <children>
+                  <Label text="Password: " />
+                  <TextField fx:id="userPasswordTxt" />
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#showMe" text="Enter" />
+         </children>
+      </VBox>
+      <HBox layoutX="14.0" layoutY="14.0" prefHeight="55.0" prefWidth="149.0">
+         <children>
+            <Label text="Location " />
+            <Label fx:id="locationTxt" text="Zoneld" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
