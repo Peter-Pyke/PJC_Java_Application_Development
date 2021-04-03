@@ -10,7 +10,7 @@ public class DBConnection {
 
     private static final String protocal = "jdbc";
     private static final String vendorName = ":mysql:";
-    private static final String ipAddress = "//wqudb.ucertify.com:3306/";
+    private static final String ipAddress = "//wgudb.ucertify.com:3306/";
     private static final String dbName = "WJ06Wtq";
 
     private static final String jdbcURL = protocal + vendorName + ipAddress + dbName;
