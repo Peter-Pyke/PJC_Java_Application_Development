@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
+   <children>
+      <VBox prefHeight="700.0" prefWidth="450.0" spacing="20.0">
+         <children>
+            <ComboBox onAction="#onActionCBoxCustomer" prefWidth="150.0" promptText="Customer" />
+            <GridPane prefHeight="300.0" prefWidth="286.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.20001220703125" minWidth="10.0" prefWidth="118.80001220703124" />
+                <ColumnConstraints maxWidth="349.1999877929687" minWidth="10.0" prefWidth="231.9999877929687" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Name" GridPane.rowIndex="1" />
+                  <TextField fx:id="customerNameTxt" prefHeight="25.0" prefWidth="235.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="customerAddressTxt" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <TextField fx:id="customerPostalCodeTxt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label text="Address" GridPane.rowIndex="4" />
+                  <Label text="Postal code" GridPane.rowIndex="5" />
+                  <Label text="Phone number" GridPane.rowIndex="6" />
+                  <Label text="CustomerID" />
+                  <TextField fx:id="customerPhoneTxt" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <TextField fx:id="customerIDTxt" disable="true" editable="false" promptText="AutoGen ID" GridPane.columnIndex="1" />
+                  <Label text="Country" GridPane.rowIndex="2" />
+                  <ComboBox onAction="#onActionCBoxCountry" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="State" GridPane.rowIndex="3" />
+                  <ComboBox onAction="#onActionCBoxState" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+               <padding>
+                  <Insets left="10.0" right="100.0" />
+               </padding>
+            </GridPane>
+            <GridPane fx:id="calendarGrid" alignment="CENTER" gridLinesVisible="true">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="78.60000610351562" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="54.60000000000001" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="55.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="65.800048828125" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="61.19999999999999" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="56.0" />
+                <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="401.40003204345703" minWidth="10.0" prefWidth="64.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Sunday" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Monday" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Tuesday" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Wednesday" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets left="1.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Thursday" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Friday" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <Label text="Saturday" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <ComboBox onAction="#onActionCBoxMonth" prefWidth="150.0" promptText="Month" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </GridPane>
+         </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </VBox>
+      <VBox layoutX="450.0" prefHeight="700.0" prefWidth="450.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onActionAddcustomer" text="Add" />
+                  <Button mnemonicParsing="false" onAction="#onActionUpdateCustomer" text="update" />
+                  <Button mnemonicParsing="false" onAction="#onActionDeleteCustomer" text="delete" />
+               </children>
+            </HBox>
+            <TableView fx:id="allCustomerTableView" prefHeight="500.0" prefWidth="200.0">
+              <columns>
+                <TableColumn fx:id="customerIDCol" prefWidth="34.0" text="ID" />
+                <TableColumn fx:id="customerNameCol" prefWidth="51.999969482421875" text="Name" />
+                  <TableColumn fx:id="customerAddressCol" prefWidth="71.20001220703125" text="Address" />
+                  <TableColumn fx:id="customerPostalCodeCol" prefWidth="86.39996337890625" text="Postal code" />
+                  <TableColumn fx:id="customerPhoneCol" prefWidth="64.7999267578125" text="Phone #" />
+                  <TableColumn fx:id="customerCountryCol" prefWidth="68.4000244140625" text="Country" />
+                  <TableColumn fx:id="customerStateCol" prefWidth="71.2000732421875" text="State" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets left="10.0" top="10.0" />
+   </padding>
+</AnchorPane>
