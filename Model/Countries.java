@@ -1,5 +1,8 @@
 package Model;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 /**
  * This is the Countries class and contains the attributes of the country model. It also contains the constructor and
  * getters methods.
@@ -7,6 +10,10 @@ package Model;
 public class Countries {
     private int id;
     private String name;
+    private Date createdDate;
+    private String createdBy;
+    private Timestamp lastUpdated;
+    private String lastUpdatedBy;
 
     public Countries( int id, String name){
         this.id = id;

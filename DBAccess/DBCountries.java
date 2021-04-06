@@ -41,7 +41,7 @@ public class DBCountries {
         return clist;
     }
 
-    public static void checkDataConversion(){
+    public static void checkDateConversion(){
         System.out.println("CREATE DATA TEST");
         String sql = "select Create_Date from countries";
         try {

@@ -1,7 +1,13 @@
 package Controllers;
+import DBAccess.DBCountries;
+import DBAccess.DBCustomers;
+import Model.Countries;
+import Model.Customers;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -11,6 +17,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainSceneController implements Initializable {
+
+    @FXML
+    private ComboBox<Customers> customerComboBox;
 
     @FXML
     private TextField customerNameTxt;
@@ -86,6 +95,15 @@ public class MainSceneController implements Initializable {
 
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
+
+    }
+    @FXML
+    void onActionLoadCustomerBtn(ActionEvent event) {
+        ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
+        for(Customers C : customerList){
+            System.out.println("Customer Id :" + C.getCustomerID());
+        }
+        // customerComboBox.setItems(customerList);
 
     }
     @Override
