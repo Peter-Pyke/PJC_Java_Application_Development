@@ -16,9 +16,10 @@ public class Customers {
     private int divisionID;
 
 
-    public Customers(int customerID){
+    public Customers(int customerID, String customerName){
         this.customerID = customerID;
-       /* this.customerName = customerName;
+        this.customerName = customerName;
+        /*
         this.customerAddress = customerAddress;
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
@@ -29,4 +30,9 @@ public class Customers {
         public String getCustomerAddress(){return customerAddress;}
         public String getPostalCode(){return postalCode;}
         public String getPhoneNumber(){return phoneNumber;}
+
+    @Override
+    public String toString() {
+        return customerName;
+    }
 }

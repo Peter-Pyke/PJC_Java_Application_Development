@@ -20,7 +20,6 @@
          <children>
             <HBox onDragDetected="#onActionLoadCustomerBtn" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onActionLoadCustomerBtn" text="Load Customers" />
                   <ComboBox fx:id="customerComboBox" onAction="#onActionCBoxCustomer" prefWidth="150.0" promptText="Customer" />
                </children>
             </HBox>
@@ -50,9 +49,9 @@
                   <TextField fx:id="customerPhoneTxt" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" promptText="AutoGen ID" GridPane.columnIndex="1" />
                   <Label text="Country" GridPane.rowIndex="2" />
-                  <ComboBox onAction="#onActionCBoxCountry" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="countryCBox" onAction="#onActionCBoxCountry" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="State" GridPane.rowIndex="3" />
-                  <ComboBox onAction="#onActionCBoxState" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="stateCBox" onAction="#onActionCBoxState" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
                <padding>
                   <Insets left="10.0" right="100.0" />

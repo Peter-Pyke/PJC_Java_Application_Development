@@ -20,12 +20,13 @@ public class DBCustomers {
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 int customerID = rs.getInt("Customer_ID");
-               /* String customerName = rs.getString("Customer_Name");
+                String customerName = rs.getString("Customer_Name");
+               /*
                 String customerAddress = rs.getString("Address");
                 String postalCode = rs.getString("Postal_Code");
                 String phoneNumber = rs.getString("Phone");
                 */
-                Customers C = new Customers(customerID);
+                Customers C = new Customers(customerID, customerName);
                 clist.add(C);
             }
         } catch (SQLException throwables){

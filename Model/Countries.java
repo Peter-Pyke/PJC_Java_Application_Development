@@ -29,4 +29,11 @@ public class Countries {
      * @return name. The Name of the selected Country.
      * */
     public String getName(){return name;}
+    /**
+     * This override method allows me to return the name of the countries inside of the combo boxes.
+     * */
+    @Override
+    public String toString() {
+     return (name);
+    }
 }
