@@ -21,12 +21,11 @@ public class DBCustomers {
             while (rs.next()){
                 int customerID = rs.getInt("Customer_ID");
                 String customerName = rs.getString("Customer_Name");
-               /*
                 String customerAddress = rs.getString("Address");
                 String postalCode = rs.getString("Postal_Code");
                 String phoneNumber = rs.getString("Phone");
-                */
-                Customers C = new Customers(customerID, customerName);
+
+                Customers C = new Customers(customerID, customerName, customerAddress, postalCode, phoneNumber);
                 clist.add(C);
             }
         } catch (SQLException throwables){

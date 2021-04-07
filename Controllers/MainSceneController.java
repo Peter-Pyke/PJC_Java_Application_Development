@@ -13,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
 import java.net.URL;
@@ -50,22 +51,22 @@ public class MainSceneController implements Initializable {
     private GridPane calendarGrid;
 
     @FXML
-    private TableView<?> allCustomerTableView;
+    private TableView<Customers> allCustomerTableView;
 
     @FXML
-    private TableColumn<?, ?> customerIDCol;
+    private TableColumn<Customers, Integer> customerIDCol;
 
     @FXML
-    private TableColumn<?, ?> customerNameCol;
+    private TableColumn<Customers, String> customerNameCol;
 
     @FXML
-    private TableColumn<?, ?> customerAddressCol;
+    private TableColumn<Customers, String> customerAddressCol;
 
     @FXML
-    private TableColumn<?, ?> customerPostalCodeCol;
+    private TableColumn<Customers, String> customerPostalCodeCol;
 
     @FXML
-    private TableColumn<?, ?> customerPhoneCol;
+    private TableColumn<Customers, String> customerPhoneCol;
 
     @FXML
     private TableColumn<?, ?> customerCountryCol;
@@ -85,7 +86,10 @@ public class MainSceneController implements Initializable {
 
     @FXML
     void onActionCBoxCustomer(ActionEvent event) {
-
+        Customers selectedCustomer = customerComboBox.getValue();
+        ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
+        allCustomerTableView.setItems(customerList);
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<Customers, Integer>(customerID));
     }
 
     @FXML
