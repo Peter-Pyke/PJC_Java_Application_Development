@@ -83,13 +83,19 @@ public class MainSceneController implements Initializable {
     void onActionCBoxCountry(ActionEvent event) {
 
     }
+    public void setTableView() {
 
-    @FXML
-    void onActionCBoxCustomer(ActionEvent event) {
-        Customers selectedCustomer = customerComboBox.getValue();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
         allCustomerTableView.setItems(customerList);
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<Customers, Integer>(customerID));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+    }
+    @FXML
+    void onActionCBoxCustomer(ActionEvent event) {
+        setTableView();
     }
 
     @FXML
