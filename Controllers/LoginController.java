@@ -1,6 +1,8 @@
 package Controllers;
 import DBAccess.DBCountries;
+import DBAccess.DBUsers;
 import Model.Countries;
+import Model.Users;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,12 +33,31 @@ public class LoginController implements Initializable {
     @FXML
     private Label locationTxt;
 
+    public boolean checkPasswordAndUserName(){
+        ObservableList<Users> myusers = DBUsers.getAllUsers();
+        for (int index = 0; index < myusers.size(); index++){
+            if (userPasswordTxt.getText().equals(myusers.get(index).getUserPassword()) && userIdTxt.getText().equals(myusers.get(index).getUserName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @FXML
     void onActionEnterBtn(ActionEvent event) throws IOException {
-        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/Scenes/Main_Scene.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
+        if (checkPasswordAndUserName()) {
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            scene = FXMLLoader.load(getClass().getResource("/Scenes/Main_Scene.fxml"));
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
+        else {
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Incorrect User Name or Password!");
+            error.showAndWait();
+
+        }
     }
     /**
      * This is the initialize method which is used as an override method for the LoginController. As far as I can tell is helps to
@@ -48,15 +69,5 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle){
 
 }
-/**
- * This is the onActionEnter method which controls what will happen when the enter button is clicked.
- * @param actionEvent
- * */
-//currently using this method to retrieve country info from database as an example. Will be changes later.
-public void showMe(ActionEvent actionEvent){
-    ObservableList<Countries> countryList = DBCountries.getAllCountries();
-    for(Countries C : countryList){
-        System.out.println("Country Id :" + C.getId() + " Name : " + C.getName());
-    }
-}
+
 }

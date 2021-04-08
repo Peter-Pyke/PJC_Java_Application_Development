@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
    <children>
-      <VBox prefHeight="700.0" prefWidth="450.0" spacing="20.0">
+      <VBox prefHeight="700.0" prefWidth="900.0" spacing="20.0">
          <children>
             <HBox onDragDetected="#onActionLoadCustomerBtn" prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -57,39 +57,39 @@
                   <Insets left="10.0" right="100.0" />
                </padding>
             </GridPane>
+            <VBox prefHeight="400.0" prefWidth="450.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onActionAddcustomer" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#onActionUpdateCustomer" text="update" />
+                        <Button mnemonicParsing="false" onAction="#onActionDeleteCustomer" text="delete" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Customer Information" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="allCustomerTableView" prefHeight="500.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="customerIDCol" prefWidth="34.0" text="ID" />
+                      <TableColumn fx:id="customerNameCol" prefWidth="51.999969482421875" text="Name" />
+                        <TableColumn fx:id="customerAddressCol" prefWidth="71.20001220703125" text="Address" />
+                        <TableColumn fx:id="customerPostalCodeCol" prefWidth="86.39996337890625" text="Postal code" />
+                        <TableColumn fx:id="customerPhoneCol" prefWidth="64.7999267578125" text="Phone #" />
+                        <TableColumn fx:id="customerCountryCol" prefWidth="68.4000244140625" text="Country" />
+                        <TableColumn fx:id="customerStateCol" prefWidth="71.2000732421875" text="State" />
+                    </columns>
+                  </TableView>
+               </children>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </VBox>
          </children>
          <padding>
             <Insets left="10.0" top="20.0" />
-         </padding>
-      </VBox>
-      <VBox layoutX="450.0" prefHeight="700.0" prefWidth="450.0">
-         <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onActionAddcustomer" text="Add" />
-                  <Button mnemonicParsing="false" onAction="#onActionUpdateCustomer" text="update" />
-                  <Button mnemonicParsing="false" onAction="#onActionDeleteCustomer" text="delete" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">
-               <children>
-                  <Label text="Customer Information" />
-               </children>
-            </HBox>
-            <TableView fx:id="allCustomerTableView" prefHeight="500.0" prefWidth="200.0">
-              <columns>
-                <TableColumn fx:id="customerIDCol" prefWidth="34.0" text="ID" />
-                <TableColumn fx:id="customerNameCol" prefWidth="51.999969482421875" text="Name" />
-                  <TableColumn fx:id="customerAddressCol" prefWidth="71.20001220703125" text="Address" />
-                  <TableColumn fx:id="customerPostalCodeCol" prefWidth="86.39996337890625" text="Postal code" />
-                  <TableColumn fx:id="customerPhoneCol" prefWidth="64.7999267578125" text="Phone #" />
-                  <TableColumn fx:id="customerCountryCol" prefWidth="68.4000244140625" text="Country" />
-                  <TableColumn fx:id="customerStateCol" prefWidth="71.2000732421875" text="State" />
-              </columns>
-            </TableView>
-         </children>
-         <padding>
-            <Insets right="10.0" />
          </padding>
       </VBox>
    </children>

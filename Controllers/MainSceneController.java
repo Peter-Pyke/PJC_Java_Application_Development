@@ -83,19 +83,10 @@ public class MainSceneController implements Initializable {
     void onActionCBoxCountry(ActionEvent event) {
 
     }
-    public void setTableView() {
 
-        ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
-        allCustomerTableView.setItems(customerList);
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
-        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
-        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-    }
     @FXML
     void onActionCBoxCustomer(ActionEvent event) {
-        setTableView();
+
     }
 
     @FXML
@@ -126,12 +117,21 @@ public class MainSceneController implements Initializable {
 
 
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
+
 
         ObservableList<Countries> countryList = DBCountries.getAllCountries();
         ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
+        allCustomerTableView.setItems(customerList);
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        customerStateCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
         customerComboBox.setItems(customerList);
         countryCBox.setItems(countryList);
         stateCBox.setItems(divisionList);

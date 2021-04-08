@@ -2,7 +2,7 @@ package DataBase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import Password.Password;
 
 /**
  * This is the DBConnection class, it provides the methods to make connections to the database.
@@ -30,7 +30,7 @@ public class DBConnection {
     public static Connection startConnection() {
         try {
             Class.forName(MYSQLJBCDriver);
-            conn = DriverManager.getConnection(jdbcURL, username, Password.Password.getPassword());
+            conn = DriverManager.getConnection(jdbcURL, username, Password.getPassword());
 
             System.out.println("Connection successful");
         } catch (SQLException e){

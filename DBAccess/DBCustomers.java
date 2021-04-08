@@ -24,8 +24,9 @@ public class DBCustomers {
                 String customerAddress = rs.getString("Address");
                 String postalCode = rs.getString("Postal_Code");
                 String phoneNumber = rs.getString("Phone");
+                int customerDivisionID = rs.getInt("Division_ID");
 
-                Customers C = new Customers(customerID, customerName, customerAddress, postalCode, phoneNumber);
+                Customers C = new Customers(customerID, customerName, customerAddress, postalCode, phoneNumber, customerDivisionID);
                 clist.add(C);
             }
         } catch (SQLException throwables){

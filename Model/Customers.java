@@ -16,12 +16,13 @@ public class Customers {
     private int divisionID;
 
 
-    public Customers(int customerID, String customerName, String customerAddress, String postalCode, String phoneNumber){
+    public Customers(int customerID, String customerName, String customerAddress, String postalCode, String phoneNumber, int divisionID){
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
+        this.divisionID = divisionID;
 
     }
         public int getCustomerID(){return customerID;}
@@ -29,6 +30,7 @@ public class Customers {
         public String getCustomerAddress(){return customerAddress;}
         public String getPostalCode(){return postalCode;}
         public String getPhoneNumber(){return phoneNumber;}
+        public int getDivisionID(){return divisionID;}
 
     @Override
     public String toString() {
