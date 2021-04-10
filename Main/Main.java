@@ -7,6 +7,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
  * This is my Main class which contains my start and main methods. It is the beginning point of my program.
  * @author Peter Chouinard. StudentID: #001162524
@@ -31,6 +36,16 @@ public class Main extends Application {
  * This is my main method which connects to the database and launches the program.
  * */
     public static void main(String[] args) {
+
+        try {
+            ResourceBundle rb = ResourceBundle.getBundle("Main/Nat", Locale.getDefault());
+            if (Locale.getDefault().getLanguage().equals("fr") || Locale.getDefault().getLanguage().equals("es")) {
+                System.out.println(rb.getString("hello") + " " + rb.getString("world"));
+            }
+        }
+        catch (MissingResourceException e){
+            //nothing
+        }
         DBConnection.startConnection();
         launch(args);
         DBConnection.closeConnection();
