@@ -14,7 +14,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -25,13 +28,26 @@ public class LoginController implements Initializable {
     Parent scene;
 
     @FXML
+    private Label userIDLabel;
+
+    @FXML
     private TextField userIdTxt;
+
+    @FXML
+    private Label passwordLabel;
 
     @FXML
     private TextField userPasswordTxt;
 
     @FXML
+    private Button enterBtnLabel;
+
+    @FXML
     private Label locationTxt;
+
+    @FXML
+    private Label locationLabel;
+
 
     public boolean checkPasswordAndUserName(){
         ObservableList<Users> myusers = DBUsers.getAllUsers();
@@ -45,6 +61,7 @@ public class LoginController implements Initializable {
 
     @FXML
     void onActionEnterBtn(ActionEvent event) throws IOException {
+
         if (checkPasswordAndUserName()) {
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/Scenes/Main_Scene.fxml"));
@@ -52,10 +69,19 @@ public class LoginController implements Initializable {
             stage.show();
         }
         else {
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("Incorrect User Name or Password!");
-            error.showAndWait();
+            if (Locale.getDefault().getLanguage().equals("fr")) {
+                ResourceBundle rb = ResourceBundle.getBundle("Main/Nat", Locale.getDefault());
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle(rb.getString("Warning"));
+                error.setContentText(rb.getString("Incorrect"));
+                error.showAndWait();
+            }
+            else{
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Incorrect User Name or Password!");
+                error.showAndWait();
+            }
 
         }
     }
@@ -67,7 +93,22 @@ public class LoginController implements Initializable {
      * */
 @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
+    String country = Locale.getDefault().getCountry();
+    locationTxt.setText(country);
+    try {
+        ResourceBundle rb = ResourceBundle.getBundle("Main/Nat", Locale.getDefault());
+        if (Locale.getDefault().getLanguage().equals("fr")) {
+            userIDLabel.setText(rb.getString("UserID"));
+            passwordLabel.setText(rb.getString("Password"));
+            enterBtnLabel.setText(rb.getString("Enter"));
+            locationLabel.setText(rb.getString("Location"));
 
+        }
+    }
+    catch(MissingResourceException e){
+        //do nothing
+    }
 }
+
 
 }
