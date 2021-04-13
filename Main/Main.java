@@ -1,6 +1,7 @@
 package Main;
 
 import DataBase.DBConnection;
+import DataBase.DBQuery;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -8,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -36,7 +40,7 @@ public class Main extends Application {
 /**
  * This is my main method which connects to the database and launches the program.
  * */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 //This is just from the webinar and is for reference
 //------------------------------------------------------------------------------------------------------------------
         Locale france = new Locale("fr","FR");
@@ -72,6 +76,9 @@ public class Main extends Application {
             //nothing
         }
         DBConnection.startConnection();
+        Connection conn = DBConnection.getConnection();
+        DBQuery.setSatement(conn);
+        Statement statement = DBQuery.getStatement();
         launch(args);
         DBConnection.closeConnection();
     }

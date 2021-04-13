@@ -9,27 +9,26 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="376.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.LoginController">
    <children>
-      <VBox alignment="CENTER" layoutX="81.0" layoutY="25.0" prefHeight="200.0" prefWidth="214.0">
+      <VBox alignment="CENTER" layoutX="38.0" layoutY="25.0" prefHeight="200.0" prefWidth="300.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="214.0" spacing="10.0">
                <children>
-                  <Label text="User ID: " />
-                  <TextField fx:id="userIdTxt" prefHeight="25.0" prefWidth="149.0" />
+                  <Label fx:id="userIDLabel" prefHeight="17.0" prefWidth="138.0" text="User ID: " />
+                  <TextField fx:id="userIdTxt" prefHeight="25.0" prefWidth="150.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="214.0">
                <children>
-                  <Label text="Password: " />
-                  <TextField fx:id="userPasswordTxt" />
+                  <Label fx:id="passwordLabel" prefHeight="17.0" prefWidth="148.0" text="Password: " />
+                  <TextField fx:id="userPasswordTxt" prefHeight="25.0" prefWidth="154.0" />
                </children>
             </HBox>
-            <Button mnemonicParsing="false" onAction="#onActionEnterBtn" text="Enter" />
-            <Button mnemonicParsing="false" onAction="#showMe" text="Print Countries" />
+            <Button fx:id="enterBtnLabel" mnemonicParsing="false" onAction="#onActionEnterBtn" prefHeight="25.0" prefWidth="64.0" text="Enter" />
          </children>
       </VBox>
       <HBox layoutX="14.0" layoutY="14.0" prefHeight="55.0" prefWidth="149.0">
          <children>
-            <Label text="Location " />
+            <Label fx:id="locationLabel" text="Location " />
             <Label fx:id="locationTxt" text="Zoneld" />
          </children>
       </HBox>
