@@ -41,44 +41,8 @@ public class Main extends Application {
  * This is my main method which connects to the database and launches the program.
  * */
     public static void main(String[] args) throws SQLException {
-//This is just from the webinar and is for reference
-//------------------------------------------------------------------------------------------------------------------
-        Locale france = new Locale("fr","FR");
 
-/**
-        Scanner keyboard = new Scanner(System.in);
-        System.out.println("Enter a language(es, de, or fr): ");
-        String languageCode = keyboard.nextLine();
-
-        if (languageCode.equals("fr")){
-            Locale.setDefault(france);
-        }
-        else if(languageCode.equals("es")){
-            Locale.setDefault(spanish);
-        }
-        else if (languageCode.equals("de")){
-            Locale.setDefault(german);
-        }
-        else {
-            System.out.println("Language not supported!");
-            System.exit(0);
-        }
- */
-//--------------------------------------------------------------------------------------------------------------
-
-        try {
-            ResourceBundle rb = ResourceBundle.getBundle("Main/Nat", Locale.getDefault());
-            if (Locale.getDefault().getLanguage().equals("fr")) {
-                System.out.println(rb.getString("hello") + " " + rb.getString("world"));
-            }
-        }
-        catch (MissingResourceException e){
-            //nothing
-        }
         DBConnection.startConnection();
-        Connection conn = DBConnection.getConnection();
-        DBQuery.setSatement(conn);
-        Statement statement = DBQuery.getStatement();
         launch(args);
         DBConnection.closeConnection();
     }

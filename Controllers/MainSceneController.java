@@ -2,6 +2,8 @@ package Controllers;
 import DBAccess.DBCountries;
 import DBAccess.DBCustomers;
 import DBAccess.DBDivisions;
+import DataBase.DBConnection;
+import DataBase.DBQuery;
 import Model.Countries;
 import Model.Customers;
 import Model.Division;
@@ -16,7 +18,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
+import java.io.PrintStream;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 
 /**
@@ -119,12 +125,37 @@ public class MainSceneController implements Initializable {
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle){
+    public void initialize(URL url, ResourceBundle resourceBundle) {
 
+/**
+        // example from first webinar of JDBC interfaces
+        try {
+            Connection conn = DBConnection.getConnection(); // Create Statement Object
+            DBQuery.setSatement(conn);
+            Statement statement = DBQuery.getStatement(); //Get Statement reference
 
+            // Raw SQL insert statement
+            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('BlaBla', '2020-02-22 00:00:00', 'admin', 'admin') ";
+
+            //Execute statement
+            statement.execute(insertStatement);
+
+            if(statement.getUpdateCount() > 0){
+                System.out.println(statement.getUpdateCount() + " row(s) affected!");
+            }
+            else {
+                System.out.println("No Change");
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        */
         ObservableList<Countries> countryList = DBCountries.getAllCountries();
         ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
+
+//Add code to filter out division based on what country is selected.
         allCustomerTableView.setItems(customerList);
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
@@ -135,6 +166,8 @@ public class MainSceneController implements Initializable {
         customerComboBox.setItems(customerList);
         countryCBox.setItems(countryList);
         stateCBox.setItems(divisionList);
+
+
     }
 
 }
