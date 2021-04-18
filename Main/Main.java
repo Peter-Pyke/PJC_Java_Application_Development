@@ -1,21 +1,13 @@
 package Main;
 
 import DataBase.DBConnection;
-import DataBase.DBQuery;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+
 
 /**
  * This is my Main class which contains my start and main methods. It is the beginning point of my program.

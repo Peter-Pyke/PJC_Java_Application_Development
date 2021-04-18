@@ -102,11 +102,17 @@ public class LoginController implements Initializable {
             passwordLabel.setText(rb.getString("Password"));
             enterBtnLabel.setText(rb.getString("Enter"));
             locationLabel.setText(rb.getString("Location"));
+        }
+        else if (Locale.getDefault().getLanguage().equals("en")){
 
         }
     }
     catch(MissingResourceException e){
-        //do nothing
+        Alert error = new Alert(Alert.AlertType.WARNING);
+        error.setTitle("Warning Dialog");
+        error.setContentText("Language not supported!");
+        error.showAndWait();
+        System.exit(0);
     }
 }
 

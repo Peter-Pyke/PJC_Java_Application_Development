@@ -7,6 +7,7 @@ import DataBase.DBQuery;
 import Model.Countries;
 import Model.Customers;
 import Model.Division;
+import com.mysql.cj.protocol.Resultset;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,9 +19,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
+import javax.xml.transform.Result;
 import java.io.PrintStream;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
@@ -75,7 +78,7 @@ public class MainSceneController implements Initializable {
     private TableColumn<Customers, String> customerPhoneCol;
 
     @FXML
-    private TableColumn<?, ?> customerCountryCol;
+    private TableColumn<Countries, String> customerCountryCol;
 
     @FXML
     private TableColumn<?, ?> customerStateCol;
@@ -91,7 +94,7 @@ public class MainSceneController implements Initializable {
     }
 
     @FXML
-    void onActionCBoxCustomer(ActionEvent event) {
+    void onActionLoadCustomerBtn(ActionEvent event) {
 
     }
 
@@ -102,7 +105,7 @@ public class MainSceneController implements Initializable {
 
     @FXML
     void onActionCBoxState(ActionEvent event) {
-
+//Add code to filter out division based on what country is selected.
     }
 
     @FXML
@@ -114,20 +117,9 @@ public class MainSceneController implements Initializable {
     void onActionUpdateCustomer(ActionEvent event) {
 
     }
-    /**
-     * This is my onActionLoadCustomerBtn method and controls what happens when the load customer button is clicked.
-     * @param event
-     * */
-    @FXML
-    void onActionLoadCustomerBtn(ActionEvent event) {
 
-
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-/**
+    //Add code to filter out division based on what country is selected.
+    public void JDBC1method() {
         // example from first webinar of JDBC interfaces
         try {
             Connection conn = DBConnection.getConnection(); // Create Statement Object
@@ -135,27 +127,50 @@ public class MainSceneController implements Initializable {
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
             // Raw SQL insert statement
-            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('BlaBla', '2020-02-22 00:00:00', 'admin', 'admin') ";
+            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('China', '2020-02-22 00:00:00', 'admin', 'admin') ";
 
             //Execute statement
             statement.execute(insertStatement);
 
-            if(statement.getUpdateCount() > 0){
+            if (statement.getUpdateCount() > 0) {
                 System.out.println(statement.getUpdateCount() + " row(s) affected!");
-            }
-            else {
+            } else {
                 System.out.println("No Change");
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        */
+    }
+        public void JDBC2method(){
+            try {
+                Connection conn = DBConnection.getConnection(); // Create Statement Object
+                DBQuery.setSatement(conn);
+                Statement statement = DBQuery.getStatement(); //Get Statement reference
+                String selectStatement = "SELECT * FROM countries"; // SELECT statement
+                statement.execute(selectStatement); //Execute statement
+                ResultSet rs = statement.getResultSet(); // Get ResultSet
+
+                //Forward Scroll ResultSet
+                while(rs.next()){
+                    String country = rs.getString("Country");
+
+                    System.out.println(country);
+                }
+            }
+            catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        JDBC2method();
         ObservableList<Countries> countryList = DBCountries.getAllCountries();
         ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
-//Add code to filter out division based on what country is selected.
+
         allCustomerTableView.setItems(customerList);
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
@@ -166,7 +181,6 @@ public class MainSceneController implements Initializable {
         customerComboBox.setItems(customerList);
         countryCBox.setItems(countryList);
         stateCBox.setItems(divisionList);
-
 
     }
 

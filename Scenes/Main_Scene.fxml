@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
    <children>
       <VBox prefHeight="700.0" prefWidth="900.0" spacing="20.0">
          <children>
             <HBox onDragDetected="#onActionLoadCustomerBtn" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <ComboBox fx:id="customerComboBox" onAction="#onActionCBoxCustomer" prefWidth="150.0" promptText="Customer" />
+                  <ComboBox fx:id="customerComboBox" onAction="#onActionLoadCustomerBtn" prefWidth="150.0" promptText="Customer" />
                </children>
             </HBox>
             <GridPane prefHeight="300.0" prefWidth="286.0">
