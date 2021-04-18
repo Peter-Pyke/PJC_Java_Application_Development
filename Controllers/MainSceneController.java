@@ -117,10 +117,9 @@ public class MainSceneController implements Initializable {
     void onActionUpdateCustomer(ActionEvent event) {
 
     }
-
-    //Add code to filter out division based on what country is selected.
+    // Example from first webinar of JDBC interfaces placed into a method. This will not be part of the project.
     public void JDBC1method() {
-        // example from first webinar of JDBC interfaces
+
         try {
             Connection conn = DBConnection.getConnection(); // Create Statement Object
             DBQuery.setSatement(conn);
@@ -141,6 +140,7 @@ public class MainSceneController implements Initializable {
             e.printStackTrace();
         }
     }
+    //Example from the second JDBC webinar placed in a method. This will not be part of the project.
         public void JDBC2method(){
             try {
                 Connection conn = DBConnection.getConnection(); // Create Statement Object
@@ -161,16 +161,24 @@ public class MainSceneController implements Initializable {
                 e.printStackTrace();
             }
         }
-
+/**
+ * This is the initialize method and it controls what happens when the Main Scene is loaded.
+ * @param resourceBundle
+ * @param url
+ * */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        JDBC2method();
+        JDBC2method(); //Example method to print the countries.
+
+        /* The three lines below retrieve the Counties, Divisions and Customers from my data
+        base and hold them in three lists.
+        */
         ObservableList<Countries> countryList = DBCountries.getAllCountries();
         ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
-
+//The follow is to set up the Table View with all the customers information.
         allCustomerTableView.setItems(customerList);
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
