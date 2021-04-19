@@ -83,16 +83,43 @@ public class MainSceneController implements Initializable {
     @FXML
     void onActionAddCustomer(ActionEvent event) {
         try {
+
+            String customerName = customerNameTxt.getText();
+            String customerAddress = customerAddressTxt.getText();
+            String postalCode = customerPostalCodeTxt.getText();
+            String phoneNumber = customerPhoneTxt.getText();
+            String createdBy = "admin"; // Right code to reference login credentials.
+            String lastUpdateBy = "admin"; //Same as above.
+            Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
+            int customerDivisionID = selectedDivision.getDivisionID(); //Figure out how to change the String value in the combo box into the
+            // integer value of the division.
+
             Connection conn = DBConnection.getConnection(); // Create Statement Object
             DBQuery.setSatement(conn);
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-
             // Raw SQL insert statement
-            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('China', '2020-02-22 00:00:00', 'admin', 'admin') ";
+            String insertStatement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID)"
+                    +"VALUES('"+ customerName +"', '"+ customerAddress+"', '"+ postalCode +"', '"+ phoneNumber+"', '"+ createdBy +"', '"+
+                    lastUpdateBy +"', '"+ customerDivisionID +"') ";
 
             //Execute statement
             statement.execute(insertStatement);
+            ObservableList<Countries> countryList = DBCountries.getAllCountries();
+            ObservableList<Division> divisionList = DBDivisions.getAllDivision();
+            ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
+
+//The follow is to set up the Table View with all the customers information.
+            allCustomerTableView.setItems(customerList);
+            customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+            customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+            customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+            customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+            customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+            customerComboBox.setItems(customerList);
+            countryCBox.setItems(countryList);
+            stateCBox.setItems(divisionList);
 
             if (statement.getUpdateCount() > 0) {
                 System.out.println(statement.getUpdateCount() + " row(s) affected!");
@@ -170,6 +197,13 @@ public class MainSceneController implements Initializable {
  * */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        ObservableList<Customers> myCustomers = DBCustomers.getAllCustomers();
+        int lastCustomerIndex = myCustomers.size() - 1;
+        Customers lastCustomer = myCustomers.get(lastCustomerIndex);
+        int nextCustomerID = lastCustomer.getCustomerID() +1;
+
+        customerIDTxt.setText(String.valueOf(nextCustomerID));
 
         JDBC2method(); //Example method to print the countries.
 

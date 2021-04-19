@@ -16,12 +16,15 @@ public class Customers {
     private int divisionID;
 
 
-    public Customers(int customerID, String customerName, String customerAddress, String postalCode, String phoneNumber, int divisionID){
+    public Customers(Integer customerID, String customerName, String customerAddress, String postalCode, String phoneNumber, String createdBy, String lastUpdatedBy, int divisionID){
+
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
+        this.createdBy = createdBy;
+        this.lastUpdatedBy = lastUpdatedBy;
         this.divisionID = divisionID;
 
     }

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
    <children>
       <VBox prefHeight="700.0" prefWidth="900.0" spacing="20.0">
          <children>
@@ -78,7 +78,7 @@
                         <TableColumn fx:id="customerAddressCol" prefWidth="71.20001220703125" text="Address" />
                         <TableColumn fx:id="customerPostalCodeCol" prefWidth="86.39996337890625" text="Postal code" />
                         <TableColumn fx:id="customerPhoneCol" prefWidth="64.7999267578125" text="Phone #" />
-                        <TableColumn fx:id="customerDivisionCol" prefWidth="71.2000732421875" text="Division" />
+                        <TableColumn fx:id="customerDivisionCol" prefWidth="71.2000732421875" text="Division_ID" />
                     </columns>
                   </TableView>
                </children>
