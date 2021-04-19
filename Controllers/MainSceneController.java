@@ -78,30 +78,32 @@ public class MainSceneController implements Initializable {
     private TableColumn<Customers, String> customerPhoneCol;
 
     @FXML
-    private TableColumn<Countries, String> customerCountryCol;
+    private TableColumn<Customers, Integer> customerDivisionCol;
 
     @FXML
-    private TableColumn<?, ?> customerStateCol;
+    void onActionAddCustomer(ActionEvent event) {
+        try {
+            Connection conn = DBConnection.getConnection(); // Create Statement Object
+            DBQuery.setSatement(conn);
+            Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-    @FXML
-    void onActionAddcustomer(ActionEvent event) {
 
+            // Raw SQL insert statement
+            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('China', '2020-02-22 00:00:00', 'admin', 'admin') ";
+
+            //Execute statement
+            statement.execute(insertStatement);
+
+            if (statement.getUpdateCount() > 0) {
+                System.out.println(statement.getUpdateCount() + " row(s) affected!");
+            } else {
+                System.out.println("No Change");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    void onActionCBoxCountry(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onActionLoadCustomerBtn(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onActionCBoxMonth(ActionEvent event) {
-
-    }
 
     @FXML
     void onActionCBoxState(ActionEvent event) {
@@ -185,7 +187,7 @@ public class MainSceneController implements Initializable {
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        customerStateCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+        customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
         customerComboBox.setItems(customerList);
         countryCBox.setItems(countryList);
         stateCBox.setItems(divisionList);
