@@ -7,6 +7,7 @@ import DataBase.DBQuery;
 import Model.Countries;
 import Model.Customers;
 import Model.Division;
+import Model.Users;
 import com.mysql.cj.protocol.Resultset;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -55,10 +56,7 @@ public class MainSceneController implements Initializable {
 
     @FXML
     private TextField customerIDTxt;
-
-    @FXML
-    private GridPane calendarGrid;
-
+    
     @FXML
     private TableView<Customers> allCustomerTableView;
 
@@ -80,21 +78,34 @@ public class MainSceneController implements Initializable {
     @FXML
     private TableColumn<Customers, Integer> customerDivisionCol;
 
-    @FXML
-    void onActionAddCustomer(ActionEvent event) {
+    private static String userName = null; // String object to hold the username of the person who logged in.
+    private static String userPassword = null; // String object to hold the password of the person who logged in.
+
+    /**
+     * This is the passLoginInfo method, it is used to get the username and password that was used to login.
+     * The username and password is than stored in the private static string objects above until needed.
+     * @param userName1 username of person logged in.
+     * @param userPassword1 password of person logged in.
+     * */
+    public void passLoginInfo(String userName1, String userPassword1){
+        userName = userName1;
+        userPassword = userPassword1;
+    }
+
+    public void addCustomer(){
         try {
 
             String customerName = customerNameTxt.getText();
             String customerAddress = customerAddressTxt.getText();
             String postalCode = customerPostalCodeTxt.getText();
             String phoneNumber = customerPhoneTxt.getText();
-            String createdBy = "admin"; // Right code to reference login credentials.
-            String lastUpdateBy = "admin"; //Same as above.
+            String createdBy = userName;//"admin"; // Right code to reference login credentials.
+            String lastUpdateBy = userPassword; //"admin"; //Same as above.
             Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
             int customerDivisionID = selectedDivision.getDivisionID(); //Figure out how to change the String value in the combo box into the
             // integer value of the division.
 
-            Connection conn = DBConnection.getConnection(); // Create Statement Object
+            Connection conn = DBConnection.getConnection(); // Create Connection Object
             DBQuery.setSatement(conn);
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
@@ -109,7 +120,7 @@ public class MainSceneController implements Initializable {
             ObservableList<Division> divisionList = DBDivisions.getAllDivision();
             ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
-//The follow is to set up the Table View with all the customers information.
+            //The follow is to set up the Table View with all the customers information.
             allCustomerTableView.setItems(customerList);
             customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
             customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
@@ -117,18 +128,22 @@ public class MainSceneController implements Initializable {
             customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
             customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
             customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
-            customerComboBox.setItems(customerList);
-            countryCBox.setItems(countryList);
-            stateCBox.setItems(divisionList);
-
+            //This if else statement prints a line letting you know if the code above worked.
             if (statement.getUpdateCount() > 0) {
                 System.out.println(statement.getUpdateCount() + " row(s) affected!");
             } else {
                 System.out.println("No Change");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // prints out error messages
         }
+    }
+    /**
+     * This is the onActionAddCustomer method and it decides what will happen when the add button is clicked in the main menu.
+     * */
+    @FXML
+    void onActionAddCustomer(ActionEvent event) {
+        addCustomer(); //addCustomer method is called to insert a new customer into the database.
     }
 
 

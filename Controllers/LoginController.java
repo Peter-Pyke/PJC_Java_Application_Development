@@ -12,6 +12,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -63,10 +65,17 @@ public class LoginController implements Initializable {
     void onActionEnterBtn(ActionEvent event) throws IOException {
 
         if (checkPasswordAndUserName()) {
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/Scenes/Main_Scene.fxml"));
+            Parent mainSceneAdd = loader.load();
+            Scene scene1 = new Scene(mainSceneAdd);
+            MainSceneController pass = loader.getController();
+            pass.passLoginInfo(userIdTxt.getText(), userPasswordTxt.getText());
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            scene = FXMLLoader.load(getClass().getResource("/Scenes/Main_Scene.fxml"));
-            stage.setScene(new Scene(scene));
+            stage.setScene(scene1);
             stage.show();
+
         }
         else {
             if (Locale.getDefault().getLanguage().equals("fr")) {
@@ -92,8 +101,9 @@ public class LoginController implements Initializable {
      * */
 @Override
     public void initialize(URL url, ResourceBundle resourceBundle){
-    String country = Locale.getDefault().getCountry();
-    locationTxt.setText(country);
+    ZonedDateTime currentTimeZone = ZonedDateTime.now();
+    String zoneID = currentTimeZone.getZone().getId();
+    locationTxt.setText(zoneID);
     try {
         ResourceBundle rb = ResourceBundle.getBundle("Main/Nat", Locale.getDefault());
         if (Locale.getDefault().getLanguage().equals("fr")) {
