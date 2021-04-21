@@ -13,10 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
@@ -91,7 +88,18 @@ public class MainSceneController implements Initializable {
         userName = userName1;
         userPassword = userPassword1;
     }
+    public void updateTableView(){
+        ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
+        //The follow is to set up the Table View with all the customers information.
+        allCustomerTableView.setItems(customerList);
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+        customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+    }
     public void addCustomer(){
         try {
 
@@ -99,11 +107,10 @@ public class MainSceneController implements Initializable {
             String customerAddress = customerAddressTxt.getText();
             String postalCode = customerPostalCodeTxt.getText();
             String phoneNumber = customerPhoneTxt.getText();
-            String createdBy = userName;//"admin"; // Right code to reference login credentials.
-            String lastUpdateBy = userPassword; //"admin"; //Same as above.
+            String createdBy = userName;
+            String lastUpdateBy = userPassword;
             Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
-            int customerDivisionID = selectedDivision.getDivisionID(); //Figure out how to change the String value in the combo box into the
-            // integer value of the division.
+            int customerDivisionID = selectedDivision.getDivisionID();
 
             Connection conn = DBConnection.getConnection(); // Create Connection Object
             DBQuery.setSatement(conn);
@@ -116,18 +123,9 @@ public class MainSceneController implements Initializable {
 
             //Execute statement
             statement.execute(insertStatement);
-            ObservableList<Countries> countryList = DBCountries.getAllCountries();
-            ObservableList<Division> divisionList = DBDivisions.getAllDivision();
-            ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
-            //The follow is to set up the Table View with all the customers information.
-            allCustomerTableView.setItems(customerList);
-            customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
-            customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
-            customerNameCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-            customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-            customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-            customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+            updateTableView();
+
             //This if else statement prints a line letting you know if the code above worked.
             if (statement.getUpdateCount() > 0) {
                 System.out.println(statement.getUpdateCount() + " row(s) affected!");
@@ -154,7 +152,29 @@ public class MainSceneController implements Initializable {
 
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
+        try {
+            Connection conn = DBConnection.getConnection(); // Create Connection Object
+            DBQuery.setSatement(conn);
+            Statement statement = DBQuery.getStatement(); //Get Statement reference
 
+            Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem(); //Get customer currently selected in table.
+            String selectedCustomerName = selectedCustomer.getCustomerName(); //Get the name of the customer currently selected in the table.
+
+            // Raw SQL delete statement
+            String deleteStatement = "DELETE FROM customers WHERE Customer_Name = '" + selectedCustomerName + "'";
+
+            //Execute statement
+            statement.execute(deleteStatement);
+
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText(selectedCustomerName + " has been deleted!");
+            error.showAndWait();
+            updateTableView();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
