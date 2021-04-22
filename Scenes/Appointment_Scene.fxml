@@ -5,6 +5,9 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,7 +18,7 @@
    <children>
       <HBox prefHeight="600.0" prefWidth="800.0" spacing="30.0">
          <children>
-            <VBox alignment="CENTER_LEFT" prefHeight="560.0" prefWidth="367.0" spacing="10.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="560.0" prefWidth="470.0" spacing="10.0">
                <children>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
@@ -47,7 +50,7 @@
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
                         <Label text="Contact" />
-                        <TextField fx:id="contatctTxt" />
+                        <ComboBox fx:id="contactsComboBox" prefWidth="150.0" />
                      </children>
                   </HBox>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
@@ -58,26 +61,28 @@
                   </HBox>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
-                        <Label text="Start Date &amp; Time" />
-                        <TextField fx:id="startDateAndTimeTxt" />
+                        <Label prefHeight="17.0" prefWidth="130.0" text="Start Date &amp; Time" />
+                        <DatePicker fx:id="startDatePicker" prefHeight="25.0" prefWidth="124.0" />
+                        <ComboBox fx:id="startTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
                      </children>
                   </HBox>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
-                        <Label text="End Date &amp; Time" />
-                        <TextField fx:id="EndDateAndTimeTxt" />
+                        <Label prefHeight="17.0" prefWidth="123.0" text="End Date &amp; Time" />
+                        <DatePicker fx:id="endDatePicker" prefWidth="124.0" />
+                        <ComboBox fx:id="endTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
                      </children>
                   </HBox>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
                         <Label text="Customer_ID" />
-                        <TextField fx:id="customerIDTxt" />
+                        <TextField fx:id="customerIDTxt" disable="true" editable="false" />
                      </children>
                   </HBox>
                   <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                      <children>
                         <Label text="User_ID" />
-                        <TextField fx:id="userIDTxt" />
+                        <TextField fx:id="userIDTxt" disable="true" editable="false" />
                      </children>
                   </HBox>
                </children>
@@ -85,13 +90,35 @@
                   <Insets left="20.0" />
                </padding>
             </VBox>
-            <VBox alignment="CENTER" prefHeight="360.0" prefWidth="118.0" spacing="60.0">
+            <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="589.0" spacing="10.0">
                <children>
-                  <DatePicker fx:id="datePicker" />
-                  <Button fx:id="addAppBtn" mnemonicParsing="false" text="Add" />
-                  <Button fx:id="deleteAppBtn" mnemonicParsing="false" text="Delete" />
-                  <Button fx:id="updateAppBtn" mnemonicParsing="false" text="Update" />
-                  <ComboBox fx:id="contactsComboBox" prefHeight="25.0" prefWidth="106.0" promptText="Contacts" />
+                  <HBox alignment="CENTER" prefHeight="49.0" prefWidth="282.0" spacing="20.0">
+                     <children>
+                        <ComboBox fx:id="customerComboBox" onAction="#onActionCustomerComboBox" prefHeight="25.0" prefWidth="110.0" promptText="Customer" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppAddBtn" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppDeleteBtn" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppUpdateBtn" text="Update" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="44.0" prefWidth="374.0" spacing="50.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" onAction="#onActionMonthRBtn" text="Month" />
+                        <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="appointmentTableView" prefHeight="438.0" prefWidth="380.0">
+                    <columns>
+                      <TableColumn fx:id="appIDCol" prefWidth="50.0" text="Appointment_ID" />
+                      <TableColumn fx:id="titleCol" prefWidth="50.0" text="Title" />
+                        <TableColumn fx:id="descriptionCol" prefWidth="50.0" text="Description" />
+                        <TableColumn fx:id="locationCol" prefWidth="50.0" text="Location" />
+                        <TableColumn fx:id="contactCol" prefWidth="42.40008544921875" text="Contact" />
+                        <TableColumn fx:id="typeCol" prefWidth="50.0" text="Type" />
+                        <TableColumn fx:id="startDateCol" prefWidth="50.0" text="Start Date&amp;Time" />
+                        <TableColumn fx:id="endDateCol" minWidth="9.20001220703125" prefWidth="50.0" text="End Date&amp;Time" />
+                        <TableColumn fx:id="customerIDCol" minWidth="6.39996337890625" prefWidth="50.0" text="Customer_ID" />
+                    </columns>
+                  </TableView>
                </children>
                <padding>
                   <Insets left="10.0" />

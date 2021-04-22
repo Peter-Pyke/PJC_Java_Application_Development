@@ -1,7 +1,10 @@
 package Model;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import DBAccess.DBAppointments;
+import DataBase.DBConnection;
+import javafx.collections.ObservableList;
+
+import java.sql.*;
 
 public class Customers {
     private int customerID;
@@ -34,6 +37,22 @@ public class Customers {
         public String getPostalCode(){return postalCode;}
         public String getPhoneNumber(){return phoneNumber;}
         public int getDivisionID(){return divisionID;}
+
+    public ObservableList<Appointments> getAllCustomerAppointments(){
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        ObservableList<Appointments> selectedCustomerAppointments = null;
+        int index = 0;
+        while(index < allAppointments.size()){
+            Integer currentIndexID = allAppointments.get(index).getCustomerID();
+            Integer customerID = this.getCustomerID();
+            if(currentIndexID.compareTo(customerID) == 1) {
+                selectedCustomerAppointments.add(allAppointments.get(index));
+            }
+            index++;
+
+        }
+        return selectedCustomerAppointments;
+    }
 
     @Override
     public String toString() {

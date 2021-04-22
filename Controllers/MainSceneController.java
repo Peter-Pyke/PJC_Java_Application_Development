@@ -1,24 +1,25 @@
 package Controllers;
+import DBAccess.DBAppointments;
 import DBAccess.DBCountries;
 import DBAccess.DBCustomers;
 import DBAccess.DBDivisions;
 import DataBase.DBConnection;
 import DataBase.DBQuery;
+import Model.Appointments;
 import Model.Countries;
 import Model.Customers;
 import Model.Division;
-import Model.Users;
-import com.mysql.cj.protocol.Resultset;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-
-import javax.xml.transform.Result;
-import java.io.PrintStream;
+import javafx.stage.Stage;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,7 +31,8 @@ import java.util.ResourceBundle;
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
  * */
 public class MainSceneController implements Initializable {
-
+    Stage stage;
+    Parent scene;
     @FXML
     private ComboBox<Customers> customerComboBox;
 
@@ -225,6 +227,20 @@ public class MainSceneController implements Initializable {
                 e.printStackTrace();
             }
         }
+    @FXML
+    void onActionAppointmentsBtn(ActionEvent event) throws IOException {
+
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/Scenes/Appointment_Scene.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
+    }
+    @FXML
+    void onActionTestBtn(ActionEvent event) {
+       Customers myCustomer = allCustomerTableView.getSelectionModel().getSelectedItem();
+       ObservableList<Appointments> myCustomersApp = myCustomer.getAllCustomerAppointments();
+        System.out.println(myCustomersApp);
+    }
 /**
  * This is the initialize method and it controls what happens when the Main Scene is loaded.
  * @param resourceBundle
