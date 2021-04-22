@@ -115,7 +115,7 @@ public class MainSceneController implements Initializable {
             int customerDivisionID = selectedDivision.getDivisionID();
 
             Connection conn = DBConnection.getConnection(); // Create Connection Object
-            DBQuery.setSatement(conn);
+            DBQuery.setStatement(conn);
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
             // Raw SQL insert statement
@@ -156,7 +156,7 @@ public class MainSceneController implements Initializable {
     void onActionDeleteCustomer(ActionEvent event) {
         try {
             Connection conn = DBConnection.getConnection(); // Create Connection Object
-            DBQuery.setSatement(conn);
+            DBQuery.setStatement(conn);
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
             Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem(); //Get customer currently selected in table.
@@ -188,7 +188,7 @@ public class MainSceneController implements Initializable {
 
         try {
             Connection conn = DBConnection.getConnection(); // Create Statement Object
-            DBQuery.setSatement(conn);
+            DBQuery.setStatement(conn);
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
             // Raw SQL insert statement
@@ -210,7 +210,7 @@ public class MainSceneController implements Initializable {
         public void JDBC2method(){
             try {
                 Connection conn = DBConnection.getConnection(); // Create Statement Object
-                DBQuery.setSatement(conn);
+                DBQuery.setStatement(conn);
                 Statement statement = DBQuery.getStatement(); //Get Statement reference
                 String selectStatement = "SELECT * FROM countries"; // SELECT statement
                 statement.execute(selectStatement); //Execute statement
@@ -237,9 +237,14 @@ public class MainSceneController implements Initializable {
     }
     @FXML
     void onActionTestBtn(ActionEvent event) {
-       Customers myCustomer = allCustomerTableView.getSelectionModel().getSelectedItem();
-       ObservableList<Appointments> myCustomersApp = myCustomer.getAllCustomerAppointments();
-        System.out.println(myCustomersApp);
+        try {
+            Customers myCustomer = allCustomerTableView.getSelectionModel().getSelectedItem();
+            ObservableList<Appointments> myCustomersApp = myCustomer.getAllCustomerAppointments();
+            System.out.println(myCustomersApp);
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 /**
  * This is the initialize method and it controls what happens when the Main Scene is loaded.

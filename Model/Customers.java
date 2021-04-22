@@ -39,19 +39,10 @@ public class Customers {
         public int getDivisionID(){return divisionID;}
 
     public ObservableList<Appointments> getAllCustomerAppointments(){
+        //Figure out how to short all appointments using the customerID list into a new list of just
+        // appoints for the selected customer.
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-        ObservableList<Appointments> selectedCustomerAppointments = null;
-        int index = 0;
-        while(index < allAppointments.size()){
-            Integer currentIndexID = allAppointments.get(index).getCustomerID();
-            Integer customerID = this.getCustomerID();
-            if(currentIndexID.compareTo(customerID) == 1) {
-                selectedCustomerAppointments.add(allAppointments.get(index));
-            }
-            index++;
-
-        }
-        return selectedCustomerAppointments;
+    return allAppointments;
     }
 
     @Override

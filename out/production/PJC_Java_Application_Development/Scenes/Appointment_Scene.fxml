@@ -3,98 +3,127 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
    <children>
-      <HBox prefHeight="400.0" prefWidth="600.0" spacing="30.0">
+      <HBox prefHeight="600.0" prefWidth="800.0" spacing="30.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="60.0">
+            <VBox alignment="CENTER_LEFT" prefHeight="560.0" prefWidth="470.0" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" text="Add" />
-                  <Button mnemonicParsing="false" text="Delete" />
-                  <Button mnemonicParsing="false" text="Update" />
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="96.0" text="Appointment_ID" />
+                        <TextField fx:id="appointmentIDTxt" disable="true" promptText="Auto Gen" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="Title" />
+                        <TextField fx:id="titleTxt" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="87.0" prefWidth="346.0" spacing="10.0">
+                     <children>
+                        <Label text="Description" />
+                        <TextArea fx:id="descriptionTxtArea" prefHeight="62.0" prefWidth="187.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="Location" />
+                        <TextField fx:id="locationTxt" />
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="Contact" />
+                        <ComboBox fx:id="contactsComboBox" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="Type" />
+                        <TextField fx:id="TypeTxt" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="130.0" text="Start Date &amp; Time" />
+                        <DatePicker fx:id="startDatePicker" prefHeight="25.0" prefWidth="124.0" />
+                        <ComboBox fx:id="startTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="123.0" text="End Date &amp; Time" />
+                        <DatePicker fx:id="endDatePicker" prefWidth="124.0" />
+                        <ComboBox fx:id="endTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="Customer_ID" />
+                        <TextField fx:id="customerIDTxt" disable="true" editable="false" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
+                     <children>
+                        <Label text="User_ID" />
+                        <TextField fx:id="userIDTxt" disable="true" editable="false" />
+                     </children>
+                  </HBox>
                </children>
                <padding>
-                  <Insets left="30.0" />
+                  <Insets left="20.0" />
                </padding>
             </VBox>
-            <GridPane fx:id="calendarGrid" alignment="CENTER" gridLinesVisible="true">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="78.60000610351562" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="54.60000000000001" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="55.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="65.800048828125" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="61.19999999999999" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="220.199951171875" minWidth="10.0" prefWidth="56.0" />
-                  <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="401.40003204345703" minWidth="10.0" prefWidth="64.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
+            <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="589.0" spacing="10.0">
                <children>
-                  <Label text="Sunday" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Monday" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="3.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Tuesday" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="3.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Wednesday" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                     <padding>
-                        <Insets left="1.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Thursday" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="5.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Friday" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
-                  <Label text="Saturday" GridPane.columnIndex="6" GridPane.rowIndex="1">
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
-                  <ComboBox onAction="#onActionCBoxMonth" prefWidth="150.0" promptText="Month" />
+                  <HBox alignment="CENTER" prefHeight="49.0" prefWidth="282.0" spacing="20.0">
+                     <children>
+                        <ComboBox fx:id="customerComboBox" onAction="#onActionCustomerComboBox" prefHeight="25.0" prefWidth="110.0" promptText="Customer" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppAddBtn" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppDeleteBtn" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppUpdateBtn" text="Update" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="44.0" prefWidth="374.0" spacing="50.0">
+                     <children>
+                        <RadioButton mnemonicParsing="false" onAction="#onActionMonthRBtn" text="Month" />
+                        <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
+                     </children>
+                  </HBox>
+                  <TableView fx:id="appointmentTableView" prefHeight="438.0" prefWidth="380.0">
+                    <columns>
+                      <TableColumn fx:id="appIDCol" prefWidth="50.0" text="Appointment_ID" />
+                      <TableColumn fx:id="titleCol" prefWidth="50.0" text="Title" />
+                        <TableColumn fx:id="descriptionCol" prefWidth="50.0" text="Description" />
+                        <TableColumn fx:id="locationCol" prefWidth="50.0" text="Location" />
+                        <TableColumn fx:id="contactCol" prefWidth="42.40008544921875" text="Contact" />
+                        <TableColumn fx:id="typeCol" prefWidth="50.0" text="Type" />
+                        <TableColumn fx:id="startDateCol" prefWidth="50.0" text="Start Date&amp;Time" />
+                        <TableColumn fx:id="endDateCol" minWidth="9.20001220703125" prefWidth="50.0" text="End Date&amp;Time" />
+                        <TableColumn fx:id="customerIDCol" minWidth="6.39996337890625" prefWidth="50.0" text="Customer_ID" />
+                    </columns>
+                  </TableView>
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
                <padding>
-                  <Insets left="10.0" right="10.0" />
+                  <Insets left="10.0" />
                </padding>
-            </GridPane>
+            </VBox>
          </children>
          <padding>
             <Insets bottom="20.0" top="20.0" />

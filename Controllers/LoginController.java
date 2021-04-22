@@ -117,6 +117,7 @@ public class LoginController implements Initializable {
         }
     }
     catch(MissingResourceException e){
+        e.printStackTrace();
         Alert error = new Alert(Alert.AlertType.WARNING);
         error.setTitle("Warning Dialog");
         error.setContentText("Language not supported!");
