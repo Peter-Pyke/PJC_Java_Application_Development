@@ -127,15 +127,15 @@ public class AppointmentController implements Initializable {
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i-> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
         appointmentTableView.setItems(selectedCustomerAppointments);
-        appIDCol.setCellValueFactory(new PropertyValueFactory<>("Appointment_ID"));
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
         startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
         endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
-        contactCol.setCellValueFactory(new PropertyValueFactory<>("Contact_ID"));
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("Customer_ID"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
