@@ -1,11 +1,13 @@
 package Controllers;
 
 
+import DBAccess.DBAppointments;
 import DBAccess.DBCustomers;
 import Model.Appointments;
 import Model.Contacts;
 import Model.Customers;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -122,9 +124,9 @@ public class AppointmentController implements Initializable {
     updateTable();
     }
     public void updateTable(){
-        Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
-        ObservableList<Appointments> myCustomerApp = selectedCustomer.getAllCustomerAppointments();
-        appointmentTableView.setItems(myCustomerApp);
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i-> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
+        appointmentTableView.setItems(selectedCustomerAppointments);
         appIDCol.setCellValueFactory(new PropertyValueFactory<>("Appointment_ID"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));

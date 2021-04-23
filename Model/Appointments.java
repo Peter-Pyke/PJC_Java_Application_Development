@@ -44,6 +44,14 @@ public class Appointments {
         return title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
     public String getType() {
         return type;
     }
@@ -83,5 +91,7 @@ public class Appointments {
     public int getContactID() {
         return contactID;
     }
+
+
 
 }

@@ -10,6 +10,7 @@ import Model.Countries;
 import Model.Customers;
 import Model.Division;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -238,9 +239,9 @@ public class MainSceneController implements Initializable {
     @FXML
     void onActionTestBtn(ActionEvent event) {
         try {
-            Customers myCustomer = allCustomerTableView.getSelectionModel().getSelectedItem();
-            ObservableList<Appointments> myCustomersApp = myCustomer.getAllCustomerAppointments();
-            System.out.println(myCustomersApp);
+            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+            FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i-> i.getCustomerID() == allCustomerTableView.getSelectionModel().getSelectedItem().getCustomerID());
+            System.out.println(selectedCustomerAppointments);
         }
         catch (NullPointerException e){
             e.printStackTrace();

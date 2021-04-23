@@ -1,10 +1,7 @@
 package Model;
 
-import DBAccess.DBAppointments;
-import DataBase.DBConnection;
-import javafx.collections.ObservableList;
-
 import java.sql.*;
+
 
 public class Customers {
     private int customerID;
@@ -38,15 +35,10 @@ public class Customers {
         public String getPhoneNumber(){return phoneNumber;}
         public int getDivisionID(){return divisionID;}
 
-    public ObservableList<Appointments> getAllCustomerAppointments(){
-        //Figure out how to short all appointments using the customerID list into a new list of just
-        // appoints for the selected customer.
-        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-    return allAppointments;
-    }
 
     @Override
     public String toString() {
         return customerName;
     }
 }
+
