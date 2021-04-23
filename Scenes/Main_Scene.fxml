@@ -20,7 +20,7 @@
          <children>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <ComboBox fx:id="customerComboBox" prefWidth="150.0" promptText="Customer" />
+                  <ComboBox fx:id="customerComboBox" onAction="#onActionCustomerCBox" prefWidth="150.0" promptText="Customer" />
                </children>
             </HBox>
             <GridPane prefHeight="300.0" prefWidth="286.0">
@@ -49,9 +49,9 @@
                   <TextField fx:id="customerPhoneTxt" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" promptText="AutoGen ID" GridPane.columnIndex="1" />
                   <Label text="Country" GridPane.rowIndex="2" />
-                  <ComboBox fx:id="countryCBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="countryCBox" onAction="#onActionCountryCBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label text="State" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="stateCBox" onAction="#onActionCBoxState" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="stateCBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
                <padding>
                   <Insets left="10.0" right="100.0" />
@@ -75,12 +75,12 @@
                   </HBox>
                   <TableView fx:id="allCustomerTableView" prefHeight="500.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn fx:id="customerIDCol" prefWidth="34.0" text="ID" />
-                      <TableColumn fx:id="customerNameCol" prefWidth="51.999969482421875" text="Name" />
-                        <TableColumn fx:id="customerAddressCol" prefWidth="71.20001220703125" text="Address" />
-                        <TableColumn fx:id="customerPostalCodeCol" prefWidth="86.39996337890625" text="Postal code" />
-                        <TableColumn fx:id="customerPhoneCol" prefWidth="64.7999267578125" text="Phone #" />
-                        <TableColumn fx:id="customerDivisionCol" prefWidth="71.2000732421875" text="Division_ID" />
+                      <TableColumn fx:id="customerIDCol" prefWidth="60.0" text="ID" />
+                      <TableColumn fx:id="customerNameCol" prefWidth="100.0" text="Name" />
+                        <TableColumn fx:id="customerAddressCol" prefWidth="150.0" text="Address" />
+                        <TableColumn fx:id="customerPostalCodeCol" prefWidth="100.0" text="Postal code" />
+                        <TableColumn fx:id="customerPhoneCol" prefWidth="100.0" text="Phone #" />
+                        <TableColumn fx:id="customerDivisionCol" prefWidth="100.0" text="Division_ID" />
                     </columns>
                   </TableView>
                </children>

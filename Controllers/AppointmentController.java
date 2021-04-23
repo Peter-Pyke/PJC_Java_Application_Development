@@ -123,6 +123,10 @@ public class AppointmentController implements Initializable {
     void onActionCustomerComboBox(ActionEvent event) {
     updateTable();
     }
+    /**
+     * This is my updateTable method. This method displays all the appointments associated with the customer that is
+     * currently selected inside of the customer combo box.
+     * */
     public void updateTable(){
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i-> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());

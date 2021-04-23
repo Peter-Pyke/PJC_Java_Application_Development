@@ -91,6 +91,10 @@ public class MainSceneController implements Initializable {
         userName = userName1;
         userPassword = userPassword1;
     }
+    /**
+     * This is my updateTableView method. This method is used to place all the customers and their information
+     * into the table view.
+     * */
     public void updateTableView(){
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
@@ -103,6 +107,10 @@ public class MainSceneController implements Initializable {
         customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
     }
+    /**
+     * This is my addCustomer method. This method collects the information in the text fields and uses it to
+     * create a new customer in our database.
+     * */
     public void addCustomer(){
         try {
 
@@ -146,13 +154,23 @@ public class MainSceneController implements Initializable {
     void onActionAddCustomer(ActionEvent event) {
         addCustomer(); //addCustomer method is called to insert a new customer into the database.
     }
-
-
-    @FXML
-    void onActionCBoxState(ActionEvent event) {
-//Add code to filter out division based on what country is selected.
+    /**
+     * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
+     * the country currently selected in the country combo box.
+     * */
+    public void filterDivision(){
+        ObservableList<Division> allDivision = DBDivisions.getAllDivision();
+        FilteredList<Division> filteredDivisions = new FilteredList<Division>(allDivision, i -> i.getCountryID() == countryCBox.getSelectionModel().getSelectedItem().getId());
+        stateCBox.setItems(filteredDivisions);
     }
-
+    @FXML
+    void onActionCountryCBox(ActionEvent event) {
+        filterDivision();
+    }
+    @FXML
+    void onActionCustomerCBox(ActionEvent event) {
+    //Write code to auto populate text files with the information from the customer currently selected in the combo box.
+    }
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
         try {
@@ -281,7 +299,7 @@ public class MainSceneController implements Initializable {
         customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
         customerComboBox.setItems(customerList);
         countryCBox.setItems(countryList);
-        stateCBox.setItems(divisionList);
+
 
     }
 
