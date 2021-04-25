@@ -167,9 +167,26 @@ public class MainSceneController implements Initializable {
     void onActionCountryCBox(ActionEvent event) {
         filterDivision();
     }
+    public void setUpDateCustomer(){
+        Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
+        customerIDTxt.setText(String.valueOf(selectedCustomer.getCustomerID()));
+        customerNameTxt.setText(selectedCustomer.getCustomerName());
+        customerAddressTxt.setText(selectedCustomer.getCustomerAddress());
+        customerPhoneTxt.setText(selectedCustomer.getPhoneNumber());
+        customerPostalCodeTxt.setText(selectedCustomer.getPostalCode());
+        ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
+        int divisionIndex = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID() - 1);
+        Division divisionOfSelectedCustomer = allDivisions.get(divisionIndex);
+        stateCBox.setValue(divisionOfSelectedCustomer);
+        int countryIndex = (divisionOfSelectedCustomer.getCountryID() -1);
+        ObservableList<Countries> allCountries = DBCountries.getAllCountries();
+        Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
+        countryCBox.setValue(countryOfSelectedCustomer);
+    }
     @FXML
     void onActionCustomerCBox(ActionEvent event) {
     //Write code to auto populate text files with the information from the customer currently selected in the combo box.
+   setUpDateCustomer();
     }
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
