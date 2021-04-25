@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
 /**
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
  * */
-public class MainSceneController implements Initializable {
+public class MainSceneController<size> implements Initializable {
     Stage stage;
     Parent scene;
     @FXML
@@ -113,36 +113,35 @@ public class MainSceneController implements Initializable {
      * */
     public void addCustomer(){
         try {
+                String customerName = customerNameTxt.getText();
+                String customerAddress = customerAddressTxt.getText();
+                String postalCode = customerPostalCodeTxt.getText();
+                String phoneNumber = customerPhoneTxt.getText();
+                String createdBy = userName;
+                String lastUpdateBy = userPassword;
+                Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
+                int customerDivisionID = selectedDivision.getDivisionID();
 
-            String customerName = customerNameTxt.getText();
-            String customerAddress = customerAddressTxt.getText();
-            String postalCode = customerPostalCodeTxt.getText();
-            String phoneNumber = customerPhoneTxt.getText();
-            String createdBy = userName;
-            String lastUpdateBy = userPassword;
-            Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
-            int customerDivisionID = selectedDivision.getDivisionID();
+                Connection conn = DBConnection.getConnection(); // Create Connection Object
+                DBQuery.setStatement(conn);
+                Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-            Connection conn = DBConnection.getConnection(); // Create Connection Object
-            DBQuery.setStatement(conn);
-            Statement statement = DBQuery.getStatement(); //Get Statement reference
+                // Raw SQL insert statement
+                String insertStatement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID)"
+                        + "VALUES('" + customerName + "', '" + customerAddress + "', '" + postalCode + "', '" + phoneNumber + "', '" + createdBy + "', '" +
+                        lastUpdateBy + "', '" + customerDivisionID + "') ";
 
-            // Raw SQL insert statement
-            String insertStatement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID)"
-                    +"VALUES('"+ customerName +"', '"+ customerAddress+"', '"+ postalCode +"', '"+ phoneNumber+"', '"+ createdBy +"', '"+
-                    lastUpdateBy +"', '"+ customerDivisionID +"') ";
+                //Execute statement
+                statement.execute(insertStatement);
 
-            //Execute statement
-            statement.execute(insertStatement);
+                updateTableView();
 
-            updateTableView();
-
-            //This if else statement prints a line letting you know if the code above worked.
-            if (statement.getUpdateCount() > 0) {
-                System.out.println(statement.getUpdateCount() + " row(s) affected!");
-            } else {
-                System.out.println("No Change");
-            }
+                //This if else statement prints a line letting you know if the code above worked.
+                if (statement.getUpdateCount() > 0) {
+                    System.out.println(statement.getUpdateCount() + " row(s) affected!");
+                } else {
+                    System.out.println("No Change");
+                }
         } catch (SQLException e) {
             e.printStackTrace(); // prints out error messages
         }
@@ -152,7 +151,15 @@ public class MainSceneController implements Initializable {
      * */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
-        addCustomer(); //addCustomer method is called to insert a new customer into the database.
+        if(!(customerComboBox.getSelectionModel().isEmpty())){
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("CustomerID already in use. Please use UpDate or clear form before adding.");
+            error.showAndWait();
+        }
+        else {
+            addCustomer(); //addCustomer method is called to insert a new customer into the database.
+        }
     }
     /**
      * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
@@ -167,27 +174,33 @@ public class MainSceneController implements Initializable {
     void onActionCountryCBox(ActionEvent event) {
         filterDivision();
     }
-    public void setUpDateCustomer(){
-        Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
-        customerIDTxt.setText(String.valueOf(selectedCustomer.getCustomerID()));
-        customerNameTxt.setText(selectedCustomer.getCustomerName());
-        customerAddressTxt.setText(selectedCustomer.getCustomerAddress());
-        customerPhoneTxt.setText(selectedCustomer.getPhoneNumber());
-        customerPostalCodeTxt.setText(selectedCustomer.getPostalCode());
-        ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
-        int divisionIndex = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID() - 1);
-        Division divisionOfSelectedCustomer = allDivisions.get(divisionIndex);
-        stateCBox.setValue(divisionOfSelectedCustomer);
-        int countryIndex = (divisionOfSelectedCustomer.getCountryID() -1);
-        ObservableList<Countries> allCountries = DBCountries.getAllCountries();
-        Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
-        countryCBox.setValue(countryOfSelectedCustomer);
-    }
     @FXML
     void onActionCustomerCBox(ActionEvent event) {
-    //Write code to auto populate text files with the information from the customer currently selected in the combo box.
-   setUpDateCustomer();
+        //Write code to auto populate text files with the information from the customer currently selected in the combo box.
+            setUpDateCustomer();
     }
+    public void setUpDateCustomer(){
+        try {
+            Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
+            customerIDTxt.setText(String.valueOf(selectedCustomer.getCustomerID()));
+            customerNameTxt.setText(selectedCustomer.getCustomerName());
+            customerAddressTxt.setText(selectedCustomer.getCustomerAddress());
+            customerPhoneTxt.setText(selectedCustomer.getPhoneNumber());
+            customerPostalCodeTxt.setText(selectedCustomer.getPostalCode());
+            ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
+            int divisionIndex = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID() - 1);
+            Division divisionOfSelectedCustomer = allDivisions.get(divisionIndex);
+            stateCBox.setValue(divisionOfSelectedCustomer);
+            int countryIndex = (divisionOfSelectedCustomer.getCountryID() - 1);
+            ObservableList<Countries> allCountries = DBCountries.getAllCountries();
+            Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
+            countryCBox.setValue(countryOfSelectedCustomer);
+        }
+        catch (NullPointerException e){
+            //Do nothing
+        }
+    }
+
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
         try {
@@ -196,19 +209,21 @@ public class MainSceneController implements Initializable {
             Statement statement = DBQuery.getStatement(); //Get Statement reference
 
             Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem(); //Get customer currently selected in table.
-            String selectedCustomerName = selectedCustomer.getCustomerName(); //Get the name of the customer currently selected in the table.
+            int selectedCustomerID = selectedCustomer.getCustomerID(); //Get the name of the customer currently selected in the table.
 
             // Raw SQL delete statement
-            String deleteStatement = "DELETE FROM customers WHERE Customer_Name = '" + selectedCustomerName + "'";
+            String deleteStatement = "DELETE FROM customers WHERE Customer_ID = '" + selectedCustomerID + "'";
 
             //Execute statement
             statement.execute(deleteStatement);
 
+            String selectedCustomerName = selectedCustomer.getCustomerName();
             Alert error = new Alert(Alert.AlertType.WARNING);
             error.setTitle("Warning Dialog");
             error.setContentText(selectedCustomerName + " has been deleted!");
             error.showAndWait();
             updateTableView();
+            customerComboBox.setItems(DBCustomers.getAllCustomers());
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -272,15 +287,22 @@ public class MainSceneController implements Initializable {
         stage.show();
     }
     @FXML
-    void onActionTestBtn(ActionEvent event) {
+    void onActionClearFormBtn(ActionEvent event) {
+
         try {
-            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-            FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i-> i.getCustomerID() == allCustomerTableView.getSelectionModel().getSelectedItem().getCustomerID());
-            System.out.println(selectedCustomerAppointments);
+            customerIDTxt.setText("Auto Generated");
+            customerNameTxt.setText("");
+            customerAddressTxt.setText("");
+            customerPhoneTxt.setText("");
+            customerPostalCodeTxt.setText("");
+            customerComboBox.setItems(DBCustomers.getAllCustomers());
+            countryCBox.setValue(DBCountries.getAllCountries().get(0));
+            stateCBox.setValue(DBDivisions.getAllDivision().get(0));
         }
         catch (NullPointerException e){
             e.printStackTrace();
         }
+
     }
 /**
  * This is the initialize method and it controls what happens when the Main Scene is loaded.
@@ -291,11 +313,7 @@ public class MainSceneController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         ObservableList<Customers> myCustomers = DBCustomers.getAllCustomers();
-        int lastCustomerIndex = myCustomers.size() - 1;
-        Customers lastCustomer = myCustomers.get(lastCustomerIndex);
-        int nextCustomerID = lastCustomer.getCustomerID() +1;
-
-        customerIDTxt.setText(String.valueOf(nextCustomerID));
+        customerIDTxt.setText("Auto Generated");
 
         JDBC2method(); //Example method to print the countries.
 
