@@ -301,26 +301,37 @@ public class MainSceneController<size> implements Initializable {
      * */
     public void deleteCustomer(){
         try {
-            Connection conn = DBConnection.getConnection(); // Create Connection Object
-            DBQuery.setStatement(conn);
-            Statement statement = DBQuery.getStatement(); //Get Statement reference
+            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+            FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == allCustomerTableView.getSelectionModel().getSelectedItem().getCustomerID());
 
-            Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem(); //Get customer currently selected in table.
-            int selectedCustomerID = selectedCustomer.getCustomerID(); //Get the name of the customer currently selected in the table.
+           if(!selectedCustomerAppointments.isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Delete Associated Appointments First!");
+                error.showAndWait();
+            }
+            else {
+                Connection conn = DBConnection.getConnection(); // Create Connection Object
+                DBQuery.setStatement(conn);
+                Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-            // Raw SQL delete statement
-            String deleteStatement = "DELETE FROM customers WHERE Customer_ID = '" + selectedCustomerID + "'";
+                Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem(); //Get customer currently selected in table.
+                int selectedCustomerID = selectedCustomer.getCustomerID(); //Get the name of the customer currently selected in the table.
 
-            //Execute statement
-            statement.execute(deleteStatement);
+                // Raw SQL delete statement
+                String deleteStatement = "DELETE FROM customers WHERE Customer_ID = '" + selectedCustomerID + "'";
 
-            String selectedCustomerName = selectedCustomer.getCustomerName();
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText(selectedCustomerName + " has been deleted!");
-            error.showAndWait();
-            updateTableView();
-            customerComboBox.setItems(DBCustomers.getAllCustomers());
+                //Execute statement
+                statement.execute(deleteStatement);
+
+                String selectedCustomerName = selectedCustomer.getCustomerName();
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText(selectedCustomerName + " has been deleted!");
+                error.showAndWait();
+                updateTableView();
+                customerComboBox.setItems(DBCustomers.getAllCustomers());
+            }
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -350,7 +361,15 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
-       deleteCustomer();
+       if(allCustomerTableView.getSelectionModel().isEmpty()){
+           Alert error = new Alert(Alert.AlertType.WARNING);
+           error.setTitle("Warning Dialog");
+           error.setContentText("Please Select A Customer From The Table!");
+           error.showAndWait();
+       }
+       else {
+           deleteCustomer();
+       }
     }
     /**
      * On Action Country Combo Box method. Calls the filter Division method which filters the Division
