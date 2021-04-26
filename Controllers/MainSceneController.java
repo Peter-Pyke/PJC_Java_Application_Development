@@ -32,8 +32,8 @@ import java.util.ResourceBundle;
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
  * */
 public class MainSceneController<size> implements Initializable {
-    Stage stage;
-    Parent scene;
+    Stage stage; //Declaring stage object to be used later on.
+    Parent scene; //Declaring scene object to be used later on.
     @FXML
     private ComboBox<Customers> customerComboBox;
 
@@ -302,11 +302,10 @@ public class MainSceneController<size> implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        /* The three lines below retrieve the Counties, Divisions and Customers from my data
-        base and hold them in three lists.
+        /* The two lines below retrieve the Countries and Customers from my data
+        base and hold them in two lists.
         */
         ObservableList<Countries> countryList = DBCountries.getAllCountries();
-        ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
         customerIDTxt.setText("Auto Generated"); // Sets the Customer ID text field.
