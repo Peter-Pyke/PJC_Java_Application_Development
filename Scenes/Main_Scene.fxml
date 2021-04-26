@@ -46,7 +46,7 @@
                   <Label text="Postal code" GridPane.rowIndex="5" />
                   <Label text="Phone number" GridPane.rowIndex="6" />
                   <Label text="CustomerID" />
-                  <TextField fx:id="customerPhoneTxt" text="000-000-0000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <TextField fx:id="customerPhoneTxt" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" promptText="AutoGen ID" GridPane.columnIndex="1" />
                   <Label text="Country" GridPane.rowIndex="2" />
                   <ComboBox fx:id="countryCBox" onAction="#onActionCountryCBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
