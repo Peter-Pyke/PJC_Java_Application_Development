@@ -146,6 +146,43 @@ public class MainSceneController<size> implements Initializable {
             e.printStackTrace(); // prints out error messages
         }
     }
+    public void upDateCustomer(){
+        try {
+            String customerName = customerNameTxt.getText();
+            String customerAddress = customerAddressTxt.getText();
+            String postalCode = customerPostalCodeTxt.getText();
+            String phoneNumber = customerPhoneTxt.getText();
+            String createdBy = userName;
+            String lastUpdateBy = userPassword;
+            Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
+            int customerDivisionID = selectedDivision.getDivisionID();
+            int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
+
+            Connection conn = DBConnection.getConnection(); // Create Connection Object
+            DBQuery.setStatement(conn);
+            Statement statement = DBQuery.getStatement(); //Get Statement reference
+
+            // Raw SQL update statement
+            String updateStatement = "UPDATE customers SET Customer_Name = '"+ customerName
+                    +"', Address = '" + customerAddress +"', Postal_Code = '" + postalCode +"', "
+                    +"Phone = '"+ phoneNumber + "', Created_By = '"+ createdBy +"', Last_Updated_By = '"+ lastUpdateBy
+                    +"', Division_ID = '"+ customerDivisionID +"' WHERE Customer_ID = '"+ customerID +"';";
+
+            //Execute statement
+            statement.execute(updateStatement);
+
+            updateTableView();
+
+            //This if else statement prints a line letting you know if the code above worked.
+            if (statement.getUpdateCount() > 0) {
+                System.out.println(statement.getUpdateCount() + " row(s) affected!");
+            } else {
+                System.out.println("No Change");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // prints out error messages
+        }
+    }
     /**
      * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
      * the country currently selected in the country combo box.
@@ -250,7 +287,7 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionCustomerCBox(ActionEvent event) {
-            setUpDateCustomer();
+        setUpDateCustomer();
     }
     /**
      * On Action Add Customer method. Calls addCustomer method if no customer is currently
@@ -274,7 +311,7 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
-
+    upDateCustomer();
     }
     /**
      * On Action Appointments method. This method changes the scene to the appointment scene.
