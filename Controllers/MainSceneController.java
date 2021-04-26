@@ -193,7 +193,6 @@ public class MainSceneController<size> implements Initializable {
             String customerAddress = customerAddressTxt.getText();
             String postalCode = customerPostalCodeTxt.getText();
             String phoneNumber = customerPhoneTxt.getText();
-            String createdBy = userName;
             String lastUpdateBy = userPassword;
             Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
             if (customerName.isEmpty()) {
@@ -243,7 +242,7 @@ public class MainSceneController<size> implements Initializable {
                 // Raw SQL update statement
                 String updateStatement = "UPDATE customers SET Customer_Name = '" + customerName
                         + "', Address = '" + customerAddress + "', Postal_Code = '" + postalCode + "', "
-                        + "Phone = '" + phoneNumber + "', Created_By = '" + createdBy + "', Last_Updated_By = '" + lastUpdateBy
+                        + "Phone = '" + phoneNumber + "', Last_Updated_By = '" + lastUpdateBy
                         + "', Division_ID = '" + customerDivisionID + "' WHERE Customer_ID = '" + customerID + "';";
 
                 //Execute statement
@@ -284,13 +283,43 @@ public class MainSceneController<size> implements Initializable {
             customerPhoneTxt.setText(selectedCustomer.getPhoneNumber());
             customerPostalCodeTxt.setText(selectedCustomer.getPostalCode());
             ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
-            int divisionIndex = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID() - 1);
-            Division divisionOfSelectedCustomer = allDivisions.get(divisionIndex);
-            stateCBox.setValue(divisionOfSelectedCustomer);
-            int countryIndex = (divisionOfSelectedCustomer.getCountryID() - 1);
+            int divisionID = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID());
             ObservableList<Countries> allCountries = DBCountries.getAllCountries();
-            Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
-            countryCBox.setValue(countryOfSelectedCustomer);
+            if(divisionID <= 49) {
+                Division divisionInUS = allDivisions.get(divisionID - 1);
+                int countryIndex = (divisionInUS.getCountryID() - 1);
+                Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
+                countryCBox.setValue(countryOfSelectedCustomer);
+                stateCBox.setValue(divisionInUS);
+            }
+            else if(divisionID == 52){
+                Countries countryOfSelectedCustomer = allCountries.get(1);
+                countryCBox.setValue(countryOfSelectedCustomer);
+                Division hawaii = allDivisions.get(49);
+                stateCBox.setValue(hawaii);
+            }
+            else if(divisionID == 54){
+                Countries countryOfSelectedCustomer = allCountries.get(1);
+                countryCBox.setValue(countryOfSelectedCustomer);
+                Division Alaska = allDivisions.get(50);
+                stateCBox.setValue(Alaska);
+            }
+            else if (divisionID > 54 && divisionID <= 72){
+                Division divisionInUK = allDivisions.get(divisionID - 9);
+                int countryIndex = (divisionInUK.getCountryID() - 1);
+                Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
+                countryCBox.setValue(countryOfSelectedCustomer);
+                stateCBox.setValue(divisionInUK);
+            }
+            else if(divisionID > 72 && divisionID <= 104){
+                Division divisionINCan = allDivisions.get(divisionID - 37);
+                int countryIndex = (divisionINCan.getCountryID() - 1);
+                Countries countryOfSelectedCustomer = (allCountries.get(countryIndex));
+                countryCBox.setValue(countryOfSelectedCustomer);
+                stateCBox.setValue(divisionINCan);
+            }
+
+
         }
         catch (NullPointerException e){
             //Do nothing
@@ -348,8 +377,8 @@ public class MainSceneController<size> implements Initializable {
             customerPhoneTxt.setText("");
             customerPostalCodeTxt.setText("");
             customerComboBox.setItems(DBCustomers.getAllCustomers());
-            countryCBox.setValue(DBCountries.getAllCountries().get(0));
-            stateCBox.setValue(DBDivisions.getAllDivision().get(0));
+            countryCBox.setValue(null);
+            stateCBox.setValue(null);
         }
         catch (NullPointerException e){
             e.printStackTrace();
