@@ -147,21 +147,6 @@ public class MainSceneController<size> implements Initializable {
         }
     }
     /**
-     * This is the onActionAddCustomer method and it decides what will happen when the add button is clicked in the main menu.
-     * */
-    @FXML
-    void onActionAddCustomer(ActionEvent event) {
-        if(!(customerComboBox.getSelectionModel().isEmpty())){
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("CustomerID already in use. Please use UpDate or clear form before adding.");
-            error.showAndWait();
-        }
-        else {
-            addCustomer(); //addCustomer method is called to insert a new customer into the database.
-        }
-    }
-    /**
      * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
      * the country currently selected in the country combo box.
      * */
@@ -170,15 +155,10 @@ public class MainSceneController<size> implements Initializable {
         FilteredList<Division> filteredDivisions = new FilteredList<Division>(allDivision, i -> i.getCountryID() == countryCBox.getSelectionModel().getSelectedItem().getId());
         stateCBox.setItems(filteredDivisions);
     }
-    @FXML
-    void onActionCountryCBox(ActionEvent event) {
-        filterDivision();
-    }
-    @FXML
-    void onActionCustomerCBox(ActionEvent event) {
-        //Write code to auto populate text files with the information from the customer currently selected in the combo box.
-            setUpDateCustomer();
-    }
+    /**
+     * Set UpDate Customer method. This method takes the selected customer's information and populates
+     * the on screen form with that information.
+     * */
     public void setUpDateCustomer(){
         try {
             Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
@@ -200,9 +180,10 @@ public class MainSceneController<size> implements Initializable {
             //Do nothing
         }
     }
-
-    @FXML
-    void onActionDeleteCustomer(ActionEvent event) {
+    /**
+     * Delete Customer method. This method removes the customer currently selected in the Table View.
+     * */
+    public void deleteCustomer(){
         try {
             Connection conn = DBConnection.getConnection(); // Create Connection Object
             DBQuery.setStatement(conn);
@@ -229,66 +210,10 @@ public class MainSceneController<size> implements Initializable {
             e.printStackTrace();
         }
     }
-
-    @FXML
-    void onActionUpdateCustomer(ActionEvent event) {
-
-    }
-    // Example from first webinar of JDBC interfaces placed into a method. This will not be part of the project.
-    public void JDBC1method() {
-
-        try {
-            Connection conn = DBConnection.getConnection(); // Create Statement Object
-            DBQuery.setStatement(conn);
-            Statement statement = DBQuery.getStatement(); //Get Statement reference
-
-            // Raw SQL insert statement
-            String insertStatement = "INSERT INTO countries(Country, Create_Date, Created_By, Last_Updated_By) VALUES('China', '2020-02-22 00:00:00', 'admin', 'admin') ";
-
-            //Execute statement
-            statement.execute(insertStatement);
-
-            if (statement.getUpdateCount() > 0) {
-                System.out.println(statement.getUpdateCount() + " row(s) affected!");
-            } else {
-                System.out.println("No Change");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    //Example from the second JDBC webinar placed in a method. This will not be part of the project.
-        public void JDBC2method(){
-            try {
-                Connection conn = DBConnection.getConnection(); // Create Statement Object
-                DBQuery.setStatement(conn);
-                Statement statement = DBQuery.getStatement(); //Get Statement reference
-                String selectStatement = "SELECT * FROM countries"; // SELECT statement
-                statement.execute(selectStatement); //Execute statement
-                ResultSet rs = statement.getResultSet(); // Get ResultSet
-
-                //Forward Scroll ResultSet
-                while(rs.next()){
-                    String country = rs.getString("Country");
-
-                    System.out.println(country);
-                }
-            }
-            catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    @FXML
-    void onActionAppointmentsBtn(ActionEvent event) throws IOException {
-
-        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/Scenes/Appointment_Scene.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
-    }
-    @FXML
-    void onActionClearFormBtn(ActionEvent event) {
-
+    /**
+     * Clear Form method. This method resets all the text fields and combo boxes on the screen to a default.
+     * */
+    public void clearForm(){
         try {
             customerIDTxt.setText("Auto Generated");
             customerNameTxt.setText("");
@@ -302,20 +227,80 @@ public class MainSceneController<size> implements Initializable {
         catch (NullPointerException e){
             e.printStackTrace();
         }
+    }
+    /**
+     * On Action Delete Customer method. Calls the deleteCustomer method which removes the customer
+     * currently selected in the table view from the database.
+     * */
+    @FXML
+    void onActionDeleteCustomer(ActionEvent event) {
+       deleteCustomer();
+    }
+    /**
+     * On Action Country Combo Box method. Calls the filter Division method which filters the Division
+     * combo box with only the divisions in the selected country.
+     * */
+    @FXML
+    void onActionCountryCBox(ActionEvent event) {
+        filterDivision();
+    }
+    /**
+     * On Action Customer Combo Box method. Calls set UpDate Customer method which auto populates
+     * the on screen form with the selected customer's information.
+     * */
+    @FXML
+    void onActionCustomerCBox(ActionEvent event) {
+            setUpDateCustomer();
+    }
+    /**
+     * On Action Add Customer method. Calls addCustomer method if no customer is currently
+     * selected in the combo box. Otherwise it provides an error message.
+     * */
+    @FXML
+    void onActionAddCustomer(ActionEvent event) {
+        if(!(customerComboBox.getSelectionModel().isEmpty())){
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Please use UpDate button or clear form before adding.");
+            error.showAndWait();
+        }
+        else {
+            addCustomer(); //addCustomer method is called to insert a new customer into the database.
+        }
+    }
+    /**
+     * On Action Update Customer method. Calls the Update Customer method which replaces
+     * the selected customer information with the information provided on the screen.
+     * */
+    @FXML
+    void onActionUpdateCustomer(ActionEvent event) {
 
     }
-/**
- * This is the initialize method and it controls what happens when the Main Scene is loaded.
- * @param resourceBundle
- * @param url
- * */
+    /**
+     * On Action Appointments method. This method changes the scene to the appointment scene.
+     * */
+    @FXML
+    void onActionAppointmentsBtn(ActionEvent event) throws IOException {
+        stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/Scenes/Appointment_Scene.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
+    }
+    /**
+     * On Action Clear Form method. This method calls the clear form method to reset the data
+     * on the form.
+     * */
+    @FXML
+    void onActionClearFormBtn(ActionEvent event) {
+    clearForm();
+    }
+    /**
+    * This is the initialize method and it controls what happens when the Main Scene is loaded.
+    * @param resourceBundle
+    * @param url
+    * */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        ObservableList<Customers> myCustomers = DBCustomers.getAllCustomers();
-        customerIDTxt.setText("Auto Generated");
-
-        JDBC2method(); //Example method to print the countries.
 
         /* The three lines below retrieve the Counties, Divisions and Customers from my data
         base and hold them in three lists.
@@ -324,7 +309,11 @@ public class MainSceneController<size> implements Initializable {
         ObservableList<Division> divisionList = DBDivisions.getAllDivision();
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
-//The follow is to set up the Table View with all the customers information.
+        customerIDTxt.setText("Auto Generated"); // Sets the Customer ID text field.
+        customerComboBox.setItems(customerList); // Sets up Customer Combo box.
+        countryCBox.setItems(countryList);       // Sets up Country Combo box.
+
+        //The follow is to set up the Table View with all the customers information.
         allCustomerTableView.setItems(customerList);
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("customerID"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
@@ -332,10 +321,6 @@ public class MainSceneController<size> implements Initializable {
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
-        customerComboBox.setItems(customerList);
-        countryCBox.setItems(countryList);
-
-
     }
 
 }
