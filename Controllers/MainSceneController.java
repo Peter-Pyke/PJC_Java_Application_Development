@@ -27,6 +27,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
@@ -113,6 +115,7 @@ public class MainSceneController<size> implements Initializable {
      * */
     public void addCustomer(){
         try {
+
                 String customerName = customerNameTxt.getText();
                 String customerAddress = customerAddressTxt.getText();
                 String postalCode = customerPostalCodeTxt.getText();
@@ -120,27 +123,65 @@ public class MainSceneController<size> implements Initializable {
                 String createdBy = userName;
                 String lastUpdateBy = userPassword;
                 Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
-                int customerDivisionID = selectedDivision.getDivisionID();
+                if(customerName.isEmpty()){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Enter A Valid Name!");
+                    error.showAndWait();
+                }
+                else if(customerAddress.isEmpty()){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Enter A Valid Address!");
+                    error.showAndWait();
+                }
+                else if(postalCode.isEmpty()){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Enter A Valid Postal Code!");
+                    error.showAndWait();
+                }
+                else if(!phoneNumber.matches("\\d{3}-\\d{3}-\\d{4}")){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Enter A Valid phone#!");
+                    error.showAndWait();
+                }
+                else if(stateCBox.getSelectionModel().isEmpty()){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Select A Division!");
+                    error.showAndWait();
+                }
+                else if(countryCBox.getSelectionModel().isEmpty()){
+                    Alert error = new Alert(Alert.AlertType.WARNING);
+                    error.setTitle("Warning Dialog");
+                    error.setContentText("Please Select A Country!");
+                    error.showAndWait();
+                }
+                else {
+                    int customerDivisionID = selectedDivision.getDivisionID();
 
-                Connection conn = DBConnection.getConnection(); // Create Connection Object
-                DBQuery.setStatement(conn);
-                Statement statement = DBQuery.getStatement(); //Get Statement reference
+                    Connection conn = DBConnection.getConnection(); // Create Connection Object
+                    DBQuery.setStatement(conn);
+                    Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-                // Raw SQL insert statement
-                String insertStatement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID)"
-                        + "VALUES('" + customerName + "', '" + customerAddress + "', '" + postalCode + "', '" + phoneNumber + "', '" + createdBy + "', '" +
-                        lastUpdateBy + "', '" + customerDivisionID + "') ";
+                    // Raw SQL insert statement
+                    String insertStatement = "INSERT INTO customers(Customer_Name, Address, Postal_Code, Phone, Created_By, Last_Updated_By, Division_ID)"
+                            + "VALUES('" + customerName + "', '" + customerAddress + "', '" + postalCode + "', '" + phoneNumber + "', '" + createdBy + "', '" +
+                            lastUpdateBy + "', '" + customerDivisionID + "') ";
 
-                //Execute statement
-                statement.execute(insertStatement);
+                    //Execute statement
+                    statement.execute(insertStatement);
 
-                updateTableView();
+                    updateTableView();
 
-                //This if else statement prints a line letting you know if the code above worked.
-                if (statement.getUpdateCount() > 0) {
-                    System.out.println(statement.getUpdateCount() + " row(s) affected!");
-                } else {
-                    System.out.println("No Change");
+                    //This if else statement prints a line letting you know if the code above worked.
+                    if (statement.getUpdateCount() > 0) {
+                        System.out.println(statement.getUpdateCount() + " row(s) affected!");
+                    } else {
+                        System.out.println("No Change");
+                    }
                 }
         } catch (SQLException e) {
             e.printStackTrace(); // prints out error messages
@@ -155,33 +196,71 @@ public class MainSceneController<size> implements Initializable {
             String createdBy = userName;
             String lastUpdateBy = userPassword;
             Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
-            int customerDivisionID = selectedDivision.getDivisionID();
-            int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
-
-            Connection conn = DBConnection.getConnection(); // Create Connection Object
-            DBQuery.setStatement(conn);
-            Statement statement = DBQuery.getStatement(); //Get Statement reference
-
-            // Raw SQL update statement
-            String updateStatement = "UPDATE customers SET Customer_Name = '"+ customerName
-                    +"', Address = '" + customerAddress +"', Postal_Code = '" + postalCode +"', "
-                    +"Phone = '"+ phoneNumber + "', Created_By = '"+ createdBy +"', Last_Updated_By = '"+ lastUpdateBy
-                    +"', Division_ID = '"+ customerDivisionID +"' WHERE Customer_ID = '"+ customerID +"';";
-
-            //Execute statement
-            statement.execute(updateStatement);
-
-            updateTableView();
-
-            //This if else statement prints a line letting you know if the code above worked.
-            if (statement.getUpdateCount() > 0) {
-                System.out.println(statement.getUpdateCount() + " row(s) affected!");
-            } else {
-                System.out.println("No Change");
+            if (customerName.isEmpty()) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Enter A Valid Name!");
+                error.showAndWait();
+            } else if (customerAddress.isEmpty()) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Enter A Valid Address!");
+                error.showAndWait();
+            } else if (postalCode.isEmpty()) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Enter A Valid Postal Code!");
+                error.showAndWait();
+            } else if (!phoneNumber.matches("\\d{3}-\\d{3}-\\d{4}")) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Enter A Valid phone#!");
+                error.showAndWait();
+            } else if (stateCBox.getSelectionModel().isEmpty()) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Select A Division!");
+                error.showAndWait();
+            } else if (countryCBox.getSelectionModel().isEmpty()) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Select A Country!");
+                error.showAndWait();
+            } else if(customerComboBox.getSelectionModel().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Select A Customer!");
+                error.showAndWait();
             }
-        } catch (SQLException e) {
-            e.printStackTrace(); // prints out error messages
-        }
+            else {
+                int customerDivisionID = selectedDivision.getDivisionID();
+                int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
+
+                Connection conn = DBConnection.getConnection(); // Create Connection Object
+                DBQuery.setStatement(conn);
+                Statement statement = DBQuery.getStatement(); //Get Statement reference
+
+                // Raw SQL update statement
+                String updateStatement = "UPDATE customers SET Customer_Name = '" + customerName
+                        + "', Address = '" + customerAddress + "', Postal_Code = '" + postalCode + "', "
+                        + "Phone = '" + phoneNumber + "', Created_By = '" + createdBy + "', Last_Updated_By = '" + lastUpdateBy
+                        + "', Division_ID = '" + customerDivisionID + "' WHERE Customer_ID = '" + customerID + "';";
+
+                //Execute statement
+                statement.execute(updateStatement);
+
+                updateTableView();
+
+                //This if else statement prints a line letting you know if the code above worked.
+                if (statement.getUpdateCount() > 0) {
+                    System.out.println(statement.getUpdateCount() + " row(s) affected!");
+                } else {
+                    System.out.println("No Change");
+                }
+            }
+            } catch(SQLException e){
+                e.printStackTrace(); // prints out error messages
+            }
     }
     /**
      * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
