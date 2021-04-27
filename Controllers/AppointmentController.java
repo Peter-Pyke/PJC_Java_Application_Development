@@ -3,9 +3,13 @@ package Controllers;
 
 import DBAccess.DBAppointments;
 import DBAccess.DBCustomers;
+import DataBase.DBConnection;
+import DataBase.DBPreparedStatement;
+import DataBase.DBQuery;
 import Model.Appointments;
 import Model.Contacts;
 import Model.Customers;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -21,8 +25,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Time;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 public class AppointmentController implements Initializable {
@@ -95,10 +101,65 @@ public class AppointmentController implements Initializable {
 
     @FXML
     private TableColumn<Appointments, Integer> customerIDCol;
+    private static String userName = null; // String object to hold the username of the person who logged in.
+    private static String userPassword = null; // String object to hold the password of the person who logged in.
+    public void passLoginInfo(String userName1, String userPassword1){
+        userName = userName1;
+        userPassword = userPassword1;
+    }
+    ObservableList<LocalTime> times = FXCollections.observableArrayList();
+    LocalTime start = LocalTime.of(6,0);
+    LocalTime end = LocalTime.of(8,0);
+    while(start.isBefore(end.plusSeconds(1))){
+        startTimeComboBox.getItems().add(start);
+        start = start.plusMinutes(10);
+    }
 
+    public void addApp() throws SQLException{
+
+        Connection conn = DBConnection.getConnection();
+
+        String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID)"
+                        + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
+
+        PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
+
+        String title = titleTxt.getText();
+        String description = descriptionTxtArea.getText();
+        String location = locationTxt.getText();
+        String type = TypeTxt.getText();
+        LocalDate start = startDatePicker.getValue();
+        LocalDate end = endDatePicker.getValue();
+        String createdBy = userName;
+        String lastUpdatedBy = userName;
+        int customerID = Integer.getInteger(customerIDTxt.getText());
+        int userID = Integer.getInteger(userIDTxt.getText());
+        int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
+
+        //key-value map
+        ps.setString(1, title);
+        ps.setString(2, description);
+        ps.setString(3, location);
+        ps.setString(4, type);
+        //ps.setDate(5,start);
+        //ps.setDate(6, end);
+        ps.setString(8, createdBy);
+        ps.setString(10, lastUpdatedBy);
+        ps.setInt(11,customerID);
+        ps.setInt(12, userID);
+        ps.setInt(13, contactID);
+
+        ps.execute();
+
+    }
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
-
+        LocalDate startDate = startDatePicker.getValue();
+        LocalTime mytime = LocalTime.of(12,30);
+        LocalDateTime myDate = LocalDateTime.of(startDate, mytime);
+        System.out.println(myDate);
     }
 
     @FXML
