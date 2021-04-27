@@ -55,13 +55,13 @@ public class AppointmentController implements Initializable {
     private DatePicker startDatePicker;
 
     @FXML
-    private ComboBox<Time> startTimeComboBox;
+    private ComboBox<LocalTime> startTimeComboBox;
 
     @FXML
     private DatePicker endDatePicker;
 
     @FXML
-    private ComboBox<Time> endTimeComboBox;
+    private ComboBox<LocalTime> endTimeComboBox;
 
     @FXML
     private TextField customerIDTxt;
@@ -106,13 +106,6 @@ public class AppointmentController implements Initializable {
     public void passLoginInfo(String userName1, String userPassword1){
         userName = userName1;
         userPassword = userPassword1;
-    }
-    ObservableList<LocalTime> times = FXCollections.observableArrayList();
-    LocalTime start = LocalTime.of(6,0);
-    LocalTime end = LocalTime.of(8,0);
-    while(start.isBefore(end.plusSeconds(1))){
-        startTimeComboBox.getItems().add(start);
-        start = start.plusMinutes(10);
     }
 
     public void addApp() throws SQLException{
@@ -205,5 +198,12 @@ public class AppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     customerComboBox.setItems(DBCustomers.getAllCustomers());
+        LocalTime start = LocalTime.of(6,0);
+        LocalTime end = LocalTime.of(8,0);
+
+        while(start.isBefore(end.plusSeconds(1))){
+            startTimeComboBox.getItems().add(start);
+            start = start.plusMinutes(10);
+        }
     }
 }
