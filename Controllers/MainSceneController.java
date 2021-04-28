@@ -438,16 +438,24 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
-    upDateCustomer();
+   // upDateCustomer();
+        System.out.println(userName);
+        System.out.println(userPassword);
     }
     /**
      * On Action Appointments method. This method changes the scene to the appointment scene.
      * */
     @FXML
     void onActionAppointmentsBtn(ActionEvent event) throws IOException {
+
+        FXMLLoader loader1 = new FXMLLoader();
+        loader1.setLocation(getClass().getResource("/Scenes/Appointment_Scene.fxml"));
+        Parent mainSceneAdd1 = loader1.load();
+        Scene scene2 = new Scene(mainSceneAdd1);
+        AppointmentController pass1 = loader1.getController();
+        pass1.passLoginInfo1(userName, userPassword);
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/Scenes/Appointment_Scene.fxml"));
-        stage.setScene(new Scene(scene));
+        stage.setScene(scene2);
         stage.show();
     }
     /**
