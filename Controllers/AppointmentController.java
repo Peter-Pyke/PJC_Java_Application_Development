@@ -33,6 +33,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class AppointmentController implements Initializable {
@@ -112,6 +113,7 @@ public class AppointmentController implements Initializable {
         userNameApp = userName1;
         userPasswordApp = userPassword1;
     }
+
     @FXML
     void onActionCustomerComboBox(ActionEvent event) {
         updateTable();
@@ -127,34 +129,33 @@ public class AppointmentController implements Initializable {
         DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
 
         PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
+        getLocalTimeStart();
+        getLocalTimeEnd();
 
         String title = titleTxt.getText();
         String description = descriptionTxtArea.getText();
         String location = locationTxt.getText();
         String type = TypeTxt.getText();
-        Date start = Date.valueOf(startDatePicker.getValue());
-        Date end = Date.valueOf(endDatePicker.getValue());
+        String start = startDatePicker.getValue().toString() + " " + selectedTime.toString();
+        String end = endDatePicker.getValue().toString() + " " + selectedTime2.toString();
         String createdBy = userNameApp;
         String lastUpdatedBy = userNameApp;
-        System.out.println(customerIDTxt.getText());
-        int customerID = Integer.getInteger(customerIDTxt.getText());
-        int userID = Integer.getInteger(userIDTxt.getText());
+        int customerID = Integer.valueOf(customerIDTxt.getText());
+        int userID = Integer.valueOf(userIDTxt.getText());
         int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
-
-
 
         //key-value map
         ps.setString(1, title);
         ps.setString(2, description);
         ps.setString(3, location);
         ps.setString(4, type);
-        ps.setDate(5,start);
-        ps.setDate(6, end);
-        ps.setString(8, createdBy);
-        ps.setString(10, lastUpdatedBy);
-        ps.setInt(11, customerID);
-        ps.setInt(12, userID);
-        ps.setInt(13, contactID);
+        ps.setString(5, start);
+        ps.setString(6, end);
+        ps.setString(7, createdBy);
+        ps.setString(8, lastUpdatedBy);
+        ps.setInt(9, customerID);
+        ps.setInt(10, userID);
+        ps.setInt(11, contactID);
 
         ps.execute();
 
@@ -177,7 +178,7 @@ public class AppointmentController implements Initializable {
 
     @FXML
     void onActionAppUpdateBtn(ActionEvent event) {
-        System.out.println(customerIDTxt.getText());
+
     }
 
     @FXML
@@ -299,7 +300,7 @@ public class AppointmentController implements Initializable {
         int startIndex = startTimeComboBox.getSelectionModel().getSelectedIndex();
 
         switch(startIndex){
-            case 0: selectedTime = LocalTime.of(8,0);
+            case 0: selectedTime = LocalTime.of(8,0,00);
                 break;
             case 1: selectedTime = LocalTime.of(8,30);
                 break;

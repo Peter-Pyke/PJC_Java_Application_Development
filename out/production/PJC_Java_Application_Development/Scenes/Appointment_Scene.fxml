@@ -41,13 +41,13 @@
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label text="Customer_ID" />
-                  <TextField fx:id="customerIDTxt" />
+                  <TextField fx:id="customerIDTxt" disable="true" editable="false" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label text="User_ID" />
-                  <TextField fx:id="userIDTxt" />
+                  <TextField fx:id="userIDTxt" disable="true" editable="false" />
                   <Button mnemonicParsing="false" onAction="#onActionFillUserIDBtn" text="Fill" />
                </children>
             </HBox>
