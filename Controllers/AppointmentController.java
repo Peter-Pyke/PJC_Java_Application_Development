@@ -365,6 +365,17 @@ public class AppointmentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         customerComboBox.setItems(DBCustomers.getAllCustomers());
         contactsComboBox.setItems(DBContacts.getAllContacts());
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd hh mm a");
+        String text = date.format(formatter);
+        System.out.println(text);
+        LocalDateTime parsedDate = LocalDateTime.parse(text, formatter);
+        System.out.println(parsedDate);
+
+        LocalTime mytime = LocalTime.now();
+        DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        String time = mytime.format(myformatter);
+        System.out.println(time);
 
         LocalTime start = LocalTime.of(8, 0);
         LocalTime am = LocalTime.of(12, 31);
