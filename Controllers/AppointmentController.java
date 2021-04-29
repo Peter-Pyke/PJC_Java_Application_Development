@@ -173,7 +173,11 @@ public class AppointmentController implements Initializable {
 
     @FXML
     void onActionAppDeleteBtn(ActionEvent event) {
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        String time =startTimeComboBox.getSelectionModel().getSelectedItem();
+        System.out.println(time);
+        LocalTime stringToTime = LocalTime.parse(time, formatter);
+        System.out.println(stringToTime);
     }
 
     @FXML
@@ -377,10 +381,22 @@ public class AppointmentController implements Initializable {
         String time = mytime.format(myformatter);
         System.out.println(time);
 
-        LocalTime start = LocalTime.of(8, 0);
+        LocalTime start = LocalTime.of(8,0);
+        LocalTime end = LocalTime.of(11,59);
+        LocalTime open = LocalTime.of(8, 0);
+        LocalTime close = LocalTime.of(22, 1);
         LocalTime am = LocalTime.of(12, 31);
         LocalTime pm = LocalTime.of(10, 1);
         LocalTime myTimeS = LocalTime.of(1, 0);
+/*
+        while (open.isBefore(close.plusSeconds(1))){
+            String timeToEnter  = open.format(myformatter);
+            startTimeComboBox.getItems().add(timeToEnter);
+            endTimeComboBox.getItems().add(timeToEnter);
+            open = open.plusMinutes(30);
+        }
+
+ */
 
 
         while (start.isBefore(am.plusSeconds(1))) {
@@ -401,5 +417,6 @@ public class AppointmentController implements Initializable {
             endTimeComboBox.getItems().add(myTimeString + " pm");
             myTimeS = myTimeS.plusMinutes(30);
         }
+
     }
 }
