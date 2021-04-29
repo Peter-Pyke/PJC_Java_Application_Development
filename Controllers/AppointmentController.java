@@ -120,7 +120,11 @@ public class AppointmentController implements Initializable {
         int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
         customerIDTxt.setText(String.valueOf(customerID));
     }
+
     public void addApp() throws SQLException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
+        LocalTime selectedTime2 = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
         Connection conn = DBConnection.getConnection();
 
         String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID, Contact_ID)"
@@ -129,8 +133,7 @@ public class AppointmentController implements Initializable {
         DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
 
         PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
-        getLocalTimeStart();
-        getLocalTimeEnd();
+
 
         String title = titleTxt.getText();
         String description = descriptionTxtArea.getText();
@@ -230,192 +233,25 @@ public class AppointmentController implements Initializable {
         contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
-    LocalTime selectedTime = LocalTime.of(0,0);
-    LocalTime selectedTime2 = LocalTime.of(0,0);
 
-    public void getLocalTimeEnd(){
-
-        int endIndex = endTimeComboBox.getSelectionModel().getSelectedIndex();
-
-        switch(endIndex){
-            case 0: selectedTime2 = LocalTime.of(8,0);
-                break;
-            case 1: selectedTime2 = LocalTime.of(8,30);
-                break;
-            case 2: selectedTime2 = LocalTime.of(9,0);
-                break;
-            case 3: selectedTime2 = LocalTime.of(9,30);
-                break;
-            case 4: selectedTime2 = LocalTime.of(10,0);
-                break;
-            case 5: selectedTime2 = LocalTime.of(10,30);
-                break;
-            case 6: selectedTime2 = LocalTime.of(11,0);
-                break;
-            case 7: selectedTime2 = LocalTime.of(11,30);
-                break;
-            case 8: selectedTime2 = LocalTime.of(12,0);
-                break;
-            case 9: selectedTime2 = LocalTime.of(12,30);
-                break;
-            case 10: selectedTime2 = LocalTime.of(13,0);
-                break;
-            case 11: selectedTime2 = LocalTime.of(13,30);
-                break;
-            case 12: selectedTime2 = LocalTime.of(14,0);
-                break;
-            case 13: selectedTime2 = LocalTime.of(14,30);
-                break;
-            case 14: selectedTime2 = LocalTime.of(15,0);
-                break;
-            case 15: selectedTime2 = LocalTime.of(15,30);
-                break;
-            case 16: selectedTime2 = LocalTime.of(16,0);
-                break;
-            case 17: selectedTime2 = LocalTime.of(16,30);
-                break;
-            case 18: selectedTime2 = LocalTime.of(17,0);
-                break;
-            case 19: selectedTime2 = LocalTime.of(17,30);
-                break;
-            case 20: selectedTime2 = LocalTime.of(18,0);
-                break;
-            case 21: selectedTime2 = LocalTime.of(18,30);
-                break;
-            case 22: selectedTime2 = LocalTime.of(19,0);
-                break;
-            case 23: selectedTime2 = LocalTime.of(19,30);
-                break;
-            case 24: selectedTime2 = LocalTime.of(20,0);
-                break;
-            case 25: selectedTime2 = LocalTime.of(20,30);
-                break;
-            case 26: selectedTime2 = LocalTime.of(21,0);
-                break;
-            case 27: selectedTime2 = LocalTime.of(21,30);
-                break;
-            case 28: selectedTime2 = LocalTime.of(22,0);
-                break;
-        }
-
-    }
-    public void getLocalTimeStart(){
-
-        int startIndex = startTimeComboBox.getSelectionModel().getSelectedIndex();
-
-        switch(startIndex){
-            case 0: selectedTime = LocalTime.of(8,0,00);
-                break;
-            case 1: selectedTime = LocalTime.of(8,30);
-                break;
-            case 2: selectedTime = LocalTime.of(9,0);
-                break;
-            case 3: selectedTime = LocalTime.of(9,30);
-                break;
-            case 4: selectedTime = LocalTime.of(10,0);
-                break;
-            case 5: selectedTime = LocalTime.of(10,30);
-                break;
-            case 6: selectedTime = LocalTime.of(11,0);
-                break;
-            case 7: selectedTime = LocalTime.of(11,30);
-                break;
-            case 8: selectedTime = LocalTime.of(12,0);
-                break;
-            case 9: selectedTime = LocalTime.of(12,30);
-                break;
-            case 10: selectedTime = LocalTime.of(13,0);
-                break;
-            case 11: selectedTime = LocalTime.of(13,30);
-                break;
-            case 12: selectedTime = LocalTime.of(14,0);
-                break;
-            case 13: selectedTime = LocalTime.of(14,30);
-                break;
-            case 14: selectedTime = LocalTime.of(15,0);
-                break;
-            case 15: selectedTime = LocalTime.of(15,30);
-                break;
-            case 16: selectedTime = LocalTime.of(16,0);
-                break;
-            case 17: selectedTime = LocalTime.of(16,30);
-                break;
-            case 18: selectedTime = LocalTime.of(17,0);
-                break;
-            case 19: selectedTime = LocalTime.of(17,30);
-                break;
-            case 20: selectedTime = LocalTime.of(18,0);
-                break;
-            case 21: selectedTime = LocalTime.of(18,30);
-                break;
-            case 22: selectedTime = LocalTime.of(19,0);
-                break;
-            case 23: selectedTime = LocalTime.of(19,30);
-                break;
-            case 24: selectedTime = LocalTime.of(20,0);
-                break;
-            case 25: selectedTime = LocalTime.of(20,30);
-                break;
-            case 26: selectedTime = LocalTime.of(21,0);
-                break;
-            case 27: selectedTime = LocalTime.of(21,30);
-                break;
-            case 28: selectedTime = LocalTime.of(22,0);
-                break;
-        }
-
-    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         customerComboBox.setItems(DBCustomers.getAllCustomers());
         contactsComboBox.setItems(DBContacts.getAllContacts());
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy MM dd hh mm a");
-        String text = date.format(formatter);
-        System.out.println(text);
-        LocalDateTime parsedDate = LocalDateTime.parse(text, formatter);
-        System.out.println(parsedDate);
 
         LocalTime mytime = LocalTime.now();
         DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
         String time = mytime.format(myformatter);
         System.out.println(time);
 
-        LocalTime start = LocalTime.of(8,0);
-        LocalTime end = LocalTime.of(11,59);
         LocalTime open = LocalTime.of(8, 0);
         LocalTime close = LocalTime.of(22, 1);
-        LocalTime am = LocalTime.of(12, 31);
-        LocalTime pm = LocalTime.of(10, 1);
-        LocalTime myTimeS = LocalTime.of(1, 0);
-/*
+
         while (open.isBefore(close.plusSeconds(1))){
             String timeToEnter  = open.format(myformatter);
             startTimeComboBox.getItems().add(timeToEnter);
             endTimeComboBox.getItems().add(timeToEnter);
             open = open.plusMinutes(30);
-        }
-
- */
-
-
-        while (start.isBefore(am.plusSeconds(1))) {
-            String myTimeString = start.toString();
-            if(start.isBefore(LocalTime.of(11,59))) {
-                startTimeComboBox.getItems().add(myTimeString + " am");
-                endTimeComboBox.getItems().add(myTimeString + " am");
-            }
-            else if(start.isAfter(LocalTime.of(11, 59))){
-                startTimeComboBox.getItems().add(start + " pm");
-                endTimeComboBox.getItems().add(start + " pm");
-            }
-            start = start.plusMinutes(30);
-        }
-        while (myTimeS.isBefore(pm.plusSeconds(0))) {
-            String myTimeString = myTimeS.toString();
-            startTimeComboBox.getItems().add(myTimeString + " pm");
-            endTimeComboBox.getItems().add(myTimeString + " pm");
-            myTimeS = myTimeS.plusMinutes(30);
         }
 
     }

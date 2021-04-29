@@ -27,7 +27,7 @@ public class DBAppointments {
                 String description = rs.getString("Description");
                 String location = rs.getString("Location");
                 String type = rs.getString("Type");
-                Date start = rs.getDate("Start");
+                Timestamp start = rs.getTimestamp("Start");
                 Date end = rs.getDate("End");
                 Date createdDate = rs.getDate("Create_Date");
                 String createdBy = rs.getString("Created_By");
