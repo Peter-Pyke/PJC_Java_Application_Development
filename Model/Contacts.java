@@ -37,7 +37,7 @@ public class Contacts {
 
     @Override
     public String toString() {
-        return contactName;
+        return contactName + " (Contact_ID: "+contactID+")";
     }
 
 }

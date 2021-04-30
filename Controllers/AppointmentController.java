@@ -18,13 +18,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -120,7 +114,49 @@ public class AppointmentController implements Initializable {
         int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
         customerIDTxt.setText(String.valueOf(customerID));
     }
+    public void upDateApp() throws SQLException{
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
+        LocalTime selectedTime2 = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
+        Connection conn = DBConnection.getConnection();
 
+        String sqlStatement = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?,"
+                + " Start = ?, End = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ?"
+                + "WHERE Appointment_ID = ?";
+
+        DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
+
+        PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
+
+
+        String title = titleTxt.getText();
+        String description = descriptionTxtArea.getText();
+        String location = locationTxt.getText();
+        String type = TypeTxt.getText();
+        String start = startDatePicker.getValue().toString() + " " + selectedTime.toString();
+        String end = endDatePicker.getValue().toString() + " " + selectedTime2.toString();
+        String lastUpdatedBy = userNameApp;
+        int customerID = Integer.valueOf(customerIDTxt.getText());
+        int userID = Integer.valueOf(userIDTxt.getText());
+        int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
+        int AppointmentID = Integer.valueOf(appointmentIDTxt.getText());
+
+        //key-value map
+        ps.setInt(1, AppointmentID);
+        ps.setString(2, title);
+        ps.setString(3, description);
+        ps.setString(4, location);
+        ps.setString(5, type);
+        ps.setString(6, start);
+        ps.setString(7, end);
+        ps.setString(8, lastUpdatedBy);
+        ps.setInt(9, customerID);
+        ps.setInt(10, userID);
+        ps.setInt(11, contactID);
+
+        ps.execute();
+
+    }
     public void addApp() throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
         LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
@@ -185,7 +221,21 @@ public class AppointmentController implements Initializable {
 
     @FXML
     void onActionAppUpdateBtn(ActionEvent event) {
-
+        try {
+            if(appointmentTableView.getSelectionModel().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Select Appointment from Table!");
+                error.showAndWait();
+            }
+            else {
+                appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
+                upDateApp();
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -199,10 +249,6 @@ public class AppointmentController implements Initializable {
     }
 
     @FXML
-    void onActionStartComboBox(ActionEvent event){
-
-    }
-    @FXML
     void onActionFillUserIDBtn(){
         ObservableList<Users> allUsers = DBUsers.getAllUsers();
         int index = 0;
@@ -214,6 +260,20 @@ public class AppointmentController implements Initializable {
             }
             index++;
         }
+    }
+    @FXML
+    void onActionAllAppointments(){
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        appointmentTableView.setItems(allAppointments);
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
      * This is my updateTable method. This method displays all the appointments associated with the customer that is

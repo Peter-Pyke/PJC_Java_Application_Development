@@ -438,9 +438,7 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
-   // upDateCustomer();
-        System.out.println(userName);
-        System.out.println(userPassword);
+     upDateCustomer();
     }
     /**
      * On Action Appointments method. This method changes the scene to the appointment scene.
