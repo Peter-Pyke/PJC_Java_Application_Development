@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
    <children>
-      <VBox layoutX="363.0" prefHeight="337.0" prefWidth="437.0" spacing="10.0">
+      <VBox layoutX="500.0" prefHeight="337.0" prefWidth="450.0" spacing="10.0">
          <children>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
@@ -28,7 +28,7 @@
                <children>
                   <Label prefHeight="17.0" prefWidth="130.0" text="Start Date &amp; Time" />
                   <DatePicker fx:id="startDatePicker" prefHeight="25.0" prefWidth="124.0" />
-                  <ComboBox fx:id="startTimeComboBox" onAction="#onActionStartComboBox" prefHeight="25.0" prefWidth="118.0" />
+                  <ComboBox fx:id="startTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
@@ -42,13 +42,14 @@
                <children>
                   <Label text="Customer_ID" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" />
+                  <Button mnemonicParsing="false" onAction="#onActionInsertCusIDBtn" text="Insert ID" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label text="User_ID" />
                   <TextField fx:id="userIDTxt" disable="true" editable="false" />
-                  <Button mnemonicParsing="false" onAction="#onActionFillUserIDBtn" text="Fill" />
+                  <Button mnemonicParsing="false" onAction="#onActionInsertUserIDBtn" text="Insert ID" />
                </children>
             </HBox>
          </children>
@@ -56,7 +57,7 @@
             <Insets top="35.0" />
          </padding>
       </VBox>
-      <VBox alignment="TOP_CENTER" layoutX="5.0" layoutY="344.0" prefHeight="256.0" prefWidth="790.0" spacing="10.0">
+      <VBox alignment="TOP_CENTER" layoutX="5.0" layoutY="344.0" prefHeight="256.0" prefWidth="990.0" spacing="10.0">
          <children>
             <HBox alignment="CENTER" prefHeight="49.0" prefWidth="282.0" spacing="20.0">
                <children>
@@ -68,6 +69,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="44.0" prefWidth="374.0" spacing="50.0">
                <children>
+                  <Button mnemonicParsing="false" onAction="#onActionAllAppointments" text="All Appointments" />
                   <RadioButton mnemonicParsing="false" onAction="#onActionMonthRBtn" text="Month" />
                   <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
                </children>
@@ -76,13 +78,13 @@
               <columns>
                 <TableColumn fx:id="appIDCol" prefWidth="100.0" text="Appointment_ID" />
                 <TableColumn fx:id="titleCol" prefWidth="50.0" text="Title" />
-                  <TableColumn fx:id="descriptionCol" prefWidth="100.0" text="Description" />
-                  <TableColumn fx:id="locationCol" prefWidth="73.20001220703125" text="Location" />
-                  <TableColumn fx:id="contactCol" prefWidth="86.79998779296875" text="Contact" />
-                  <TableColumn fx:id="typeCol" prefWidth="50.0" text="Type" />
-                  <TableColumn fx:id="startDateCol" prefWidth="100.0" text="Start Date&amp;Time" />
-                  <TableColumn fx:id="endDateCol" minWidth="9.20001220703125" prefWidth="114.80010986328125" text="End Date&amp;Time" />
-                  <TableColumn fx:id="customerIDCol" minWidth="6.39996337890625" prefWidth="103.20001220703125" text="Customer_ID" />
+                  <TableColumn fx:id="descriptionCol" prefWidth="192.0" text="Description" />
+                  <TableColumn fx:id="locationCol" minWidth="4.4000244140625" prefWidth="81.5999755859375" text="Location" />
+                  <TableColumn fx:id="contactCol" prefWidth="78.0" text="Contact_ID" />
+                  <TableColumn fx:id="typeCol" prefWidth="100.0" text="Type" />
+                  <TableColumn fx:id="startDateCol" prefWidth="150.0" text="Start Date&amp;Time" />
+                  <TableColumn fx:id="endDateCol" minWidth="9.20001220703125" prefWidth="150.0" text="End Date&amp;Time" />
+                  <TableColumn fx:id="customerIDCol" minWidth="6.39996337890625" prefWidth="77.199951171875" text="Customer_ID" />
               </columns>
             </TableView>
          </children>
@@ -90,7 +92,7 @@
             <Insets left="10.0" />
          </padding>
       </VBox>
-      <VBox alignment="CENTER_LEFT" prefHeight="365.0" prefWidth="336.0" spacing="10.0">
+      <VBox alignment="CENTER_LEFT" layoutX="14.0" prefHeight="365.0" prefWidth="450.0" spacing="10.0">
          <children>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
@@ -107,13 +109,13 @@
             <HBox prefHeight="87.0" prefWidth="346.0" spacing="10.0">
                <children>
                   <Label text="Description" />
-                  <TextArea fx:id="descriptionTxtArea" prefHeight="62.0" prefWidth="187.0" />
+                  <TextArea fx:id="descriptionTxtArea" prefHeight="87.0" prefWidth="272.0" />
                </children>
             </HBox>
             <HBox prefHeight="35.0" prefWidth="583.0" spacing="10.0">
                <children>
                   <Label text="Location" />
-                  <TextField fx:id="locationTxt" />
+                  <TextField fx:id="locationTxt" prefHeight="25.0" prefWidth="207.0" />
                </children>
                <padding>
                   <Insets top="10.0" />
@@ -122,7 +124,7 @@
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label text="Contact" />
-                  <ComboBox fx:id="contactsComboBox" prefWidth="150.0" />
+                  <ComboBox fx:id="contactsComboBox" prefHeight="25.0" prefWidth="209.0" />
                </children>
             </HBox>
          </children>

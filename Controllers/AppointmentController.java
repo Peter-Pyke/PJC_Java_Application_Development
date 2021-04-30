@@ -121,8 +121,8 @@ public class AppointmentController implements Initializable {
         Connection conn = DBConnection.getConnection();
 
         String sqlStatement = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?,"
-                + " Start = ?, End = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ?"
-                + "WHERE Appointment_ID = ?";
+                + " Start = ?, End = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? "
+                + "WHERE Appointment_ID =?;";
 
         DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
 
@@ -142,17 +142,17 @@ public class AppointmentController implements Initializable {
         int AppointmentID = Integer.valueOf(appointmentIDTxt.getText());
 
         //key-value map
-        ps.setInt(1, AppointmentID);
-        ps.setString(2, title);
-        ps.setString(3, description);
-        ps.setString(4, location);
-        ps.setString(5, type);
-        ps.setString(6, start);
-        ps.setString(7, end);
-        ps.setString(8, lastUpdatedBy);
-        ps.setInt(9, customerID);
-        ps.setInt(10, userID);
-        ps.setInt(11, contactID);
+        ps.setString(1, title);
+        ps.setString(2, description);
+        ps.setString(3, location);
+        ps.setString(4, type);
+        ps.setString(5, start);
+        ps.setString(6, end);
+        ps.setString(7, lastUpdatedBy);
+        ps.setInt(8, customerID);
+        ps.setInt(9, userID);
+        ps.setInt(10, contactID);
+        ps.setInt(11, AppointmentID);
 
         ps.execute();
 
@@ -209,14 +209,35 @@ public class AppointmentController implements Initializable {
            e.printStackTrace();
        }
     }
+    public void deleteApp(){
+        try {
+                Connection conn = DBConnection.getConnection(); // Create Connection Object
+                DBQuery.setStatement(conn);
+                Statement statement = DBQuery.getStatement(); //Get Statement reference
 
+                Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
+                int selectedAppointmentID = selectedAppointment.getAppointmentID();
+
+                // Raw SQL delete statement
+                String deleteStatement = "DELETE FROM appointments WHERE Appointment_ID = '" + selectedAppointmentID + "'";
+
+                //Execute statement
+                statement.execute(deleteStatement);
+
+                int selectedAppID = selectedAppointmentID;
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Appointment_ID: " + selectedAppID + " has been deleted!");
+                error.showAndWait();
+                appointmentTableView.setItems(DBAppointments.getAllAppointments());
+            }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
     @FXML
     void onActionAppDeleteBtn(ActionEvent event) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        String time =startTimeComboBox.getSelectionModel().getSelectedItem();
-        System.out.println(time);
-        LocalTime stringToTime = LocalTime.parse(time, formatter);
-        System.out.println(stringToTime);
+    deleteApp();
     }
 
     @FXML
@@ -226,6 +247,12 @@ public class AppointmentController implements Initializable {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select Appointment from Table!");
+                error.showAndWait();
+            }
+            else if(!(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()).equals(customerIDTxt.getText()))){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please Insert Customer Correct Customer ID!");
                 error.showAndWait();
             }
             else {
@@ -249,7 +276,7 @@ public class AppointmentController implements Initializable {
     }
 
     @FXML
-    void onActionFillUserIDBtn(){
+    void onActionInsertUserIDBtn(ActionEvent event){
         ObservableList<Users> allUsers = DBUsers.getAllUsers();
         int index = 0;
         while(index < allUsers.size()){
@@ -261,6 +288,18 @@ public class AppointmentController implements Initializable {
             index++;
         }
     }
+    @FXML
+    void onActionInsertCusIDBtn(ActionEvent event){
+        try {
+            customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
+        }
+        catch(NullPointerException e){
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Please Select Appointment from Table!");
+            error.showAndWait();
+        }
+        }
     @FXML
     void onActionAllAppointments(){
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();

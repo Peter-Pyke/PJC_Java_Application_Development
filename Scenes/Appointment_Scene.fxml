@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
    <children>
       <VBox layoutX="500.0" prefHeight="337.0" prefWidth="450.0" spacing="10.0">
          <children>
@@ -42,13 +42,14 @@
                <children>
                   <Label text="Customer_ID" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" />
+                  <Button mnemonicParsing="false" onAction="#onActionInsertCusIDBtn" text="Insert ID" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label text="User_ID" />
                   <TextField fx:id="userIDTxt" disable="true" editable="false" />
-                  <Button mnemonicParsing="false" onAction="#onActionFillUserIDBtn" text=" View ID" />
+                  <Button mnemonicParsing="false" onAction="#onActionInsertUserIDBtn" text="Insert ID" />
                </children>
             </HBox>
          </children>
