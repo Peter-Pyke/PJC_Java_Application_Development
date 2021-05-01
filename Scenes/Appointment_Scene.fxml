@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AppointmentController">
    <children>
       <VBox layoutX="500.0" prefHeight="337.0" prefWidth="450.0" spacing="10.0">
          <children>
@@ -79,7 +79,7 @@
                   <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
                </children>
             </HBox>
-            <TableView fx:id="appointmentTableView" onMouseClicked="#onMouseClickedApp" prefHeight="438.0" prefWidth="380.0">
+            <TableView fx:id="appointmentTableView" prefHeight="438.0" prefWidth="380.0">
               <columns>
                 <TableColumn fx:id="appIDCol" prefWidth="100.0" text="Appointment_ID" />
                 <TableColumn fx:id="titleCol" prefWidth="50.0" text="Title" />
