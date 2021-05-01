@@ -290,7 +290,19 @@ public class AppointmentController implements Initializable {
     void onActionWeekRBtn(ActionEvent event) {
 
     }
-
+    public void insertUserID(){
+        ObservableList<Users> allUsers = DBUsers.getAllUsers();
+        int index = 0;
+        while(index < allUsers.size()){
+            Users myUser = allUsers.get(index);
+            String myUsersPassword = myUser.getUserPassword();
+            String myUserName = myUser.getUserName();
+            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
+                userIDTxt.setText(String.valueOf(myUser.getUserID()));
+            }
+            index++;
+        }
+    }
     @FXML
     void onActionInsertUserIDBtn(ActionEvent event){
         ObservableList<Users> allUsers = DBUsers.getAllUsers();
@@ -298,7 +310,8 @@ public class AppointmentController implements Initializable {
         while(index < allUsers.size()){
             Users myUser = allUsers.get(index);
             String myUsersPassword = myUser.getUserPassword();
-            if (userPasswordApp.equals(myUsersPassword)) {
+            String myUserName = myUser.getUserName();
+            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
                 userIDTxt.setText(String.valueOf(myUser.getUserID()));
             }
             index++;
@@ -358,26 +371,36 @@ public class AppointmentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         customerComboBox.setItems(DBCustomers.getAllCustomers());
         contactsComboBox.setItems(DBContacts.getAllContacts());
-
-        appointmentTableView.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
-            @Override
-            public void handle(javafx.scene.input.MouseEvent mouseEvent) {
-                appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
-                titleTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getTitle());
-                descriptionTxtArea.setText(appointmentTableView.getSelectionModel().getSelectedItem().getDescription());
-                locationTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getLocation());
-                TypeTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getType());
-                DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
-                Timestamp startTime = appointmentTableView.getSelectionModel().getSelectedItem().getStart();
-                LocalDateTime startTime1 = startTime.toLocalDateTime();
-                String startTime2 = startTime1.format(myformatter);
-                Timestamp endTime = appointmentTableView.getSelectionModel().getSelectedItem().getEnd();
-                LocalDateTime endTime1 = endTime.toLocalDateTime();
-                String endTime2 = startTime1.format(myformatter);
-                startTimeComboBox.setValue(startTime2);
-                endTimeComboBox.setValue(endTime2);
-            }
-        });
+try {
+    appointmentTableView.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
+        @Override
+        public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+            appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
+            titleTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getTitle());
+            descriptionTxtArea.setText(appointmentTableView.getSelectionModel().getSelectedItem().getDescription());
+            locationTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getLocation());
+            TypeTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getType());
+            DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
+            Timestamp startTime = appointmentTableView.getSelectionModel().getSelectedItem().getStart();
+            LocalDateTime startTime1 = startTime.toLocalDateTime();
+            String startTime2 = startTime1.format(myformatter);
+            Timestamp endTime = appointmentTableView.getSelectionModel().getSelectedItem().getEnd();
+            LocalDateTime endTime1 = endTime.toLocalDateTime();
+            String endTime2 = endTime1.format(myformatter);
+            startTimeComboBox.setValue(startTime2);
+            endTimeComboBox.setValue(endTime2);
+            LocalDate startDate = startTime.toLocalDateTime().toLocalDate();
+            LocalDate endDate = endTime.toLocalDateTime().toLocalDate();
+            startDatePicker.setValue(startDate);
+            endDatePicker.setValue(endDate);
+            customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
+            insertUserID();
+        }
+    });
+}
+catch(NullPointerException e){
+    //Do nothing. A null pointer exception will be thrown if the table is not populated when clicked.
+}
 
         LocalTime mytime = LocalTime.now();
         DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");

@@ -28,10 +28,10 @@ public class DBAppointments {
                 String location = rs.getString("Location");
                 String type = rs.getString("Type");
                 Timestamp start = rs.getTimestamp("Start");
-                Date end = rs.getDate("End");
-                Date createdDate = rs.getDate("Create_Date");
+                Timestamp end = rs.getTimestamp("End");
+                Timestamp createdDate = rs.getTimestamp("Create_Date");
                 String createdBy = rs.getString("Created_By");
-                Date lastUpdated = rs.getDate("Last_Update");
+                Timestamp lastUpdated = rs.getTimestamp("Last_Update");
                 String lastUpdatedBy = rs.getString("Last_Updated_By");
                 int customerID = rs.getInt("Customer_ID");
                 int userID = rs.getInt("User_ID");
