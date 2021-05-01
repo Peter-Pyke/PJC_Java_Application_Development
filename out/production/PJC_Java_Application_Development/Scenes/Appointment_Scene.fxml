@@ -22,6 +22,11 @@
                <children>
                   <Label text="Type" />
                   <TextField fx:id="TypeTxt" />
+                  <Button mnemonicParsing="false" onAction="#onActionMainMenuBtn" text="Main Menu">
+                     <HBox.margin>
+                        <Insets left="150.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">

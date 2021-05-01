@@ -22,6 +22,11 @@
                <children>
                   <Label text="Type" />
                   <TextField fx:id="TypeTxt" />
+                  <Button mnemonicParsing="false" onAction="#onActionMainMenuBtn" text="Main Menu">
+                     <HBox.margin>
+                        <Insets left="150.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
@@ -74,7 +79,7 @@
                   <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
                </children>
             </HBox>
-            <TableView fx:id="appointmentTableView" prefHeight="438.0" prefWidth="380.0">
+            <TableView fx:id="appointmentTableView" onMouseClicked="#onMouseClickedApp" prefHeight="438.0" prefWidth="380.0">
               <columns>
                 <TableColumn fx:id="appIDCol" prefWidth="100.0" text="Appointment_ID" />
                 <TableColumn fx:id="titleCol" prefWidth="50.0" text="Title" />

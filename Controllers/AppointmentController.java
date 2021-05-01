@@ -17,10 +17,16 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.DateTimeException;
@@ -209,6 +215,15 @@ public class AppointmentController implements Initializable {
            e.printStackTrace();
        }
     }
+    @FXML
+    void onActionMainMenuBtn(ActionEvent event) throws IOException {
+        Stage stage;
+        Parent scene;
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/Scenes/Main_Scene.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
+    }
     public void deleteApp(){
         try {
                 Connection conn = DBConnection.getConnection(); // Create Connection Object
@@ -252,7 +267,7 @@ public class AppointmentController implements Initializable {
             else if(!(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()).equals(customerIDTxt.getText()))){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Please Insert Customer Correct Customer ID!");
+                error.setContentText("Please Insert Correct Customer ID!");
                 error.showAndWait();
             }
             else {
@@ -264,7 +279,10 @@ public class AppointmentController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    @FXML
+    void onMouseClickedApp(MouseEvent event) {
+        appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
+    }
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
 
@@ -291,13 +309,18 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionInsertCusIDBtn(ActionEvent event){
         try {
+            if(customerComboBox.getSelectionModel().isEmpty() || appointmentTableView.getSelectionModel().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setResizable(true);
+                error.setContentText("Please Select Customer from drop down or Appointment from Table! Note: When selecting Customer, the ID will be automatically be inserted");
+                error.getDialogPane().setPrefWidth(800);
+                error.showAndWait();
+            }
             customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
         }
         catch(NullPointerException e){
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("Please Select Appointment from Table!");
-            error.showAndWait();
+            //Do nothing. Alert is giving above for this issue.
         }
         }
     @FXML

@@ -266,9 +266,14 @@ public class MainSceneController<size> implements Initializable {
      * the country currently selected in the country combo box.
      * */
     public void filterDivision(){
-        ObservableList<Division> allDivision = DBDivisions.getAllDivision();
-        FilteredList<Division> filteredDivisions = new FilteredList<Division>(allDivision, i -> i.getCountryID() == countryCBox.getSelectionModel().getSelectedItem().getId());
-        stateCBox.setItems(filteredDivisions);
+        try {
+            ObservableList<Division> allDivision = DBDivisions.getAllDivision();
+            FilteredList<Division> filteredDivisions = new FilteredList<Division>(allDivision, i -> i.getCountryID() == countryCBox.getSelectionModel().getSelectedItem().getId());
+            stateCBox.setItems(filteredDivisions);
+        }
+        catch(NullPointerException e){
+            //Do nothing. The clear form button will cause a NullPointerException.
+        }
     }
     /**
      * Set UpDate Customer method. This method takes the selected customer's information and populates
@@ -381,7 +386,7 @@ public class MainSceneController<size> implements Initializable {
             stateCBox.setValue(null);
         }
         catch (NullPointerException e){
-            e.printStackTrace();
+            //Do nothing
         }
     }
     /**
