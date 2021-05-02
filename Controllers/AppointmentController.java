@@ -30,12 +30,10 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 public class AppointmentController implements Initializable {
 
@@ -166,6 +164,7 @@ public class AppointmentController implements Initializable {
     }
     public void addApp() throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        //Change lines below to convert timeZone
         LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
         LocalTime selectedTime2 = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
         Connection conn = DBConnection.getConnection();
@@ -215,6 +214,62 @@ public class AppointmentController implements Initializable {
        catch(SQLException e){
            e.printStackTrace();
        }
+    }
+    @FXML
+    void onActionStartTime(ActionEvent event) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
+        System.out.println(selectedTime);
+        System.out.println(LocalTime.now());
+    }
+    @FXML
+    void onActionEndTime(ActionEvent event) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        LocalTime selectedTime = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
+        System.out.println(selectedTime);
+
+        ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
+        ZoneId ESTZone = ZoneId.of("US/Eastern");
+
+        ZonedDateTime localZoneDateAndTime = ZonedDateTime.of(endDatePicker.getValue(),selectedTime,myZoneId);
+
+        Instant selectedTimeToGMT = localZoneDateAndTime.toInstant();
+
+        ZonedDateTime selectedTimeToEST = localZoneDateAndTime.withZoneSameInstant(ESTZone);
+        String ESTString = selectedTimeToEST.format(formatter);
+        LocalTime ESTTimeOnly = LocalTime.parse(ESTString, formatter);
+        System.out.println(ESTTimeOnly);
+        System.out.println(selectedTimeToEST);
+
+        LocalTime ESTLocalTime = LocalTime.from(selectedTimeToEST);
+        System.out.println(ESTLocalTime);
+        LocalTime open = LocalTime.of(8,00);
+        LocalTime close = LocalTime.of(22,00);
+
+        int compareOpenInt = ESTTimeOnly.compareTo(open);
+        System.out.println(compareOpenInt);
+        int compareCloseInt = ESTTimeOnly.compareTo(close);
+        System.out.println(compareCloseInt);
+
+        if(ESTTimeOnly.compareTo(open)<0 || ESTTimeOnly.compareTo(close)>=0){
+            System.out.println("OutSide Working Hours!");
+        }
+
+    }
+    public void timeConversionExample(){
+        LocalDate parisDate = LocalDate.of(2019,10,26);
+        LocalTime parisTime = LocalTime.of(14,50,30);
+        ZoneId parisZoneID = ZoneId.of("Europe/Paris");
+        ZonedDateTime parisZDT = ZonedDateTime.of(parisDate,parisTime,parisZoneID);
+        System.out.println(parisZDT);
+        ZonedDateTime myZDT = ZonedDateTime.now();
+        System.out.println(myZDT);
+        ZoneId localZoneID = ZoneId.of(TimeZone.getDefault().getID());
+
+        Instant parisToGMTInstant = parisZDT.toInstant();
+        System.out.println(parisToGMTInstant);
+        ZonedDateTime parisToLocalZDT = parisZDT.withZoneSameInstant(localZoneID);
+        System.out.println(parisToLocalZDT);
     }
     @FXML
     void onActionMainMenuBtn(ActionEvent event) throws IOException {
@@ -280,10 +335,9 @@ public class AppointmentController implements Initializable {
             e.printStackTrace();
         }
     }
-
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
-
+       timeConversionExample();
     }
 
     @FXML
@@ -403,16 +457,13 @@ public class AppointmentController implements Initializable {
             }
         });
 
-        LocalTime mytime = LocalTime.now();
-        DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        String time = mytime.format(myformatter);
-        System.out.println(time);
 
+        DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("hh':'mm a");
         LocalTime open = LocalTime.of(8, 0);
         LocalTime close = LocalTime.of(22, 1);
 
         while (open.isBefore(close.plusSeconds(1))){
-            String timeToEnter  = open.format(myformatter);
+            String timeToEnter  = open.format(myFormatter);
             startTimeComboBox.getItems().add(timeToEnter);
             endTimeComboBox.getItems().add(timeToEnter);
             open = open.plusMinutes(30);

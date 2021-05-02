@@ -33,14 +33,14 @@
                <children>
                   <Label prefHeight="17.0" prefWidth="130.0" text="Start Date &amp; Time" />
                   <DatePicker fx:id="startDatePicker" prefHeight="25.0" prefWidth="124.0" />
-                  <ComboBox fx:id="startTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
+                  <ComboBox fx:id="startTimeComboBox" onAction="#onActionStartTime" prefHeight="25.0" prefWidth="118.0" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
                <children>
                   <Label prefHeight="17.0" prefWidth="123.0" text="End Date &amp; Time" />
                   <DatePicker fx:id="endDatePicker" prefWidth="124.0" />
-                  <ComboBox fx:id="endTimeComboBox" prefHeight="25.0" prefWidth="118.0" />
+                  <ComboBox fx:id="endTimeComboBox" onAction="#onActionEndTime" prefHeight="25.0" prefWidth="118.0" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
