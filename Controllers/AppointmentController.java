@@ -214,23 +214,42 @@ public class AppointmentController implements Initializable {
        }
     }
     @FXML
+    void onActionStartPicker(ActionEvent event){
+        try {
+            LocalTime open = LocalTime.of(8, 00);
+            LocalTime close = LocalTime.of(22, 00);
+
+            LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
+
+            if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
+                startTimeComboBox.getSelectionModel().clearSelection();
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.showAndWait();
+            }
+        } catch (NullPointerException e) {
+            //NullPointerException is going to happen if they select date before time.
+        }
+    }
+    @FXML
     void onActionStartTime(ActionEvent event) {
         try {
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
+
             LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
 
             if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
-                System.out.println("OutSide Working Hours!");
+                startTimeComboBox.getSelectionModel().clearSelection();
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.showAndWait();
             }
         } catch (NullPointerException e) {
-            startTimeComboBox.getSelectionModel().clearSelection();
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("Please Select A Date First.");
-            error.showAndWait();
+                //NullPointerException is going to happen if they select time before date.
         }
-
     }
     @FXML
     void onActionEndTime(ActionEvent event) {
@@ -247,24 +266,8 @@ public class AppointmentController implements Initializable {
             error.setTitle("Warning Dialog");
             error.setContentText("Please Select A Date First.");
             error.showAndWait();
-            appointmentTableView.setItems(DBAppointments.getAllAppointments());
         }
 
-    }
-    public void timeConversionExample(){
-        LocalDate parisDate = LocalDate.of(2019,10,26);
-        LocalTime parisTime = LocalTime.of(14,50,30);
-        ZoneId parisZoneID = ZoneId.of("Europe/Paris");
-        ZonedDateTime parisZDT = ZonedDateTime.of(parisDate,parisTime,parisZoneID);
-        System.out.println(parisZDT);
-        ZonedDateTime myZDT = ZonedDateTime.now();
-        System.out.println(myZDT);
-        ZoneId localZoneID = ZoneId.of(TimeZone.getDefault().getID());
-
-        Instant parisToGMTInstant = parisZDT.toInstant();
-        System.out.println(parisToGMTInstant);
-        ZonedDateTime parisToLocalZDT = parisZDT.withZoneSameInstant(localZoneID);
-        System.out.println(parisToLocalZDT);
     }
     @FXML
     void onActionMainMenuBtn(ActionEvent event) throws IOException {
@@ -332,7 +335,7 @@ public class AppointmentController implements Initializable {
     }
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
-       timeConversionExample();
+
     }
 
     @FXML
