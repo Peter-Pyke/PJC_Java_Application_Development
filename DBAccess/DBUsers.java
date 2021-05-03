@@ -1,7 +1,5 @@
 package DBAccess;
 
-import DataBase.DBConnection;
-import Model.Countries;
 import Model.Users;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

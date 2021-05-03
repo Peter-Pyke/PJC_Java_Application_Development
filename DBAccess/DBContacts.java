@@ -1,6 +1,5 @@
 package DBAccess;
 
-import DataBase.DBConnection;
 import Model.Contacts;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

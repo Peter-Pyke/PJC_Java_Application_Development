@@ -5,14 +5,14 @@ import DBAccess.DBAppointments;
 import DBAccess.DBContacts;
 import DBAccess.DBCustomers;
 import DBAccess.DBUsers;
-import DataBase.DBConnection;
-import DataBase.DBPreparedStatement;
-import DataBase.DBQuery;
+import DBAccess.DBConnection;
+import DBAccess.DBPreparedStatement;
+import DBAccess.DBQuery;
 import Model.Appointments;
 import Model.Contacts;
 import Model.Customers;
 import Model.Users;
-import javafx.collections.FXCollections;
+import Utilities.ConvertTime;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -26,7 +26,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
@@ -181,8 +180,8 @@ public class AppointmentController implements Initializable {
         String description = descriptionTxtArea.getText();
         String location = locationTxt.getText();
         String type = TypeTxt.getText();
-        String start = startDatePicker.getValue().toString() + " " + selectedTime.toString();
-        String end = endDatePicker.getValue().toString() + " " + selectedTime2.toString();
+        String start = startDatePicker.getValue().toString() + " " + selectedTime.toString(); //Right code to Convert the selecedTime to UTC.
+        String end = endDatePicker.getValue().toString() + " " + selectedTime2.toString(); //Same as above
         String createdBy = userNameApp;
         String lastUpdatedBy = userNameApp;
         int customerID = Integer.valueOf(customerIDTxt.getText());
@@ -205,7 +204,6 @@ public class AppointmentController implements Initializable {
         ps.execute();
 
     }
-
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
        try {
@@ -217,42 +215,39 @@ public class AppointmentController implements Initializable {
     }
     @FXML
     void onActionStartTime(ActionEvent event) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
-        System.out.println(selectedTime);
-        System.out.println(LocalTime.now());
+        try {
+            LocalTime open = LocalTime.of(8, 00);
+            LocalTime close = LocalTime.of(22, 00);
+            LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
+
+            if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
+                System.out.println("OutSide Working Hours!");
+            }
+        } catch (NullPointerException e) {
+            startTimeComboBox.getSelectionModel().clearSelection();
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Please Select A Date First.");
+            error.showAndWait();
+        }
+
     }
     @FXML
     void onActionEndTime(ActionEvent event) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        LocalTime selectedTime = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
-        System.out.println(selectedTime);
-
-        ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
-        ZoneId ESTZone = ZoneId.of("US/Eastern");
-
-        ZonedDateTime localZoneDateAndTime = ZonedDateTime.of(endDatePicker.getValue(),selectedTime,myZoneId);
-
-        Instant selectedTimeToGMT = localZoneDateAndTime.toInstant();
-
-        ZonedDateTime selectedTimeToEST = localZoneDateAndTime.withZoneSameInstant(ESTZone);
-        String ESTString = selectedTimeToEST.format(formatter);
-        LocalTime ESTTimeOnly = LocalTime.parse(ESTString, formatter);
-        System.out.println(ESTTimeOnly);
-        System.out.println(selectedTimeToEST);
-
-        LocalTime ESTLocalTime = LocalTime.from(selectedTimeToEST);
-        System.out.println(ESTLocalTime);
-        LocalTime open = LocalTime.of(8,00);
-        LocalTime close = LocalTime.of(22,00);
-
-        int compareOpenInt = ESTTimeOnly.compareTo(open);
-        System.out.println(compareOpenInt);
-        int compareCloseInt = ESTTimeOnly.compareTo(close);
-        System.out.println(compareCloseInt);
-
-        if(ESTTimeOnly.compareTo(open)<0 || ESTTimeOnly.compareTo(close)>=0){
-            System.out.println("OutSide Working Hours!");
+        try {
+            LocalTime open = LocalTime.of(8, 00);
+            LocalTime close = LocalTime.of(22, 00);
+            LocalTime myEndTime = ConvertTime.getEndESTTime(endTimeComboBox.getSelectionModel().getSelectedItem(),endDatePicker.getValue());
+            if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) >= 0) {
+                System.out.println("OutSide Working Hours!");
+            }
+        }
+        catch (NullPointerException e){
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Please Select A Date First.");
+            error.showAndWait();
+            appointmentTableView.setItems(DBAppointments.getAllAppointments());
         }
 
     }

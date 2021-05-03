@@ -1,6 +1,6 @@
 package Main;
 
-import DataBase.DBConnection;
+import DBAccess.DBConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

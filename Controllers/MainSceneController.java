@@ -3,8 +3,8 @@ import DBAccess.DBAppointments;
 import DBAccess.DBCountries;
 import DBAccess.DBCustomers;
 import DBAccess.DBDivisions;
-import DataBase.DBConnection;
-import DataBase.DBQuery;
+import DBAccess.DBConnection;
+import DBAccess.DBQuery;
 import Model.Appointments;
 import Model.Countries;
 import Model.Customers;
@@ -23,12 +23,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
