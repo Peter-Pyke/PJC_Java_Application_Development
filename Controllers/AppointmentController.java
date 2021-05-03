@@ -162,47 +162,58 @@ public class AppointmentController implements Initializable {
 
     }
     public void addApp() throws SQLException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        //Change lines below to convert timeZone
-        LocalTime selectedTime = LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
-        LocalTime selectedTime2 = LocalTime.parse(endTimeComboBox.getSelectionModel().getSelectedItem(), formatter);
-        Connection conn = DBConnection.getConnection();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh mm ss");
+        LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(),startDatePicker.getValue()); //LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
+        LocalTime selectedEndTime = ConvertTime.endTimeToGMT(endTimeComboBox.getSelectionModel().getSelectedItem(), endDatePicker.getValue());
+        String startTimeGMT = selectedStartTime.format(formatter);
+        String endTimeGMT = selectedEndTime.format(formatter);
 
-        String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID, Contact_ID)"
-                + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String startTime = startTimeComboBox.getSelectionModel().getSelectedItem();
+        String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
 
-        DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
+        if(selectedStartTime.compareTo(selectedEndTime) < 0 && ConvertTime.hoursOfOperation(startTime,endTime,startDate,endDate)) {
+            Connection conn = DBConnection.getConnection();
 
-        PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
+            String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID, Contact_ID)"
+                    + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
+
+            PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
 
 
-        String title = titleTxt.getText();
-        String description = descriptionTxtArea.getText();
-        String location = locationTxt.getText();
-        String type = TypeTxt.getText();
-        String start = startDatePicker.getValue().toString() + " " + selectedTime.toString(); //Right code to Convert the selecedTime to UTC.
-        String end = endDatePicker.getValue().toString() + " " + selectedTime2.toString(); //Same as above
-        String createdBy = userNameApp;
-        String lastUpdatedBy = userNameApp;
-        int customerID = Integer.valueOf(customerIDTxt.getText());
-        int userID = Integer.valueOf(userIDTxt.getText());
-        int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
+            String title = titleTxt.getText();
+            String description = descriptionTxtArea.getText();
+            String location = locationTxt.getText();
+            String type = TypeTxt.getText();
+            String start = startDatePicker.getValue().toString() + " " + startTimeGMT;
+            String end = endDatePicker.getValue().toString() + " " + endTimeGMT;
+            String createdBy = userNameApp;
+            String lastUpdatedBy = userNameApp;
+            int customerID = Integer.valueOf(customerIDTxt.getText());
+            int userID = Integer.valueOf(userIDTxt.getText());
+            int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
 
-        //key-value map
-        ps.setString(1, title);
-        ps.setString(2, description);
-        ps.setString(3, location);
-        ps.setString(4, type);
-        ps.setString(5, start);
-        ps.setString(6, end);
-        ps.setString(7, createdBy);
-        ps.setString(8, lastUpdatedBy);
-        ps.setInt(9, customerID);
-        ps.setInt(10, userID);
-        ps.setInt(11, contactID);
+            //key-value map
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setString(3, location);
+            ps.setString(4, type);
+            ps.setString(5, start);
+            ps.setString(6, end);
+            ps.setString(7, createdBy);
+            ps.setString(8, lastUpdatedBy);
+            ps.setInt(9, customerID);
+            ps.setInt(10, userID);
+            ps.setInt(11, contactID);
 
-        ps.execute();
-
+            ps.execute();
+        }
+        else {
+            System.out.println("Start Date/Time must be before End Date/Time and Times must be within operating hours");
+        }
     }
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
@@ -222,7 +233,6 @@ public class AppointmentController implements Initializable {
             LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
 
             if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
-                startTimeComboBox.getSelectionModel().clearSelection();
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Selected time is outside hours of operation (EST).");
@@ -241,14 +251,31 @@ public class AppointmentController implements Initializable {
             LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
 
             if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
-                startTimeComboBox.getSelectionModel().clearSelection();
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Selected time is outside hours of operation (EST).");
                 error.showAndWait();
             }
         } catch (NullPointerException e) {
-                //NullPointerException is going to happen if they select time before date.
+                //Do nothing. NullPointerException is going to happen if they select time before date.
+        }
+    }
+    @FXML
+    void onActionEndPicker(ActionEvent event){
+        try {
+            LocalTime open = LocalTime.of(8, 00);
+            LocalTime close = LocalTime.of(22, 00);
+
+            LocalTime myEndTime = ConvertTime.getStartESTTime(endTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
+
+            if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) > 0) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.showAndWait();
+            }
+        } catch (NullPointerException e) {
+            //NullPointerException is going to happen if they select date before time.
         }
     }
     @FXML
@@ -257,15 +284,15 @@ public class AppointmentController implements Initializable {
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
             LocalTime myEndTime = ConvertTime.getEndESTTime(endTimeComboBox.getSelectionModel().getSelectedItem(),endDatePicker.getValue());
-            if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) >= 0) {
-                System.out.println("OutSide Working Hours!");
+            if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) > 0) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.showAndWait();
             }
         }
         catch (NullPointerException e){
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("Please Select A Date First.");
-            error.showAndWait();
+          //Do nothing. NullPointerException is going to happen if they select the time before date.
         }
 
     }
@@ -335,7 +362,11 @@ public class AppointmentController implements Initializable {
     }
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
-
+        //This proves the GMT time and local time conversion works.
+        LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(),startDatePicker.getValue());
+        System.out.println(selectedStartTime);
+        Instant endGMT = ConvertTime.getStartTimeZoned(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue()).toInstant();
+        System.out.println(endGMT);
     }
 
     @FXML
