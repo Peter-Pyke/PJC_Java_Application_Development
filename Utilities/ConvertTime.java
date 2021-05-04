@@ -25,7 +25,7 @@ public class ConvertTime {
     }
     public static LocalTime endTimeToGMT(String endTime, LocalDate endDate){
         Instant endGMT = getEndTimeZoned(endTime, endDate).toInstant();
-        ZoneId GMT = ZoneId.of("GMT");
+        ZoneId GMT = ZoneId.of("UTC");
         LocalTime selectedEndTimeGMT = LocalTime.ofInstant(endGMT,GMT);
         return selectedEndTimeGMT;
     }

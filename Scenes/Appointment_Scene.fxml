@@ -22,9 +22,14 @@
                <children>
                   <Label text="Type" />
                   <TextField fx:id="TypeTxt" />
+                  <Button mnemonicParsing="false" onAction="#onActionClearFormBtn" text="Clear Form">
+                     <HBox.margin>
+                        <Insets left="40.0" />
+                     </HBox.margin>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#onActionMainMenuBtn" text="Main Menu">
                      <HBox.margin>
-                        <Insets left="150.0" />
+                        <Insets left="40.0" />
                      </HBox.margin>
                   </Button>
                </children>
@@ -47,7 +52,6 @@
                <children>
                   <Label text="Customer_ID" />
                   <TextField fx:id="customerIDTxt" disable="true" editable="false" />
-                  <Button mnemonicParsing="false" onAction="#onActionInsertCusIDBtn" text="Insert ID" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
@@ -103,6 +107,7 @@
                <children>
                   <Label prefHeight="17.0" prefWidth="96.0" text="Appointment_ID" />
                   <TextField fx:id="appointmentIDTxt" disable="true" promptText="Auto Gen" />
+                  <Button mnemonicParsing="false" onAction="#onActionResetIDBtn" text="Reset ID" />
                </children>
             </HBox>
             <HBox prefHeight="43.0" prefWidth="264.0" spacing="10.0">
