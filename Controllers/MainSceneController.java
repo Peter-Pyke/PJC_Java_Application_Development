@@ -83,12 +83,12 @@ public class MainSceneController<size> implements Initializable {
     /**
      * This is the passLoginInfo method, it is used to get the username and password that was used to login.
      * The username and password is than stored in the private static string objects above until needed.
-     * @param userName1 username of person logged in.
-     * @param userPassword1 password of person logged in.
+     * @param userName_App username of person logged in.
+     * @param userPassword_App password of person logged in.
      * */
-    public void passLoginInfo(String userName1, String userPassword1){
-        userName = userName1;
-        userPassword = userPassword1;
+    public void passLoginInfo(String userName_App, String userPassword_App){
+        userName = userName_App;
+        userPassword = userPassword_App;
     }
     /**
      * This is my updateTableView method. This method is used to place all the customers and their information

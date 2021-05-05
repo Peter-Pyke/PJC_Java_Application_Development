@@ -105,20 +105,21 @@ public class AppointmentController implements Initializable {
 
     @FXML
     private TableColumn<Appointments, Integer> customerIDCol;
+
     private static String userNameApp = null; // String object to hold the username of the person who logged in.
     private static String userPasswordApp = null; // String object to hold the password of the person who logged in.
-
-    public void passLoginInfo1(String userName1, String userPassword1) {
-        userNameApp = userName1;
-        userPasswordApp = userPassword1;
+/**
+ * passLoginInfo1 method is used to pass the username and password stored in the MainSceneController class to
+ * the AppointmentController class.
+ * @param userName_App userName of the person logged in.
+ * @param userPassword_App password of the person logged in.
+ * */
+    public void passLoginInfo1(String userName_App, String userPassword_App) {
+        userNameApp = userName_App;
+        userPasswordApp = userPassword_App;
     }
+//---------------------------------------------UTILITY METHODS (USED INSIDE OF MY ON ACTION METHODS) ---------------------
 
-    @FXML
-    void onActionCustomerComboBox(ActionEvent event) {
-        updateTable();
-        int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
-        customerIDTxt.setText(String.valueOf(customerID));
-    }
     public void upDateApp() throws SQLException{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH':'mm':'ss");
         LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(),startDatePicker.getValue());
@@ -242,6 +243,80 @@ public class AppointmentController implements Initializable {
             e.printStackTrace();
         }
     }
+    public void deleteApp(){
+        try {
+            Connection conn = DBConnection.getConnection(); // Create Connection Object
+            DBQuery.setStatement(conn);
+            Statement statement = DBQuery.getStatement(); //Get Statement reference
+
+            Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
+            int selectedAppointmentID = selectedAppointment.getAppointmentID();
+
+            // Raw SQL delete statement
+            String deleteStatement = "DELETE FROM appointments WHERE Appointment_ID = '" + selectedAppointmentID + "'";
+
+            //Execute statement
+            statement.execute(deleteStatement);
+
+            int selectedAppID = selectedAppointmentID;
+            Alert error = new Alert(Alert.AlertType.WARNING);
+            error.setTitle("Warning Dialog");
+            error.setContentText("Appointment_ID: " + selectedAppID + " has been deleted!");
+            error.showAndWait();
+            appointmentTableView.setItems(DBAppointments.getAllAppointments());
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void setUpTable(){
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        appointmentTableView.setItems(allAppointments);
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
+    }
+    public void insertUserID(){
+        ObservableList<Users> allUsers = DBUsers.getAllUsers();
+        int index = 0;
+        while(index < allUsers.size()){
+            Users myUser = allUsers.get(index);
+            String myUsersPassword = myUser.getUserPassword();
+            String myUserName = myUser.getUserName();
+            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
+                userIDTxt.setText(String.valueOf(myUser.getUserID()));
+            }
+            index++;
+        }
+    }
+    /**
+     * This is my filterTable method. This method displays all the appointments associated with the customer that is
+     * currently selected inside of the customer combo box.
+     */
+    public void filterTable() {
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
+        appointmentTableView.setItems(selectedCustomerAppointments);
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
+    }
+    public void insertCustomerID(){
+            customerIDTxt.setText(String.valueOf(customerComboBox.getSelectionModel().getSelectedItem().getCustomerID()));
+    }
+    //-------------------------------------ON ACTION METHODS-----------------------------------------------------------
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
        try {
@@ -347,32 +422,7 @@ public class AppointmentController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    public void deleteApp(){
-        try {
-                Connection conn = DBConnection.getConnection(); // Create Connection Object
-                DBQuery.setStatement(conn);
-                Statement statement = DBQuery.getStatement(); //Get Statement reference
 
-                Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
-                int selectedAppointmentID = selectedAppointment.getAppointmentID();
-
-                // Raw SQL delete statement
-                String deleteStatement = "DELETE FROM appointments WHERE Appointment_ID = '" + selectedAppointmentID + "'";
-
-                //Execute statement
-                statement.execute(deleteStatement);
-
-                int selectedAppID = selectedAppointmentID;
-                Alert error = new Alert(Alert.AlertType.WARNING);
-                error.setTitle("Warning Dialog");
-                error.setContentText("Appointment_ID: " + selectedAppID + " has been deleted!");
-                error.showAndWait();
-                appointmentTableView.setItems(DBAppointments.getAllAppointments());
-            }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
     @FXML
     void onActionAppDeleteBtn(ActionEvent event) {
     deleteApp();
@@ -417,46 +467,12 @@ public class AppointmentController implements Initializable {
     void onActionWeekRBtn(ActionEvent event) {
 
     }
-    public void insertUserID(){
-        ObservableList<Users> allUsers = DBUsers.getAllUsers();
-        int index = 0;
-        while(index < allUsers.size()){
-            Users myUser = allUsers.get(index);
-            String myUsersPassword = myUser.getUserPassword();
-            String myUserName = myUser.getUserName();
-            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
-                userIDTxt.setText(String.valueOf(myUser.getUserID()));
-            }
-            index++;
-        }
-    }
+
     @FXML
     void onActionInsertUserIDBtn(ActionEvent event){
-        ObservableList<Users> allUsers = DBUsers.getAllUsers();
-        int index = 0;
-        while(index < allUsers.size()){
-            Users myUser = allUsers.get(index);
-            String myUsersPassword = myUser.getUserPassword();
-            String myUserName = myUser.getUserName();
-            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
-                userIDTxt.setText(String.valueOf(myUser.getUserID()));
-            }
-            index++;
-        }
+    insertUserID();
     }
-    public void setUpTable(){
-        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-        appointmentTableView.setItems(allAppointments);
-        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
-        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
-        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
-        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
-        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
-        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
-    }
+
     @FXML
     void onActionAllAppointments(ActionEvent event){
     setUpTable();
@@ -474,25 +490,17 @@ public class AppointmentController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    /**
-     * This is my updateTable method. This method displays all the appointments associated with the customer that is
-     * currently selected inside of the customer combo box.
-     */
-    public void updateTable() {
-        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-        FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
-        appointmentTableView.setItems(selectedCustomerAppointments);
-        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
-        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
-        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
-        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
-        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
-        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
-        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
-        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
-        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
-    }
+    @FXML
+    void onActionCustomerComboBox(ActionEvent event){
+        try {
+            filterTable();
+            insertCustomerID();
+        }
+        catch(NullPointerException e){
+            //Do nothing. NullPointer will be thrown when combo box is cleared due to no customer being selected.
+        }
 
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         customerComboBox.setItems(DBCustomers.getAllCustomers());
@@ -533,6 +541,7 @@ public class AppointmentController implements Initializable {
                 customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
                 insertUserID();
                 contactsComboBox.setValue(DBContacts.getAllContacts().get(appointmentTableView.getSelectionModel().getSelectedItem().getContactID() -1));
+                customerComboBox.getSelectionModel().clearSelection();
             }
         });
 
