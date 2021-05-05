@@ -299,7 +299,7 @@ public class AppointmentController implements Initializable {
      * This is my filterTable method. This method displays all the appointments associated with the customer that is
      * currently selected inside of the customer combo box.
      */
-    public void filterTable() {
+    public void filterTableByCustomer() {
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
         appointmentTableView.setItems(selectedCustomerAppointments);
@@ -313,6 +313,37 @@ public class AppointmentController implements Initializable {
         contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
+    public void filterTableByMonth(){
+        int currentMonth = LocalDate.now().getMonthValue();
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        FilteredList<Appointments> appointmentsThisMonth = new FilteredList<>(allAppointments, i -> i.getStart().toLocalDateTime().getMonthValue() == currentMonth);
+        appointmentTableView.setItems(appointmentsThisMonth);
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
+    }
+    public void filterTableByWeek(){
+        int DayOfTheYear = LocalDate.now().getDayOfYear();
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        FilteredList<Appointments> appointmentsThisWeek = new FilteredList<>(allAppointments, i -> i.getStart().toLocalDateTime().getDayOfYear() <= (DayOfTheYear + 8));
+        appointmentTableView.setItems(appointmentsThisWeek);
+        appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
+        titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        locationCol.setCellValueFactory(new PropertyValueFactory<>("Location"));
+        typeCol.setCellValueFactory(new PropertyValueFactory<>("Type"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory<>("Start"));
+        endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
+        contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
+        customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
+    }
+
     public void insertCustomerID(){
             customerIDTxt.setText(String.valueOf(customerComboBox.getSelectionModel().getSelectedItem().getCustomerID()));
     }
@@ -454,18 +485,12 @@ public class AppointmentController implements Initializable {
     }
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh mm ss");
-        LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(),startDatePicker.getValue()); //LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
-        LocalTime selectedEndTime = ConvertTime.endTimeToGMT(endTimeComboBox.getSelectionModel().getSelectedItem(), endDatePicker.getValue());
-        String startTimeGMT = selectedStartTime.format(formatter);
-        String endTimeGMT = selectedEndTime.format(formatter);
-        System.out.println(startTimeGMT);
-        System.out.println(endTimeGMT);
+    filterTableByMonth();
     }
 
     @FXML
     void onActionWeekRBtn(ActionEvent event) {
-
+        filterTableByWeek();
     }
 
     @FXML
@@ -493,13 +518,12 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionCustomerComboBox(ActionEvent event){
         try {
-            filterTable();
+            filterTableByCustomer();
             insertCustomerID();
         }
         catch(NullPointerException e){
             //Do nothing. NullPointer will be thrown when combo box is cleared due to no customer being selected.
         }
-
     }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

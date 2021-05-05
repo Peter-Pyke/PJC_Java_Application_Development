@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -79,8 +80,11 @@
             <HBox alignment="CENTER" prefHeight="44.0" prefWidth="374.0" spacing="50.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onActionAllAppointments" text="All Appointments" />
-                  <RadioButton mnemonicParsing="false" onAction="#onActionMonthRBtn" text="Month" />
-                  <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" />
+                  <RadioButton mnemonicParsing="false" onAction="#onActionMonthRBtn" text="Month">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="month_Week" />
+                     </toggleGroup></RadioButton>
+                  <RadioButton mnemonicParsing="false" onAction="#onActionWeekRBtn" text="Week" toggleGroup="$month_Week" />
                </children>
             </HBox>
             <TableView fx:id="appointmentTableView" prefHeight="438.0" prefWidth="380.0">
