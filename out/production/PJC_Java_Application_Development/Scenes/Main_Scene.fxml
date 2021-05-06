@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainSceneController">
    <children>
       <VBox prefHeight="700.0" prefWidth="900.0" spacing="20.0">
          <children>
@@ -64,8 +64,9 @@
                         <Button mnemonicParsing="false" onAction="#onActionAddCustomer" text="Add" />
                         <Button mnemonicParsing="false" onAction="#onActionUpdateCustomer" text="update" />
                         <Button mnemonicParsing="false" onAction="#onActionDeleteCustomer" text="delete" />
-                        <Button mnemonicParsing="false" onAction="#onActionAppointmentsBtn" text="Appointments" />
                         <Button mnemonicParsing="false" onAction="#onActionClearFormBtn" text="Clear Form" />
+                        <Button mnemonicParsing="false" onAction="#onActionAppointmentsBtn" text="Appointments" />
+                        <Button mnemonicParsing="false" onAction="#onActionReportsBtn" text="Reports" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0">

@@ -463,8 +463,17 @@ public class MainSceneController<size> implements Initializable {
      * on the form.
      * */
     @FXML
-    void onActionClearFormBtn(ActionEvent event) {
+    public void onActionClearFormBtn(ActionEvent event) {
     clearForm();
+    }
+    @FXML
+    public void onActionReportsBtn(ActionEvent event) throws IOException{
+        Stage stage;
+        Parent scene;
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/Scenes/Report_Scene.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
     /**
     * This is the initialize method and it controls what happens when the Main Scene is loaded.

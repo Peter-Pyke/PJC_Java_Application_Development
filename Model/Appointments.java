@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.Month;
 
 public class Appointments {
     private int appointmentID;
@@ -20,6 +21,7 @@ public class Appointments {
     private int customerID;
     private int userID;
     private int contactID;
+    private Month month;
 
     public Appointments(int appointmentID,String title,String description,String location,String type,Timestamp start,Timestamp end,Timestamp createDate,String createdBy,Timestamp lastUpdated,String lastUpdatedBy,int customerID,int userID,int contactID){
         this.appointmentID = appointmentID;
@@ -95,6 +97,11 @@ public class Appointments {
         return contactID;
     }
 
+    public void setMonthID(Month monthlyAppointments) {
+        this.month = monthlyAppointments;
+    }
 
-
+    public Month getMonth() {
+        return month;
+    }
 }

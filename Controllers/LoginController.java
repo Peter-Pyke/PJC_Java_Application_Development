@@ -11,9 +11,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -58,12 +59,28 @@ public class LoginController implements Initializable {
         }
         return false;
     }
+    public void fileLogin() throws IOException{
+        String fileName = "C:/Users/choui/Documents/GitHub/PJC_Java_Application_Development/Login_Activity.txt";
+        FileWriter fWriter = new FileWriter(fileName, true);
+        PrintWriter outPutFile = new PrintWriter(fWriter);
+
+        ZoneId utc = ZoneId.of("UTC");
+        LocalDateTime timeUTC = LocalDateTime.now(utc);
+
+        if(checkPasswordAndUserName()) {
+            outPutFile.println(userIdTxt.getText() + " " + timeUTC.toString()+" Successful Logging");
+        }
+        else{
+            outPutFile.println(userIdTxt.getText() + " " + timeUTC.toString()+" Failed Logging");
+        }
+        outPutFile.close();
+    }
 /**
  * On Action method, this method controls what happens when the enter button is clicked.
  * */
     @FXML
     void onActionEnterBtn(ActionEvent event) throws IOException {
-
+        fileLogin();
         if (checkPasswordAndUserName()) {
 
             FXMLLoader loader = new FXMLLoader();
