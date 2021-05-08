@@ -2,7 +2,9 @@ package Controllers;
 
 import DBAccess.DBAppointments;
 import Model.Appointments;
+import Model.Report_1;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -60,6 +62,7 @@ public class ReportsController {
 
     @FXML
     void onActionTypeMonth(ActionEvent event) {
+
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         for(int i = 0; i < allAppointments.size(); i++){
             Month month = allAppointments.get(i).getStart().toLocalDateTime().getMonth();

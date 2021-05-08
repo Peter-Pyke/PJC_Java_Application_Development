@@ -60,7 +60,7 @@ public class LoginController implements Initializable {
         return false;
     }
     public void fileLogin() throws IOException{
-        String fileName = "C:/Users/choui/Documents/GitHub/PJC_Java_Application_Development/Login_Activity.txt";
+        String fileName = "PJC_Java_Application_Development/Login_Activity.txt";
         FileWriter fWriter = new FileWriter(fileName, true);
         PrintWriter outPutFile = new PrintWriter(fWriter);
 
