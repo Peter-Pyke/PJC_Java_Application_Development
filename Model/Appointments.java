@@ -22,6 +22,7 @@ public class Appointments {
     private int userID;
     private int contactID;
     private Month month;
+    private int totalAppPerMonthByType;
 
     public Appointments(int appointmentID,String title,String description,String location,String type,Timestamp start,Timestamp end,Timestamp createDate,String createdBy,Timestamp lastUpdated,String lastUpdatedBy,int customerID,int userID,int contactID){
         this.appointmentID = appointmentID;
@@ -103,5 +104,13 @@ public class Appointments {
 
     public Month getMonth() {
         return month;
+    }
+
+    public int getTotalAppPerMonthByType() {
+        return totalAppPerMonthByType;
+    }
+
+    public void setTotalAppPerMonthByType(int totalAppPerMonthByType) {
+        this.totalAppPerMonthByType = totalAppPerMonthByType;
     }
 }

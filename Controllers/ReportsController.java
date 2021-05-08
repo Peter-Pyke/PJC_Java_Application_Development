@@ -16,13 +16,13 @@ public class ReportsController {
     private TableView<Appointments> reportTableView;
 
     @FXML
-    private TableColumn<Appointments, Integer> C1;
+    private TableColumn<Appointments, Month> C1;
 
     @FXML
-    private TableColumn<Appointments, ?> C2;
+    private TableColumn<Appointments, String> C2;
 
     @FXML
-    private TableColumn<Appointments, ?> C3;
+    private TableColumn<Appointments, Integer> C3;
 
     @FXML
     private TableColumn<Appointments, ?> C4;
@@ -41,6 +41,7 @@ public class ReportsController {
 
     @FXML
     private TableColumn<Appointments, ?> C9;
+
 
     @FXML
     void onActionContactSchedule(ActionEvent event) {
@@ -65,6 +66,8 @@ public class ReportsController {
             allAppointments.get(i).setMonthID(month);
         }
         reportTableView.setItems(allAppointments);
-        C1.setCellValueFactory(new PropertyValueFactory<>("monthlyAppointments"));
+        C1.setCellValueFactory(new PropertyValueFactory<>("month"));
+        C2.setCellValueFactory(new PropertyValueFactory<>("type"));
+        C3.setCellValueFactory(new PropertyValueFactory<>("totalAppPerMonthByType"));
     }
 }
