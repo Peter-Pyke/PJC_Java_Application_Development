@@ -2,15 +2,15 @@ package Model;
 
 import java.time.Month;
 
-public class Report_1 {
+public class Reports {
     private Month month;
     private String type;
     private int count;
 
-    public Report_1(Month month, String type, int count){
-        this.month = month;
-        this.type = type;
-        this.count = count;
+    public Reports(Month month, String type, int count){
+      setMonth(month);
+      setType(type);
+      setCount(count);
     }
 
     public String getType() {

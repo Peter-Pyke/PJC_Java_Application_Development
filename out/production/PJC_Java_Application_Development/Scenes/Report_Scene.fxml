@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportsController">
    <children>
       <VBox prefHeight="800.0" prefWidth="1200.0">
          <children>
@@ -22,15 +21,15 @@
             </HBox>
             <TableView fx:id="reportTableView" prefHeight="729.0" prefWidth="1200.0">
               <columns>
-                <TableColumn prefWidth="133.33" text="C1" />
-                <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
-                  <TableColumn prefWidth="133.33" text="C2" />
+                <TableColumn fx:id="C1" prefWidth="133.33" text="C1" />
+                <TableColumn fx:id="C2" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C3" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C4" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C5" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C6" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C7" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C8" prefWidth="133.33" text="C2" />
+                  <TableColumn fx:id="C9" prefWidth="133.33" text="C2" />
               </columns>
             </TableView>
          </children>
