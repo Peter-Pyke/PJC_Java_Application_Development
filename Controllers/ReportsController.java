@@ -75,7 +75,7 @@ public class ReportsController {
         for(int inner = 0; inner < uniqueAppTyps.size(); inner++){
             String appType = uniqueAppTyps.get(inner);
             System.out.println(appType);
-            
+
             for(int i = 1; i < 13; i++){
                 Month month = Month.of(i);
                 int count = 0;
@@ -94,8 +94,11 @@ public class ReportsController {
             }
             reportTableView.setItems(myReport);
             C1.setCellValueFactory(new PropertyValueFactory<>("month"));
+            C1.setText("Month");
             C2.setCellValueFactory(new PropertyValueFactory<>("type"));
+            C2.setText("Type");
             C3.setCellValueFactory(new PropertyValueFactory<>("count"));
+            C3.setText("Number of Appointments");
         }
 
 
