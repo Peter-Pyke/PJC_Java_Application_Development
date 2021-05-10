@@ -1,14 +1,6 @@
 package Controllers;
-import DBAccess.DBAppointments;
-import DBAccess.DBCountries;
-import DBAccess.DBCustomers;
-import DBAccess.DBDivisions;
-import DBAccess.DBConnection;
-import DBAccess.DBQuery;
-import Model.Appointments;
-import Model.Countries;
-import Model.Customers;
-import Model.Division;
+import DBAccess.*;
+import Model.*;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -25,7 +17,13 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 /**
  * This is my MainSceneController class and will be used to give the main screen after login its functionality.
@@ -79,7 +77,7 @@ public class MainSceneController<size> implements Initializable {
 
     private static String userName = null; // String object to hold the username of the person who logged in.
     private static String userPassword = null; // String object to hold the password of the person who logged in.
-
+    private static int userID;
     /**
      * This is the passLoginInfo method, it is used to get the username and password that was used to login.
      * The username and password is than stored in the private static string objects above until needed.
@@ -89,6 +87,37 @@ public class MainSceneController<size> implements Initializable {
     public void passLoginInfo(String userName_App, String userPassword_App){
         userName = userName_App;
         userPassword = userPassword_App;
+    }
+    public void appointmentCheck(){
+        //This is to create an warning message if the user has an appointment withing 15 minutes of login.
+        ObservableList<Users> allUsers = DBUsers.getAllUsers();
+        ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
+        ZoneId UTC = ZoneId.of("UTC");
+        DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
+
+        for(int i = 0; i < allUsers.size(); i++){
+            if((allUsers.get(i).getUserName().equals(userName)) && (allUsers.get(i).getUserPassword().equals(userPassword))){
+                userID = allUsers.get(i).getUserID();
+            }
+        }
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        FilteredList<Appointments> userAppointments = new FilteredList<>(allAppointments, i -> i.getUserID() == userID );
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        for(int j = 0; j < userAppointments.size(); j++){
+            Appointments appointment = userAppointments.get(j);
+            LocalDateTime dataBaseTime = appointment.getStart().toLocalDateTime();
+            ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(dataBaseTime,UTC);
+            ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
+            LocalDateTime test = displayStartTimeZoned.toLocalDateTime();
+
+            if(test.isAfter(currentDateTime.minusMinutes(15)));{
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("AppointmentID: "+appointment.getAppointmentID()+"is at "+test.toString());
+                error.showAndWait();
+            }
+        }
     }
     /**
      * This is my updateTableView method. This method is used to place all the customers and their information
@@ -190,7 +219,7 @@ public class MainSceneController<size> implements Initializable {
             String customerAddress = customerAddressTxt.getText();
             String postalCode = customerPostalCodeTxt.getText();
             String phoneNumber = customerPhoneTxt.getText();
-            String lastUpdateBy = userPassword;
+            String lastUpdateBy = userName;
             Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
             if (customerName.isEmpty()) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
@@ -501,6 +530,7 @@ public class MainSceneController<size> implements Initializable {
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
+
     }
 
 }

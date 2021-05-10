@@ -456,7 +456,15 @@ public class AppointmentController implements Initializable {
 
     @FXML
     void onActionAppDeleteBtn(ActionEvent event) {
-    deleteApp();
+    try {
+        deleteApp();
+    }
+    catch(NullPointerException e){
+        Alert error = new Alert(Alert.AlertType.WARNING);
+        error.setTitle("Warning Dialog");
+        error.setContentText("Please Select Appointment from Table!");
+        error.showAndWait();
+    }
     }
 
     @FXML

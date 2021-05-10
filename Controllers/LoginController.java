@@ -89,6 +89,7 @@ public class LoginController implements Initializable {
             Scene scene1 = new Scene(mainSceneAdd);
             MainSceneController pass = loader.getController();
             pass.passLoginInfo(userIdTxt.getText(), userPasswordTxt.getText());
+            pass.appointmentCheck();
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.setScene(scene1);
             stage.show();
