@@ -354,20 +354,36 @@ public class AppointmentController implements Initializable {
         ZoneId utcTime = ZoneId.of("UTC");
         ZoneId myTime = ZonedDateTime.now().getZone();
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-        LocalDate date = startDatePicker.getValue();
-        LocalTime time = LocalTime.parse(startTimeComboBox.getValue(), formatter);
-        ZonedDateTime timeZoned = ZonedDateTime.of(date, time, myTime);
-        ZonedDateTime timeInUTC = timeZoned.withZoneSameInstant(utcTime);
-        LocalTime timeToCompare = timeInUTC.toLocalTime();
-
+        //Getting start date and time to compare
+        LocalDate dateStart = startDatePicker.getValue();
+        LocalTime timeStart = LocalTime.parse(startTimeComboBox.getValue(), formatter);
+        ZonedDateTime timeStartZoned = ZonedDateTime.of(dateStart, timeStart, myTime);
+        ZonedDateTime timeStartInUTC = timeStartZoned.withZoneSameInstant(utcTime);
+        LocalTime startTimeToCompare = timeStartInUTC.toLocalTime();
+        //Getting end date and time to compare
+        LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
+        ZonedDateTime timeEndZoned = ZonedDateTime.of(dateStart, timeEnd, myTime);
+        ZonedDateTime timeEndInUTC = timeEndZoned.withZoneSameInstant(utcTime);
+        LocalTime endTimeToCompare = timeEndInUTC.toLocalTime();
+        /*
+        Loops through all appointments to find the ones associated with the selected customer.
+        When it finds an appointment for that customer it checks the start time against the times chosen
+        in the start and end combo boxes. If the start time of the appointment to be saved is the same as
+        an exciting appointment or if it is between the start and end time of an exciting appointment a
+        Warning message will appear telling the user that the customer has an appointment at that time already.
+         */
         for (int i = 0; i < allAppointments.size(); i++) {
             Appointments selectedAppointment = allAppointments.get(i);
-            LocalDate date2 = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
-            LocalTime time2 = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
+            LocalDate date = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
+            LocalTime time = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
             int customerIDFromApp = selectedAppointment.getCustomerID();
-            if (date.equals(date2) && timeToCompare.equals(time2) && customerIDFromApp == customerIDTXT) {
-                resultForOverLap = true;
-                System.out.println("count");
+            if (customerIDFromApp == customerIDTXT) {
+                if (dateStart.equals(date) && startTimeToCompare.equals(time)) {
+                    resultForOverLap = true;
+                }
+                else if(dateStart.equals(date) && startTimeToCompare.isAfter(time) && startTimeToCompare.isBefore(endTimeToCompare)){
+                    resultForOverLap = true;
+                }
             }
         }
     }
@@ -395,6 +411,13 @@ public class AppointmentController implements Initializable {
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
                error.setContentText("Customer already has an appointment at this time!");
+               error.showAndWait();
+               resultForOverLap = false;
+           }
+           else if(startDatePicker.getValue().isAfter(endDatePicker.getValue())){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Start date must be before end date!");
                error.showAndWait();
            }
            else {
