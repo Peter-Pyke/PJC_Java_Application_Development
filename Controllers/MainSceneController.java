@@ -17,10 +17,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
@@ -88,12 +85,15 @@ public class MainSceneController<size> implements Initializable {
         userName = userName_App;
         userPassword = userPassword_App;
     }
+    /**
+     * This is the appointmentCheck method, it is called in the login Controller class and gives the user
+     * a warning message if they have an appointment with 15 minutes of login in.
+     * */
     public void appointmentCheck(){
-        //This is to create an warning message if the user has an appointment withing 15 minutes of login.
+
         ObservableList<Users> allUsers = DBUsers.getAllUsers();
         ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
         ZoneId UTC = ZoneId.of("UTC");
-        DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
 
         for(int i = 0; i < allUsers.size(); i++){
             if((allUsers.get(i).getUserName().equals(userName)) && (allUsers.get(i).getUserPassword().equals(userPassword))){
@@ -102,23 +102,21 @@ public class MainSceneController<size> implements Initializable {
         }
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         FilteredList<Appointments> userAppointments = new FilteredList<>(allAppointments, i -> i.getUserID() == userID );
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime   = LocalTime.now();
 
         for(int j = 0; j < userAppointments.size(); j++){
             Appointments appointment = userAppointments.get(j);
             LocalDateTime dataBaseTime = appointment.getStart().toLocalDateTime();
-            System.out.println(dataBaseTime);
             ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(dataBaseTime,UTC);
-            System.out.println(dataBaseStartTimeUTC); // create local date to use for compare
+            LocalDate dateToCompare = dataBaseStartTimeUTC.toLocalDate();// use this local date to compare
             ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
-            System.out.println(displayStartTimeZoned);
-            LocalDateTime test = displayStartTimeZoned.toLocalDateTime();
-            System.out.println(test); // use this time to compare
+            LocalTime timeToCompare = displayStartTimeZoned.toLocalTime(); // use this time to compare
 
-            if(currentDateTime.isAfter(test.minusMinutes(15)) && currentDateTime.isBefore(test)){
+            if(currentDate.equals(dateToCompare) && (currentTime.isBefore(timeToCompare) && currentTime.isAfter(timeToCompare.minusMinutes(15)))){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("15 Minute Warning");
-                error.setContentText("AppointmentID: "+appointment.getAppointmentID()+"is at "+test.toString());
+                error.setContentText("AppointmentID: "+appointment.getAppointmentID()+" is at "+ timeToCompare.toString());
                 error.showAndWait();
             }
         }

@@ -347,21 +347,54 @@ public class AppointmentController implements Initializable {
     public void insertCustomerID(){
             customerIDTxt.setText(String.valueOf(customerComboBox.getSelectionModel().getSelectedItem().getCustomerID()));
     }
+    public boolean resultForOverLap;
+    public void checkForOverLap() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        int customerIDTXT = Integer.valueOf(customerIDTxt.getText());
+        ZoneId utcTime = ZoneId.of("UTC");
+        ZoneId myTime = ZonedDateTime.now().getZone();
+        ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+        LocalDate date = startDatePicker.getValue();
+        LocalTime time = LocalTime.parse(startTimeComboBox.getValue(), formatter);
+        ZonedDateTime timeZoned = ZonedDateTime.of(date, time, myTime);
+        ZonedDateTime timeInUTC = timeZoned.withZoneSameInstant(utcTime);
+        LocalTime timeToCompare = timeInUTC.toLocalTime();
+
+        for (int i = 0; i < allAppointments.size(); i++) {
+            Appointments selectedAppointment = allAppointments.get(i);
+            LocalDate date2 = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
+            LocalTime time2 = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
+            int customerIDFromApp = selectedAppointment.getCustomerID();
+            if (date.equals(date2) && timeToCompare.equals(time2) && customerIDFromApp == customerIDTXT) {
+                resultForOverLap = true;
+                System.out.println("count");
+            }
+        }
+    }
     //-------------------------------------ON ACTION METHODS-----------------------------------------------------------
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
        try {
            ObservableList<Integer> appointmentIDs = FXCollections.observableArrayList();
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+           checkForOverLap();
            int index = 0;
            while(index < allAppointments.size()){
                appointmentIDs.add(allAppointments.get(index).getAppointmentID());
                index++;
            }
-           if(appointmentIDs.contains(Integer.valueOf(appointmentIDTxt.getText()))){
+           if(!appointmentIDTxt.getText().isEmpty()) {
+               if (appointmentIDs.contains(Integer.valueOf(appointmentIDTxt.getText()))) {
+                   Alert error = new Alert(Alert.AlertType.WARNING);
+                   error.setTitle("Warning Dialog");
+                   error.setContentText("AppointmentID already in use. Click update or reset ID");
+                   error.showAndWait();
+               }
+           }
+           else if(resultForOverLap){
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
-               error.setContentText("AppointmentID already in use. Click update or reset ID");
+               error.setContentText("Customer already has an appointment at this time!");
                error.showAndWait();
            }
            else {
@@ -369,7 +402,7 @@ public class AppointmentController implements Initializable {
            }
        }
        catch(NumberFormatException e){
-           addApp();
+           e.printStackTrace();
        }
     }
     @FXML
@@ -543,38 +576,43 @@ public class AppointmentController implements Initializable {
         appointmentTableView.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
             @Override
             public void handle(javafx.scene.input.MouseEvent mouseEvent) {
-                ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
-                ZoneId UTC = ZoneId.of("UTC");
-                DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
+                try {
+                    ZoneId myZoneId = ZoneId.of(TimeZone.getDefault().getID());
+                    ZoneId UTC = ZoneId.of("UTC");
+                    DateTimeFormatter myformatter = DateTimeFormatter.ofPattern("hh':'mm a");
 
-                appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
-                titleTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getTitle());
-                descriptionTxtArea.setText(appointmentTableView.getSelectionModel().getSelectedItem().getDescription());
-                locationTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getLocation());
-                TypeTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getType());
+                    appointmentIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID()));
+                    titleTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getTitle());
+                    descriptionTxtArea.setText(appointmentTableView.getSelectionModel().getSelectedItem().getDescription());
+                    locationTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getLocation());
+                    TypeTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getType());
 
-                LocalDateTime startTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getStart().toLocalDateTime();
-                ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(startTimeFromTimeStamp,UTC);
-                ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
-                LocalTime startTimeToDisplay = displayStartTimeZoned.toLocalTime();
+                    LocalDateTime startTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getStart().toLocalDateTime();
+                    ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(startTimeFromTimeStamp, UTC);
+                    ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
+                    LocalTime startTimeToDisplay = displayStartTimeZoned.toLocalTime();
 
-                LocalDateTime endTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getEnd().toLocalDateTime();
-                ZonedDateTime dataBaseEndTimeUTC = ZonedDateTime.of(endTimeFromTimeStamp,UTC);
-                ZonedDateTime displayEndTimeZoned = dataBaseEndTimeUTC.withZoneSameInstant(myZoneId);
-                LocalTime endTimeToDisplay = displayEndTimeZoned.toLocalTime();
+                    LocalDateTime endTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getEnd().toLocalDateTime();
+                    ZonedDateTime dataBaseEndTimeUTC = ZonedDateTime.of(endTimeFromTimeStamp, UTC);
+                    ZonedDateTime displayEndTimeZoned = dataBaseEndTimeUTC.withZoneSameInstant(myZoneId);
+                    LocalTime endTimeToDisplay = displayEndTimeZoned.toLocalTime();
 
 
-                startTimeComboBox.setValue(startTimeToDisplay.format(myformatter));
-                endTimeComboBox.setValue(endTimeToDisplay.format(myformatter));
-                LocalDate startDate = startTimeFromTimeStamp.toLocalDate();
-                LocalDate endDate = endTimeFromTimeStamp.toLocalDate();
-                startDatePicker.setValue(startDate);
-                endDatePicker.setValue(endDate);
-                customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
-                insertUserID();
-                contactsComboBox.setValue(DBContacts.getAllContacts().get(appointmentTableView.getSelectionModel().getSelectedItem().getContactID() -1));
-                customerComboBox.getSelectionModel().clearSelection();
-            }
+                    startTimeComboBox.setValue(startTimeToDisplay.format(myformatter));
+                    endTimeComboBox.setValue(endTimeToDisplay.format(myformatter));
+                    LocalDate startDate = startTimeFromTimeStamp.toLocalDate();
+                    LocalDate endDate = endTimeFromTimeStamp.toLocalDate();
+                    startDatePicker.setValue(startDate);
+                    endDatePicker.setValue(endDate);
+                    customerIDTxt.setText(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()));
+                    insertUserID();
+                    contactsComboBox.setValue(DBContacts.getAllContacts().get(appointmentTableView.getSelectionModel().getSelectedItem().getContactID() - 1));
+                    customerComboBox.getSelectionModel().clearSelection();
+                }
+                catch (NullPointerException e){
+                    //Do nothing if you click on the table but not on an appointment a null pointer will be thrown.
+                }
+                }
         });
 
 
