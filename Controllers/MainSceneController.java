@@ -107,13 +107,17 @@ public class MainSceneController<size> implements Initializable {
         for(int j = 0; j < userAppointments.size(); j++){
             Appointments appointment = userAppointments.get(j);
             LocalDateTime dataBaseTime = appointment.getStart().toLocalDateTime();
+            System.out.println(dataBaseTime);
             ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(dataBaseTime,UTC);
+            System.out.println(dataBaseStartTimeUTC); // create local date to use for compare
             ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
+            System.out.println(displayStartTimeZoned);
             LocalDateTime test = displayStartTimeZoned.toLocalDateTime();
+            System.out.println(test); // use this time to compare
 
-            if(test.isAfter(currentDateTime.minusMinutes(15)));{
+            if(currentDateTime.isAfter(test.minusMinutes(15)) && currentDateTime.isBefore(test)){
                 Alert error = new Alert(Alert.AlertType.WARNING);
-                error.setTitle("Warning Dialog");
+                error.setTitle("15 Minute Warning");
                 error.setContentText("AppointmentID: "+appointment.getAppointmentID()+"is at "+test.toString());
                 error.showAndWait();
             }
