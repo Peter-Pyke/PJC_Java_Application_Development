@@ -194,15 +194,14 @@ public class AppointmentController implements Initializable {
             LocalDate endDate = endDatePicker.getValue();
 
             if (selectedStartTime.compareTo(selectedEndTime) < 0 && ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate)) {
-                Connection conn = DBConnection.getConnection();
 
+                Connection conn = DBConnection.getConnection();
                 String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID, Contact_ID)"
                         + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
 
                 PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
-
 
                 String title = titleTxt.getText();
                 String description = descriptionTxtArea.getText();
@@ -296,7 +295,7 @@ public class AppointmentController implements Initializable {
         }
     }
     /**
-     * This is my filterTable method. This method displays all the appointments associated with the customer that is
+     * The filterTableByCustomer method displays all the appointments associated with the customer that is
      * currently selected inside of the customer combo box.
      */
     public void filterTableByCustomer() {
@@ -343,14 +342,13 @@ public class AppointmentController implements Initializable {
         contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
-
     public void insertCustomerID(){
             customerIDTxt.setText(String.valueOf(customerComboBox.getSelectionModel().getSelectedItem().getCustomerID()));
     }
-    public boolean resultForOverLap;
+    public boolean resultForOverLap; //Used in my checkForOverLap method and in a if statement inside my OnAction add App method.
     public void checkForOverLap() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
-        int customerIDTXT = Integer.valueOf(customerIDTxt.getText());
+        String customerIDTXT = customerIDTxt.getText();
         ZoneId utcTime = ZoneId.of("UTC");
         ZoneId myTime = ZonedDateTime.now().getZone();
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
@@ -360,11 +358,13 @@ public class AppointmentController implements Initializable {
         ZonedDateTime timeStartZoned = ZonedDateTime.of(dateStart, timeStart, myTime);
         ZonedDateTime timeStartInUTC = timeStartZoned.withZoneSameInstant(utcTime);
         LocalTime startTimeToCompare = timeStartInUTC.toLocalTime();
+        System.out.println(startTimeToCompare+ " StartTimeToCompare");
         //Getting end date and time to compare
         LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
         ZonedDateTime timeEndZoned = ZonedDateTime.of(dateStart, timeEnd, myTime);
         ZonedDateTime timeEndInUTC = timeEndZoned.withZoneSameInstant(utcTime);
         LocalTime endTimeToCompare = timeEndInUTC.toLocalTime();
+        System.out.println(endTimeToCompare + " EndTimeToCompare");
         /*
         Loops through all appointments to find the ones associated with the selected customer.
         When it finds an appointment for that customer it checks the start time against the times chosen
@@ -377,11 +377,12 @@ public class AppointmentController implements Initializable {
             LocalDate date = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
             LocalTime time = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
             int customerIDFromApp = selectedAppointment.getCustomerID();
-            if (customerIDFromApp == customerIDTXT) {
-                if (dateStart.equals(date) && startTimeToCompare.equals(time)) {
+            String customerIDFromAppString = String.valueOf(customerIDFromApp);
+            if (customerIDFromAppString.equals(customerIDTXT)) {
+                if (dateStart.equals(date) && time.equals(startTimeToCompare)) {
                     resultForOverLap = true;
                 }
-                else if(dateStart.equals(date) && startTimeToCompare.isAfter(time) && startTimeToCompare.isBefore(endTimeToCompare)){
+                else if(dateStart.equals(date) && time.isAfter(startTimeToCompare) && time.isBefore(endTimeToCompare)){
                     resultForOverLap = true;
                 }
             }
@@ -393,6 +394,7 @@ public class AppointmentController implements Initializable {
        try {
            ObservableList<Integer> appointmentIDs = FXCollections.observableArrayList();
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+           resultForOverLap = false;
            checkForOverLap();
            int index = 0;
            while(index < allAppointments.size()){
@@ -408,11 +410,12 @@ public class AppointmentController implements Initializable {
                }
            }
            else if(resultForOverLap){
+               resultForOverLap = false;
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
                error.setContentText("Customer already has an appointment at this time!");
                error.showAndWait();
-               resultForOverLap = false;
+
            }
            else if(startDatePicker.getValue().isAfter(endDatePicker.getValue())){
                Alert error = new Alert(Alert.AlertType.WARNING);
@@ -509,7 +512,6 @@ public class AppointmentController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
     @FXML
     void onActionAppDeleteBtn(ActionEvent event) {
     try {
@@ -522,7 +524,6 @@ public class AppointmentController implements Initializable {
         error.showAndWait();
     }
     }
-
     @FXML
     void onActionAppUpdateBtn(ActionEvent event) {
         try {
@@ -530,12 +531,6 @@ public class AppointmentController implements Initializable {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select Appointment from Table!");
-                error.showAndWait();
-            }
-            else if(!(String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID()).equals(customerIDTxt.getText()))){
-                Alert error = new Alert(Alert.AlertType.WARNING);
-                error.setTitle("Warning Dialog");
-                error.setContentText("Please Insert Correct Customer ID!");
                 error.showAndWait();
             }
             else {
