@@ -27,6 +27,9 @@ import java.sql.Timestamp;
 import java.time.Month;
 import java.util.ResourceBundle;
 
+/**
+ * This is the ReportsController class and it provides the functionality to the reports scene.
+ * */
 public class ReportsController implements Initializable {
     @FXML
     private ComboBox<Contacts> contactsComboBox;
@@ -62,7 +65,11 @@ public class ReportsController implements Initializable {
 
     @FXML
     private TableColumn<Reports, Integer> C9;
-
+//--------------------------------------------------UTILITY METHODS------------------------------------------------
+    /**
+     * The forMatTableColumns method sets up the table columns text files for appointments. This method is useful
+     * because two out of the three reports need to show most of the appointment parameters.
+     * */
     public void forMatTableColumns(){
         C1.setText("AppointmentID");
         C1.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
@@ -83,7 +90,11 @@ public class ReportsController implements Initializable {
         C9.setText("CustomerID");
         C9.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
-
+/**
+ * The convertAppToReport method takes the information from an appointment and uses it to create a Report object.
+ * This method is needed for all the reports because the table view holds report objects not appointment objects
+ * so all appointment information needed to be displayed must first be added to a report object.
+ * */
     public ObservableList<Reports> convertAppToReport() {
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         ObservableList<Reports> reportsList = FXCollections.observableArrayList();
@@ -103,15 +114,25 @@ public class ReportsController implements Initializable {
         }
         return reportsList;
     }
+    //-----------------------------------------------------------ON ACTION METHODS-----------------------------------------
+    /**
+     * The onActionContactsComboBox method contains the actions to be taken when the users selects a contact from
+     * the combo box. This method sets the table view up with only the appointments associated with the selected
+     * contact.
+     * @param event
+     * */
     @FXML
     void onActionContactsComboBox(ActionEvent event) {
-
         ObservableList<Reports> allReports = convertAppToReport();
         FilteredList<Reports> reportsForTable = new FilteredList<>(allReports, i -> i.getContactID() == contactsComboBox.getSelectionModel().getSelectedItem().getContactID());
         reportTableView.setItems(reportsForTable);
         forMatTableColumns();
     }
-
+    /**
+     * The onActionMainMenu method brings the user back to the Main Scene when they click the main menu button
+     * inside the reports scene.
+     * @param event
+     * */
     @FXML
     void onActionMainMenu(ActionEvent event) throws IOException{
         Stage stage;
@@ -121,7 +142,11 @@ public class ReportsController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-
+    /**
+     * The onActionLocationComboBox method contains the actions to be taken when the user selects a location
+     * from the combo box. This method sets up the table view with only the appointments at the selected locatin.
+     * @param event
+     * */
     @FXML
     void onActionLocationComboBox(ActionEvent event) {
         ObservableList<Reports> allReports = convertAppToReport();
@@ -129,6 +154,11 @@ public class ReportsController implements Initializable {
         reportTableView.setItems(reportsForTable);
         forMatTableColumns();
     }
+    /**
+     * The onActionTypeMonth method looks through all the appointments in the database and displays in the table
+     * view the quantity of appointments in each month by type.
+     * @param event
+     * */
     @FXML
     void onActionTypeMonth(ActionEvent event) throws IOException {
             ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
@@ -182,6 +212,12 @@ public class ReportsController implements Initializable {
             C9.setText("C9");
 
         }
+        /**
+         * The initialize method contains everything needed for setting up the Report scene. This method sets the
+         * items for the contacts combo box and the location combo box.
+         * @param resourceBundle
+         * @param url 
+         * */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

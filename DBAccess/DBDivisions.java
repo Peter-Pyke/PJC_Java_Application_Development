@@ -8,7 +8,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/**
+ * The DBDivisions class is used to retrieve all the divisions from the data base.
+ * */
 public class DBDivisions {
     public static ObservableList<Division> getAllDivision(){
         ObservableList<Division> dlist = FXCollections.observableArrayList();

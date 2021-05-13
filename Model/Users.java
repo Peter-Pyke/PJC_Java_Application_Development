@@ -1,7 +1,9 @@
 package Model;
 
 import java.sql.Date;
-
+/**
+ * The Users class is a model class. This class is used to hold the user information pulled from the data base.
+ * */
 public class Users {
     private int userID;
     private String userName;
@@ -11,7 +13,16 @@ public class Users {
     private Date lastUpdated;
     private String lastUpdatedBy;
 
-
+/**
+ * This is the constructor method for the Users class.
+ * @param userID id of the user
+ * @param userName name of the user
+ * @param userPassword user password
+ * @param dateCreated date the user was created
+ * @param createdBy user that created the user
+ * @param lastUpdated date the user was last updated
+ * @param lastUpdatedBy user that last updated the user
+ * */
     public Users (int userID, String userName, String userPassword, Date dateCreated, String createdBy, Date lastUpdated, String lastUpdatedBy){
         this.userID = userID;
         this.userName = userName;
@@ -21,7 +32,9 @@ public class Users {
         this.lastUpdated = lastUpdated;
         this.lastUpdatedBy = lastUpdatedBy;
     }
-
+/**
+ * Getter methods.
+ * */
     public int getUserID() {
         return userID;
     }

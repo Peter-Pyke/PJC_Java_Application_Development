@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.*;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.time.*;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -23,8 +22,7 @@ import java.util.ResourceBundle;
  * This is the LoginController class which provides the functionality to the Login Scene.
  * */
 public class LoginController implements Initializable {
-    Stage stage;
-    Parent scene;
+    Stage stage; //Declaring stage object to be used later.
 
     @FXML
     private Label userIDLabel;
@@ -59,6 +57,9 @@ public class LoginController implements Initializable {
         }
         return false;
     }
+    /**
+     * The fileLogin method creates a text file that records all the login activity.
+     * */
     public void fileLogin() throws IOException{
         String fileName = "C:/Users/choui/Documents/GitHub/PJC_Java_Application_Development/Login_Activity.txt";
         FileWriter fWriter = new FileWriter(fileName, true);

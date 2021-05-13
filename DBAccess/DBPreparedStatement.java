@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
+/**
+ * The DBPreparedStatement class is used to create prepared statements.
+ * */
 public class DBPreparedStatement {
     public static PreparedStatement statement;
 

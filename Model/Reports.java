@@ -2,7 +2,10 @@ package Model;
 
 import java.sql.Timestamp;
 import java.time.Month;
-
+/**
+ * The Reports class is a model class. This class is similar to the appointments class but with slightly different
+ * parameters. The Reports class is used to display specific information regarding appointments.
+ * */
 public class Reports {
     private Month month;
     private String type;
@@ -16,12 +19,30 @@ public class Reports {
     private Timestamp end;
     private int customerID;
     private int contactID;
-
+/**
+ * This is the first constructor for the Reports class. This method is used for the type and month reporting.
+ * @param type name of the type of appointment
+ * @param month month the appointment takes place
+ * @param count number of appointments with the same month and type
+ * */
     public Reports(Month month, String type, int count){
       setMonth(month);
       setType(type);
       setCount(count);
     }
+    /**
+     * This is the second constructor for the Reports class. This method is used for both the location report and
+     * the contacts report.
+     * @param type name of the type of appointment
+     * @param customerID id of customer for that appointment
+     * @param contactID id of the contact for that appointment
+     * @param start date and time the appointment will start
+     * @param location name of the location the appointment is at
+     * @param description description of the appointment
+     * @param appointmentID id of the appointment
+     * @param end date and time the appointment will end
+     * @param title title for the appointment
+     * */
     public Reports(int appointmentID,String title,String description,String location,String type,Timestamp start,Timestamp end,int customerID,int contactID){
 
         setType(type);

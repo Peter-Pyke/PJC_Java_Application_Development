@@ -7,7 +7,9 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/**
+ * The DBCustomers class is used to retrieve all the customers from the data base.
+ * */
 public class DBCustomers {
     public static ObservableList<Customers> getAllCustomers(){
         ObservableList<Customers> clist = FXCollections.observableArrayList();

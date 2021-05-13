@@ -8,7 +8,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/**
+ * The DBUsers class is used to retrieve all the users from the data base.
+ * */
 public class DBUsers {
     public static ObservableList<Users> getAllUsers(){
         ObservableList<Users> ulist = FXCollections.observableArrayList();

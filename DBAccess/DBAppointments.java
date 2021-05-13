@@ -5,7 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-
+/**
+ * The DBAppointments class is used to retrieve all the appointments from the data base.
+ * */
 public class DBAppointments {
     public static ObservableList<Appointments> getAllAppointments(){
         ObservableList<Appointments> appList = FXCollections.observableArrayList();

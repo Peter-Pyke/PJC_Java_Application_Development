@@ -6,7 +6,9 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/**
+ * The DBContacts class is used to retrieve all the contacts from the data base.
+ * */
 public class DBContacts {
     public static ObservableList<Contacts> getAllContacts(){
         ObservableList<Contacts> clist = FXCollections.observableArrayList();

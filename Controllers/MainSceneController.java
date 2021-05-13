@@ -18,16 +18,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
 /**
- * This is my MainSceneController class and will be used to give the main screen after login its functionality.
+ * This is my MainSceneController class and will be used to give the main scene its functionality.
  * */
 public class MainSceneController<size> implements Initializable {
     Stage stage; //Declaring stage object to be used later on.
-    Parent scene; //Declaring scene object to be used later on.
+
     @FXML
     private ComboBox<Customers> customerComboBox;
 
@@ -74,7 +73,8 @@ public class MainSceneController<size> implements Initializable {
 
     private static String userName = null; // String object to hold the username of the person who logged in.
     private static String userPassword = null; // String object to hold the password of the person who logged in.
-    private static int userID;
+    private static int userID; //int to hold userID of the user who logged in.
+   //----------------------------------PASS METHODS-----------------------------------------------------------
     /**
      * This is the passLoginInfo method, it is used to get the username and password that was used to login.
      * The username and password is than stored in the private static string objects above until needed.
@@ -87,7 +87,7 @@ public class MainSceneController<size> implements Initializable {
     }
     /**
      * This is the appointmentCheck method, it is called in the login Controller class and gives the user
-     * a warning message if they have an appointment with 15 minutes of login in.
+     * a warning message if they have an appointment within 15 minutes of login.
      * */
     public void appointmentCheck(){
 
@@ -121,6 +121,7 @@ public class MainSceneController<size> implements Initializable {
             }
         }
     }
+    //--------------------------------UTILITY METHODS---------------------------------------------------------
     /**
      * This is my updateTableView method. This method is used to place all the customers and their information
      * into the table view.
@@ -172,7 +173,8 @@ public class MainSceneController<size> implements Initializable {
                 else if(!phoneNumber.matches("\\d{3}-\\d{3}-\\d{4}")){
                     Alert error = new Alert(Alert.AlertType.WARNING);
                     error.setTitle("Warning Dialog");
-                    error.setContentText("Please Enter A Valid phone#!");
+                    error.setContentText("Please enter A valid phone# in the following format: 123-456-7890.");
+                    error.getDialogPane().setPrefWidth(600);
                     error.showAndWait();
                 }
                 else if(stateCBox.getSelectionModel().isEmpty()){
@@ -215,6 +217,10 @@ public class MainSceneController<size> implements Initializable {
             e.printStackTrace(); // prints out error messages
         }
     }
+    /**
+     * The upDateCustomer method is called when the update button is clicked in the MainScene(Customer Creation Scene).
+     * This method updates the selected customer information inside the data base.
+     * */
     public void upDateCustomer(){
         try {
             String customerName = customerNameTxt.getText();
@@ -222,7 +228,11 @@ public class MainSceneController<size> implements Initializable {
             String postalCode = customerPostalCodeTxt.getText();
             String phoneNumber = customerPhoneTxt.getText();
             String lastUpdateBy = userName;
-            Division selectedDivision = stateCBox.getSelectionModel().getSelectedItem();
+            Division selectedDivision = stateCBox.getValue();
+            Boolean countrySelection = (countryCBox.getValue() == null);
+            Boolean stateSelection = (stateCBox.getValue() == null);
+            System.out.println(stateSelection);
+
             if (customerName.isEmpty()) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
@@ -241,14 +251,15 @@ public class MainSceneController<size> implements Initializable {
             } else if (!phoneNumber.matches("\\d{3}-\\d{3}-\\d{4}")) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Please Enter A Valid phone#!");
+                error.setContentText("Please enter A valid phone# in the following format: 123-456-7890");
+                error.getDialogPane().setPrefWidth(600);
                 error.showAndWait();
-            } else if (stateCBox.getSelectionModel().isEmpty()) {
+            } else if(stateSelection){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select A Division!");
                 error.showAndWait();
-            } else if (countryCBox.getSelectionModel().isEmpty()) {
+            } else if (countrySelection) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select A Country!");
@@ -269,7 +280,7 @@ public class MainSceneController<size> implements Initializable {
 
                 // Raw SQL update statement
                 String updateStatement = "UPDATE customers SET Customer_Name = '" + customerName
-                        + "', Address = '" + customerAddress + "', Postal_Code = '" + postalCode + "', "
+                        + "', Address = '"+ customerAddress + "', Postal_Code = '" + postalCode + "', "
                         + "Phone = '" + phoneNumber + "', Last_Updated_By = '" + lastUpdateBy
                         + "', Division_ID = '" + customerDivisionID + "' WHERE Customer_ID = '" + customerID + "';";
 
@@ -285,12 +296,15 @@ public class MainSceneController<size> implements Initializable {
                     System.out.println("No Change");
                 }
             }
-            } catch(SQLException e){
-                e.printStackTrace(); // prints out error messages
+            } catch(NullPointerException e){
+            e.printStackTrace();
+            }
+            catch(SQLException i){
+            i.printStackTrace();
             }
     }
     /**
-     * This is my filterDivision method. This method sets the Division combo box up with the Divisions that match
+     * The filterDivision method sets the Division combo box up with the Divisions that match
      * the country currently selected in the country combo box.
      * */
     public void filterDivision(){
@@ -298,6 +312,7 @@ public class MainSceneController<size> implements Initializable {
             ObservableList<Division> allDivision = DBDivisions.getAllDivision();
             FilteredList<Division> filteredDivisions = new FilteredList<Division>(allDivision, i -> i.getCountryID() == countryCBox.getSelectionModel().getSelectedItem().getId());
             stateCBox.setItems(filteredDivisions);
+            stateCBox.setValue(null);
         }
         catch(NullPointerException e){
             //Do nothing. The clear form button will cause a NullPointerException.
@@ -318,6 +333,7 @@ public class MainSceneController<size> implements Initializable {
             ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
             int divisionID = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID());
             ObservableList<Countries> allCountries = DBCountries.getAllCountries();
+
             if(divisionID <= 49) {
                 Division divisionInUS = allDivisions.get(divisionID - 1);
                 int countryIndex = (divisionInUS.getCountryID() - 1);
@@ -326,13 +342,13 @@ public class MainSceneController<size> implements Initializable {
                 stateCBox.setValue(divisionInUS);
             }
             else if(divisionID == 52){
-                Countries countryOfSelectedCustomer = allCountries.get(1);
+                Countries countryOfSelectedCustomer = allCountries.get(0);
                 countryCBox.setValue(countryOfSelectedCustomer);
                 Division hawaii = allDivisions.get(49);
                 stateCBox.setValue(hawaii);
             }
             else if(divisionID == 54){
-                Countries countryOfSelectedCustomer = allCountries.get(1);
+                Countries countryOfSelectedCustomer = allCountries.get(0);
                 countryCBox.setValue(countryOfSelectedCustomer);
                 Division Alaska = allDivisions.get(50);
                 stateCBox.setValue(Alaska);
@@ -351,8 +367,6 @@ public class MainSceneController<size> implements Initializable {
                 countryCBox.setValue(countryOfSelectedCustomer);
                 stateCBox.setValue(divisionINCan);
             }
-
-
         }
         catch (NullPointerException e){
             //Do nothing
@@ -417,6 +431,7 @@ public class MainSceneController<size> implements Initializable {
             //Do nothing
         }
     }
+    //----------------------------------------ON ACTION METHODS-------------------------------------------------
     /**
      * On Action Delete Customer method. Calls the deleteCustomer method which removes the customer
      * currently selected in the table view from the database.
@@ -485,6 +500,7 @@ public class MainSceneController<size> implements Initializable {
         Scene scene2 = new Scene(mainSceneAdd1);
         AppointmentController pass1 = loader1.getController();
         pass1.passLoginInfo1(userName, userPassword);
+        pass1.insertUserID();
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.setScene(scene2);
         stage.show();
@@ -497,6 +513,10 @@ public class MainSceneController<size> implements Initializable {
     public void onActionClearFormBtn(ActionEvent event) {
     clearForm();
     }
+    /**
+     * This method brings the user to the Report Scene.
+     * @param event
+     * */
     @FXML
     public void onActionReportsBtn(ActionEvent event) throws IOException{
         Stage stage;

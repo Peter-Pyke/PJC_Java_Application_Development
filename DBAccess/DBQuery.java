@@ -3,7 +3,9 @@ package DBAccess;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+/**
+ * The DBQuery class is used to query the data base.
+ * */
 public class DBQuery {
 
     private static Statement statement; // This is my statement reference
