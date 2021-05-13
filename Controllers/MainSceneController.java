@@ -4,6 +4,7 @@ import Model.*;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
@@ -18,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
@@ -26,9 +29,6 @@ import java.util.TimeZone;
  * */
 public class MainSceneController<size> implements Initializable {
     Stage stage; //Declaring stage object to be used later on.
-
-    @FXML
-    private ComboBox<Customers> customerComboBox;
 
     @FXML
     private ComboBox<Countries> countryCBox;
@@ -264,7 +264,7 @@ public class MainSceneController<size> implements Initializable {
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select A Country!");
                 error.showAndWait();
-            } else if(customerComboBox.getSelectionModel().isEmpty()){
+            } else if(allCustomerTableView.getSelectionModel().isEmpty()){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select A Customer!");
@@ -272,7 +272,7 @@ public class MainSceneController<size> implements Initializable {
             }
             else {
                 int customerDivisionID = selectedDivision.getDivisionID();
-                int customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
+                int customerID = allCustomerTableView.getSelectionModel().getSelectedItem().getCustomerID();
 
                 Connection conn = DBConnection.getConnection(); // Create Connection Object
                 DBQuery.setStatement(conn);
@@ -324,14 +324,14 @@ public class MainSceneController<size> implements Initializable {
      * */
     public void setUpDateCustomer(){
         try {
-            Customers selectedCustomer = customerComboBox.getSelectionModel().getSelectedItem();
+            Customers selectedCustomer = allCustomerTableView.getSelectionModel().getSelectedItem();
             customerIDTxt.setText(String.valueOf(selectedCustomer.getCustomerID()));
             customerNameTxt.setText(selectedCustomer.getCustomerName());
             customerAddressTxt.setText(selectedCustomer.getCustomerAddress());
             customerPhoneTxt.setText(selectedCustomer.getPhoneNumber());
             customerPostalCodeTxt.setText(selectedCustomer.getPostalCode());
             ObservableList<Division> allDivisions = DBDivisions.getAllDivision();
-            int divisionID = (customerComboBox.getSelectionModel().getSelectedItem().getDivisionID());
+            int divisionID = (allCustomerTableView.getSelectionModel().getSelectedItem().getDivisionID());
             ObservableList<Countries> allCountries = DBCountries.getAllCountries();
 
             if(divisionID <= 49) {
@@ -406,7 +406,6 @@ public class MainSceneController<size> implements Initializable {
                 error.setContentText(selectedCustomerName + " has been deleted!");
                 error.showAndWait();
                 updateTableView();
-                customerComboBox.setItems(DBCustomers.getAllCustomers());
             }
         }
         catch (SQLException e){
@@ -423,7 +422,6 @@ public class MainSceneController<size> implements Initializable {
             customerAddressTxt.setText("");
             customerPhoneTxt.setText("");
             customerPostalCodeTxt.setText("");
-            customerComboBox.setItems(DBCustomers.getAllCustomers());
             countryCBox.setValue(null);
             stateCBox.setValue(null);
         }
@@ -470,7 +468,7 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
-        if(!(customerComboBox.getSelectionModel().isEmpty())){
+        if(!(customerIDTxt.getText().isEmpty())){
             Alert error = new Alert(Alert.AlertType.WARNING);
             error.setTitle("Warning Dialog");
             error.setContentText("Please use UpDate button or clear form before adding.");
@@ -541,7 +539,6 @@ public class MainSceneController<size> implements Initializable {
         ObservableList<Customers> customerList = DBCustomers.getAllCustomers();
 
         customerIDTxt.setText("Auto Generated"); // Sets the Customer ID text field.
-        customerComboBox.setItems(customerList); // Sets up Customer Combo box.
         countryCBox.setItems(countryList);       // Sets up Country Combo box.
 
         //The follow is to set up the Table View with all the customers information.
@@ -553,6 +550,15 @@ public class MainSceneController<size> implements Initializable {
         customerPostalCodeCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         customerDivisionCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
 
+        allCustomerTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(javafx.scene.input.MouseEvent mouseEvent) {
+                try {
+                    setUpDateCustomer();
+                } catch (NullPointerException e) {
+                    //Do nothing if you click on the table but not on an appointment a null pointer will be thrown.
+                }
+            }
+        });
     }
-
-}
+    }

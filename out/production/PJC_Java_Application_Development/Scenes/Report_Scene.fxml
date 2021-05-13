@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReportsController">
    <children>
       <VBox prefHeight="800.0" prefWidth="1200.0">
          <children>
@@ -25,7 +25,7 @@
                   <Button mnemonicParsing="false" onAction="#onActionMainMenu" text="Main Menu" />
                </children>
             </HBox>
-            <TableView fx:id="reportTableView" prefHeight="729.0" prefWidth="1200.0">
+            <TableView fx:id="reportTableView" prefHeight="500.0" prefWidth="1200.0">
               <columns>
                 <TableColumn fx:id="C1" prefWidth="133.33" text="C1" />
                 <TableColumn fx:id="C2" prefWidth="133.33" text="C2" />

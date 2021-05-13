@@ -274,12 +274,7 @@ public class AppointmentController implements Initializable {
             error.setTitle("Warning Dialog");
             error.setContentText("Appointment_ID: " + selectedAppID + " has been deleted!");
             error.showAndWait();
-            if(customerComboBox.getSelectionModel().isEmpty()) {
-                setUpTable();
-            }
-            else{
-                filterTableByCustomer();
-            }
+            filterTableByCustomer();
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -322,8 +317,15 @@ public class AppointmentController implements Initializable {
      * currently selected inside of the customer combo box.
      */
     public void filterTableByCustomer() {
+        int customerID;
+        if(customerComboBox.getSelectionModel().isEmpty()){
+            customerID = appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID();
+        }
+        else{
+            customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
+        }
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-        FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerComboBox.getSelectionModel().getSelectedItem().getCustomerID());
+        FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerID);
         appointmentTableView.setItems(selectedCustomerAppointments);
         appIDCol.setCellValueFactory(new PropertyValueFactory<>("AppointmentID"));
         titleCol.setCellValueFactory(new PropertyValueFactory<>("Title"));
