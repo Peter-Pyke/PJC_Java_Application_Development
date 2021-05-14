@@ -74,7 +74,7 @@ public class AppointmentController implements Initializable {
     private TextField customerIDTxt;
 
     @FXML
-    private TextField userIDTxt;
+    private ComboBox<Users> userIDComboBox;
 
     @FXML
     private ComboBox<Customers> customerComboBox;
@@ -158,7 +158,7 @@ public class AppointmentController implements Initializable {
             String end = endDatePicker.getValue().toString() + " " + endTimeGMT;
             String lastUpdatedBy = userNameApp;
             int customerID = Integer.valueOf(customerIDTxt.getText());
-            int userID = Integer.valueOf(userIDTxt.getText());
+            int userID = userIDComboBox.getSelectionModel().getSelectedItem().getUserID();
             int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
             int AppointmentID = Integer.valueOf(appointmentIDTxt.getText());
 
@@ -221,7 +221,7 @@ public class AppointmentController implements Initializable {
                 String createdBy = userNameApp;
                 String lastUpdatedBy = userNameApp;
                 int customerID = Integer.valueOf(customerIDTxt.getText());
-                int userID = Integer.valueOf(userIDTxt.getText());
+                int userID = userIDComboBox.getSelectionModel().getSelectedItem().getUserID();
                 int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
 
                 //key-value map
@@ -238,7 +238,7 @@ public class AppointmentController implements Initializable {
                 ps.setInt(11, contactID);
 
                 ps.execute();
-                setUpTable();
+                filterTableByCustomer();
             } else {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
@@ -295,22 +295,6 @@ public class AppointmentController implements Initializable {
         endDateCol.setCellValueFactory(new PropertyValueFactory<>("End"));
         contactCol.setCellValueFactory(new PropertyValueFactory<>("ContactID"));
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
-    }
-    /**
-     * The insertUserID method sets the UserID text field with the userID of whoever is loggen in.
-     * */
-    public void insertUserID(){
-        ObservableList<Users> allUsers = DBUsers.getAllUsers();
-        int index = 0;
-        while(index < allUsers.size()){
-            Users myUser = allUsers.get(index);
-            String myUsersPassword = myUser.getUserPassword();
-            String myUserName = myUser.getUserName();
-            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
-                userIDTxt.setText(String.valueOf(myUser.getUserID()));
-            }
-            index++;
-        }
     }
     /**
      * The filterTableByCustomer method displays all the appointments associated with the customer that is
@@ -377,6 +361,22 @@ public class AppointmentController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
+     * The insertUserID method sets the UserID text field with the userID of whoever is loggen in.
+     * */
+    public void insertUserID(){
+        ObservableList<Users> allUsers = DBUsers.getAllUsers();
+        int index = 0;
+        while(index < allUsers.size()){
+            Users myUser = allUsers.get(index);
+            String myUsersPassword = myUser.getUserPassword();
+            String myUserName = myUser.getUserName();
+            if (userPasswordApp.equals(myUsersPassword) && userNameApp.equals(myUserName)) {
+               userIDComboBox.setValue(myUser);
+            }
+            index++;
+        }
+    }
+    /**
      * The insertCustomerID method sets the CustomerID text field with the Id of the customer either selected
      * in the customer combo box or the customer assoicated with the appointment selected in the table.
      * */
@@ -400,13 +400,13 @@ public class AppointmentController implements Initializable {
         ZonedDateTime timeStartZoned = ZonedDateTime.of(dateStart, timeStart, myTime);
         ZonedDateTime timeStartInUTC = timeStartZoned.withZoneSameInstant(utcTime);
         LocalTime startTimeToCompare = timeStartInUTC.toLocalTime();
-        System.out.println(startTimeToCompare+ " StartTimeToCompare");
+        System.out.println(startTimeToCompare+ " StartTimeToCompare from picker on screen");
         //Getting end date and time to compare
         LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
         ZonedDateTime timeEndZoned = ZonedDateTime.of(dateStart, timeEnd, myTime);
         ZonedDateTime timeEndInUTC = timeEndZoned.withZoneSameInstant(utcTime);
         LocalTime endTimeToCompare = timeEndInUTC.toLocalTime();
-        System.out.println(endTimeToCompare + " EndTimeToCompare");
+        System.out.println(endTimeToCompare + " EndTimeToCompare from picker on screen");
         /*
         Loops through all appointments to find the ones associated with the selected customer.
         When it finds an appointment for that customer it checks the start time against the times chosen
@@ -417,16 +417,18 @@ public class AppointmentController implements Initializable {
         for (int i = 0; i < allAppointments.size(); i++) {
             Appointments selectedAppointment = allAppointments.get(i);
             LocalDate date = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
-            LocalTime time = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
+            LocalTime timeStart2 = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
+            LocalTime timeEnd2 = selectedAppointment.getEnd().toLocalDateTime().toLocalTime();
             int customerIDFromApp = selectedAppointment.getCustomerID();
             String customerIDFromAppString = String.valueOf(customerIDFromApp);
-            if (customerIDFromAppString.equals(customerIDTXT)) {
-                if (dateStart.equals(date) && time.equals(startTimeToCompare)) {
+            if (customerIDFromAppString.equals(customerIDTXT) && dateStart.equals(date)) {
+                System.out.println(date+" data base appointment");
+                System.out.println(timeStart2+" data base appointment timeStart2");
+                System.out.println(timeEnd2+ " data base appointment");
+                if ((startTimeToCompare.isAfter(timeStart2) && startTimeToCompare.isBefore(timeEnd2)) || timeStart2.equals(startTimeToCompare) || (timeStart2.isAfter(startTimeToCompare) && timeStart2.isBefore(endTimeToCompare))) {
                     resultForOverLap = true;
                 }
-                else if(dateStart.equals(date) && time.isAfter(startTimeToCompare) && time.isBefore(endTimeToCompare)){
-                    resultForOverLap = true;
-                }
+
             }
         }
     }
@@ -443,6 +445,7 @@ public class AppointmentController implements Initializable {
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
            resultForOverLap = false;
            checkForOverLap();
+           System.out.println(resultForOverLap);
            int index = 0;
            while(index < allAppointments.size()){
                appointmentIDs.add(allAppointments.get(index).getAppointmentID());
@@ -696,7 +699,7 @@ public class AppointmentController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         customerComboBox.setItems(DBCustomers.getAllCustomers()); // sets up the customer combo box.
         contactsComboBox.setItems(DBContacts.getAllContacts());// sets up the contacts combo box.
-
+        userIDComboBox.setItems(DBUsers.getAllUsers());
         setUpTable(); //set the table view with all the appointments currently in the data base.
 
         //The code below fills the form in with the information of the appointment clicked in the table view.

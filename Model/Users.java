@@ -60,4 +60,9 @@ public class Users {
     public String getLastUpdatedBy() {
         return lastUpdatedBy;
     }
+
+    @Override
+    public String toString() {
+        return userName +" ("+Integer.toString(userID)+")";
+    }
 }
