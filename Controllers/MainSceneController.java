@@ -144,7 +144,6 @@ public class MainSceneController<size> implements Initializable {
      * */
     public void addCustomer(){
         try {
-
                 String customerName = customerNameTxt.getText();
                 String customerAddress = customerAddressTxt.getText();
                 String postalCode = customerPostalCodeTxt.getText();
@@ -468,7 +467,8 @@ public class MainSceneController<size> implements Initializable {
      * */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
-        if(!(customerIDTxt.getText().isEmpty())){
+        System.out.println(customerIDTxt.getText());
+        if(!(customerIDTxt.getText().equals("Auto Generated"))){
             Alert error = new Alert(Alert.AlertType.WARNING);
             error.setTitle("Warning Dialog");
             error.setContentText("Please use UpDate button or clear form before adding.");
