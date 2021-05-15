@@ -1,6 +1,8 @@
 package Controllers;
+import DBAccess.DBAppointments;
 import DBAccess.DBUsers;
 import Model.Users;
+import TimeConverter.ConvertTime;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +15,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.*;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.*;
 import java.util.Locale;
 import java.util.MissingResourceException;

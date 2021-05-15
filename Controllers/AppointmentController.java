@@ -12,7 +12,7 @@ import Model.Appointments;
 import Model.Contacts;
 import Model.Customers;
 import Model.Users;
-import Utilities.ConvertTime;
+import TimeConverter.ConvertTime;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -34,6 +34,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.function.DoubleToIntFunction;
 
 /**
  * This is the AppointmentController class and will provide all the functionality to the Appointment Scene.
@@ -397,16 +398,11 @@ public class AppointmentController implements Initializable {
         //Getting start date and time to compare
         LocalDate dateStart = startDatePicker.getValue();
         LocalTime timeStart = LocalTime.parse(startTimeComboBox.getValue(), formatter);
-        ZonedDateTime timeStartZoned = ZonedDateTime.of(dateStart, timeStart, myTime);
-        ZonedDateTime timeStartInUTC = timeStartZoned.withZoneSameInstant(utcTime);
-        LocalTime startTimeToCompare = timeStartInUTC.toLocalTime();
-        System.out.println(startTimeToCompare+ " StartTimeToCompare from picker on screen");
+
+
         //Getting end date and time to compare
         LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
-        ZonedDateTime timeEndZoned = ZonedDateTime.of(dateStart, timeEnd, myTime);
-        ZonedDateTime timeEndInUTC = timeEndZoned.withZoneSameInstant(utcTime);
-        LocalTime endTimeToCompare = timeEndInUTC.toLocalTime();
-        System.out.println(endTimeToCompare + " EndTimeToCompare from picker on screen");
+
         /*
         Loops through all appointments to find the ones associated with the selected customer.
         When it finds an appointment for that customer it checks the start time against the times chosen
@@ -422,10 +418,8 @@ public class AppointmentController implements Initializable {
             int customerIDFromApp = selectedAppointment.getCustomerID();
             String customerIDFromAppString = String.valueOf(customerIDFromApp);
             if (customerIDFromAppString.equals(customerIDTXT) && dateStart.equals(date)) {
-                System.out.println(date+" data base appointment");
-                System.out.println(timeStart2+" data base appointment timeStart2");
-                System.out.println(timeEnd2+ " data base appointment");
-                if ((startTimeToCompare.isAfter(timeStart2) && startTimeToCompare.isBefore(timeEnd2)) || timeStart2.equals(startTimeToCompare) || (timeStart2.isAfter(startTimeToCompare) && timeStart2.isBefore(endTimeToCompare))) {
+
+                if ((timeStart.isAfter(timeStart2) && timeStart.isBefore(timeEnd2)) || timeStart2.equals(timeStart) || (timeStart2.isAfter(timeStart) && timeStart2.isBefore(timeEnd))) {
                     resultForOverLap = true;
                 }
 
@@ -445,7 +439,7 @@ public class AppointmentController implements Initializable {
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
            resultForOverLap = false;
            checkForOverLap();
-           System.out.println(resultForOverLap);
+
            int index = 0;
            while(index < allAppointments.size()){
                appointmentIDs.add(allAppointments.get(index).getAppointmentID());
@@ -487,15 +481,16 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionStartPicker(ActionEvent event){
         try {
+            endDatePicker.setValue(startDatePicker.getValue());
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
             //This check is done here as well as when the time is selected to ensure it is not missed.
             LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
-
+            String myStartTimeForUser = ConvertTime.getTimeForUser(myStartTime);
             if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.setContentText("Selected time is outside hours of operation (EST: "+myStartTimeForUser+")");
                 error.showAndWait();
             }
         } catch (NullPointerException e) {
@@ -511,13 +506,12 @@ public class AppointmentController implements Initializable {
         try {
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
-
             LocalTime myStartTime = ConvertTime.getStartESTTime(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
-
+            String myStartTimeForUser = ConvertTime.getTimeForUser(myStartTime);
             if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.setContentText("Selected time is outside hours of operation (EST: "+myStartTimeForUser+")");
                 error.showAndWait();
             }
         } catch (NullPointerException e) {
@@ -531,15 +525,16 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionEndPicker(ActionEvent event){
         try {
+            startDatePicker.setValue(endDatePicker.getValue());
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
             //This check is done here and when the time is selected to ensure it is not missed.
             LocalTime myEndTime = ConvertTime.getStartESTTime(endTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
-
+            String myEndTimeForUser = ConvertTime.getTimeForUser(myEndTime);
             if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) > 0) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.setContentText("Selected time is outside hours of operation (EST: "+myEndTimeForUser+")");
                 error.showAndWait();
             }
         } catch (NullPointerException e) {
@@ -556,10 +551,11 @@ public class AppointmentController implements Initializable {
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
             LocalTime myEndTime = ConvertTime.getEndESTTime(endTimeComboBox.getSelectionModel().getSelectedItem(),endDatePicker.getValue());
+            String myEndTimeForUser = ConvertTime.getTimeForUser(myEndTime);
             if (myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) > 0) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
-                error.setContentText("Selected time is outside hours of operation (EST).");
+                error.setContentText("Selected time is outside hours of operation (EST:"+myEndTimeForUser+" ).");
                 error.showAndWait();
             }
         }
@@ -718,17 +714,11 @@ public class AppointmentController implements Initializable {
                     TypeTxt.setText(appointmentTableView.getSelectionModel().getSelectedItem().getType());
 
                     LocalDateTime startTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getStart().toLocalDateTime();
-                    ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(startTimeFromTimeStamp, UTC);
-                    ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
-                    LocalTime startTimeToDisplay = displayStartTimeZoned.toLocalTime();
 
                     LocalDateTime endTimeFromTimeStamp = appointmentTableView.getSelectionModel().getSelectedItem().getEnd().toLocalDateTime();
-                    ZonedDateTime dataBaseEndTimeUTC = ZonedDateTime.of(endTimeFromTimeStamp, UTC);
-                    ZonedDateTime displayEndTimeZoned = dataBaseEndTimeUTC.withZoneSameInstant(myZoneId);
-                    LocalTime endTimeToDisplay = displayEndTimeZoned.toLocalTime();
 
-                    startTimeComboBox.setValue(startTimeToDisplay.format(myformatter));
-                    endTimeComboBox.setValue(endTimeToDisplay.format(myformatter));
+                    startTimeComboBox.setValue(startTimeFromTimeStamp.format(myformatter));
+                    endTimeComboBox.setValue(endTimeFromTimeStamp.format(myformatter));
                     LocalDate startDate = startTimeFromTimeStamp.toLocalDate();
                     LocalDate endDate = endTimeFromTimeStamp.toLocalDate();
                     startDatePicker.setValue(startDate);
@@ -745,11 +735,13 @@ public class AppointmentController implements Initializable {
         });
 
         DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("hh':'mm a"); //Declaring a formatter object
-        LocalTime open = LocalTime.of(8, 0); //LocalTime to represent the opening hours of operation
-        LocalTime close = LocalTime.of(22, 1); //LocalTime to represent the closing hours of operation.
-
+        LocalTime open = LocalTime.of(0, 0); //LocalTime to represent the opening hours of operation
+        LocalTime close = LocalTime.of(23, 30); //LocalTime to represent the closing hours of operation.
+        int loopCount = 48;
+        int startCount = 0;
         //This loop fills the start time and end time combo boxes with my times(String objects) in 30 minute increments.
-        while (open.isBefore(close.plusSeconds(1))){
+        while (startCount < 48){
+            startCount++;
             String timeToEnter  = open.format(myFormatter);
             startTimeComboBox.getItems().add(timeToEnter);
             endTimeComboBox.getItems().add(timeToEnter);

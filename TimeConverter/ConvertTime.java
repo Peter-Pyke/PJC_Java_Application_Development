@@ -1,8 +1,11 @@
-package Utilities;
+package TimeConverter;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.function.DoubleToIntFunction;
 
 /**
  * The ConvertTime class hold multiple public methods that can be used to convert times.
@@ -107,4 +110,29 @@ public class ConvertTime {
             return true;
         }
     }
+    /**
+     * The getLocalDateTimeFromDataBase method returns a timestamp converted from UTC time
+     * to the local zone time. This method will be used to convert date and time for display in
+     * in the program.
+     * @param timeStampFromDataBase the timestamp saved in the data base.
+     * */
+    public static Timestamp getLocalDateTimeFromDataBase(Timestamp timeStampFromDataBase){
+        String myString = timeStampFromDataBase.toString()+ " UTC";
+        ZoneId localZone = TimeZone.getDefault().toZoneId();
+        DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH':'mm':'ss'.0' VV");
+        ZonedDateTime dataBaseTime = ZonedDateTime.parse(myString, myFormatter);
+        ZonedDateTime myZoneTime = dataBaseTime.toInstant().atZone(localZone);
+        LocalDateTime localDateTime = myZoneTime.toLocalDateTime();
+        Timestamp returnTime = Timestamp.valueOf(localDateTime);
+        return returnTime;
+    }
+    /**
+     * The getTimeForUser method converts a localTime object to a string in the format i want to display it in.
+     * */
+    public static String getTimeForUser(LocalTime myTime){
+        DateTimeFormatter myFormatter = DateTimeFormatter.ofPattern("hh':'mm a");
+        String myString = myTime.format(myFormatter);
+        return myString;
+    }
+
 }

@@ -63,6 +63,6 @@ public class Users {
 
     @Override
     public String toString() {
-        return userName +" ("+Integer.toString(userID)+")";
+        return userName +" ID: "+Integer.toString(userID);
     }
 }

@@ -1,3 +1,30 @@
-Title: Customer Appointment Scheduler
-Purpose: To create customers and associated appointments.
-Author: Peter J Chouinard, pchoui2@WGU.edu, 774-289-3322
+C195 Advanced Java Concepts Project/Purpose of this application is to create and maintain a database of customers and appointments.
+
+Peter J Chouinard, pchoui2@WGU.edu, 774-289-3322, Version 1.0, 05-15-2021
+
+IntelliJ IDEA Community Edition 2020.2.3 x 64
+jdk-11.0.9_windows-x64
+openjfx-11.0.2_windows-x64
+
+Directions:
+At start up the program will prompt the user to log in. If given a correct password and username the next window will appear.
+The window after login is called the Main Scene through the program and is where you can create/delete/update customers. To
+create a customer simple fill in the form and click on the add button. To update a customer click on the customer you want to update
+in the table view below and than change whatever info you want and click on the update button when you are finished. If you wish to
+delete a customer select the customer you wish to delete from the table view and then click on the delete button. Their is a clear form
+button as well if you wish to start over. From the main scene you can click on the appointments button and you will go into the appointment
+scene. In the appointment scene you can create/delete/update app6ointments. To create an appointment fill in the form and click on the add
+button. To update an appointment click on the appointment in the table view you would like to update. Make the changes in the form and
+click on the update button. Note: if you choose to select a customer from the customer combo box and than click on an appointment from
+the table view. You will have to click on the appointment twice as the first click will clear the customer combo box unselecting the
+appointment from the table. If you want to delete an appointment click on the appointment you wish to delete in the table view and
+then click on the delete button. There are a few buttons in this scene that sort the table view. You have the option to sort by month
+and week. It will also sort the table when you select a customer in the combo box to show you only the appointments from that customer.
+You also have a clear form button and a reset appointment id button. The clear form clears all selections in the form the reset id button
+clears the appointment id only. The main menu button will bring you back to the main scene. In the main scene you can click on the reports button
+to go to the report menu. Here you can click on total appointments by type and month or use either of the combo boxes to see appointments by
+contacts or location. There is also a main menu button that will return you to the main scene.
+
+The additional report I ran is a report that shows all appointments by a selected location.
+
+mysql-connector-java-8.0.23

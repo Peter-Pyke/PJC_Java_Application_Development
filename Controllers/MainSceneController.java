@@ -108,10 +108,8 @@ public class MainSceneController<size> implements Initializable {
         for(int j = 0; j < userAppointments.size(); j++){
             Appointments appointment = userAppointments.get(j);
             LocalDateTime dataBaseTime = appointment.getStart().toLocalDateTime();
-            ZonedDateTime dataBaseStartTimeUTC = ZonedDateTime.of(dataBaseTime,UTC);
-            LocalDate dateToCompare = dataBaseStartTimeUTC.toLocalDate();// use this local date to compare
-            ZonedDateTime displayStartTimeZoned = dataBaseStartTimeUTC.withZoneSameInstant(myZoneId);
-            LocalTime timeToCompare = displayStartTimeZoned.toLocalTime(); // use this time to compare
+            LocalDate dateToCompare = dataBaseTime.toLocalDate();// use this local date to compare
+            LocalTime timeToCompare = dataBaseTime.toLocalTime(); // use this time to compare
 
             if(currentDate.equals(dateToCompare) && (currentTime.isBefore(timeToCompare) && currentTime.isAfter(timeToCompare.minusMinutes(15)))){
                 Alert error = new Alert(Alert.AlertType.WARNING);
