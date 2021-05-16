@@ -28,3 +28,5 @@ contacts or location. There is also a main menu button that will return you to t
 The additional report I ran is a report that shows all appointments by a selected location.
 
 mysql-connector-java-8.0.23
+
+Location of two Lambda expressions: Inside the Appointment Controller in my filterTableByCustomer and filterTableByMonth methods.

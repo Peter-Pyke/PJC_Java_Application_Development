@@ -27,11 +27,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.util.function.DoubleToIntFunction;
@@ -192,8 +194,17 @@ public class AppointmentController implements Initializable {
      * */
     public void addApp() {
         try {
+            resultForOverLap = false;
+            checkForOverLap();
+             if(resultForOverLap){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Customer already has an appointment at this time!");
+                error.showAndWait();
+
+            }
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH':'mm':'ss");
-            LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue()); //LocalTime.parse(startTimeComboBox.getSelectionModel().getSelectedItem(),formatter);
+            LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
             LocalTime selectedEndTime = ConvertTime.endTimeToGMT(endTimeComboBox.getSelectionModel().getSelectedItem(), endDatePicker.getValue());
             String startTimeGMT = selectedStartTime.format(formatter);
             String endTimeGMT = selectedEndTime.format(formatter);
@@ -202,9 +213,20 @@ public class AppointmentController implements Initializable {
             String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
             LocalDate startDate = startDatePicker.getValue();
             LocalDate endDate = endDatePicker.getValue();
-
-            if (selectedStartTime.compareTo(selectedEndTime) < 0 && ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate)) {
-
+            System.out.println(ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate));
+            if (selectedStartTime.isAfter(selectedEndTime)){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Start Time must be before End Time.");
+                error.getDialogPane().setPrefWidth(800);
+                error.showAndWait();
+            } else if (ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate)) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Times must be within operating hours");
+                error.getDialogPane().setPrefWidth(800);
+                error.showAndWait();
+            } else {
                 Connection conn = DBConnection.getConnection();
                 String sqlStatement = "INSERT INTO appointments(Title, Description, Location, Type, Start, End, Created_By, Last_Updated_By, Customer_ID, User_ID, Contact_ID)"
                         + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -240,12 +262,6 @@ public class AppointmentController implements Initializable {
 
                 ps.execute();
                 filterTableByCustomer();
-            } else {
-                Alert error = new Alert(Alert.AlertType.WARNING);
-                error.setTitle("Warning Dialog");
-                error.setContentText("Start Date/Time must be before End Date/Time and Times must be within operating hours");
-                error.getDialogPane().setPrefWidth(800);
-                error.showAndWait();
             }
         }
         catch (SQLException e){
@@ -298,8 +314,9 @@ public class AppointmentController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
-     * The filterTableByCustomer method displays all the appointments associated with the customer that is
-     * currently selected inside of the customer combo box.
+     * (LAMBDA HERE used to create filtered list) The filterTableByCustomer method displays all the appointments associated with the customer that is
+     * currently selected inside of the customer combo box. A lambda expression is use in this method to create a filtered list
+     * that pulls all the appointments with the customer id you select.
      */
     public void filterTableByCustomer() {
         int customerID;
@@ -323,8 +340,8 @@ public class AppointmentController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
-     * The filterTableByMonth method set up the appointment table view with only the appointments for the current
-     * month.
+     * (LAMBDA HERE used to create filtered list) The filterTableByMonth method set up the appointment table view with only the appointments for the current
+     * month. A lambda expression is used in this method to create a filtered list of appointments by the current month.
      * */
     public void filterTableByMonth(){
         int currentMonth = LocalDate.now().getMonthValue();
@@ -342,7 +359,8 @@ public class AppointmentController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
-     * The filterTableByWeek method sets up the appointment table view with only the appointments in the
+     * (LAMBDA HERE used to create filtered list) The filterTableByWeek method sets up the appointment table view with only the appointments in the
+     * (LAMBDA HERE used to create filtered list) The filterTableByWeek method sets up the appointment table view with only the appointments in the
      * current week. Example: If the date is 05-13-2021 a Thursday appointments will be shown up to an including
      * 05-20-2021 the following Thursday.
      * */
@@ -434,11 +452,10 @@ public class AppointmentController implements Initializable {
      * */
     @FXML
     void onActionAppAddBtn(ActionEvent event) {
-       try {
+        try {
+            LocalDate date = startDatePicker.getValue();
            ObservableList<Integer> appointmentIDs = FXCollections.observableArrayList();
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
-           resultForOverLap = false;
-           checkForOverLap();
 
            int index = 0;
            while(index < allAppointments.size()){
@@ -453,17 +470,69 @@ public class AppointmentController implements Initializable {
                    error.showAndWait();
                }
            }
-           else if(resultForOverLap){
+           else if(titleTxt.getText().isEmpty()){
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
-               error.setContentText("Customer already has an appointment at this time!");
+               error.setContentText("Please provide a title for the appointment.");
                error.showAndWait();
 
            }
-           else if(startDatePicker.getValue().isAfter(endDatePicker.getValue())){
+           else if(descriptionTxtArea.getText().isEmpty()){
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
-               error.setContentText("Start date must be before end date!");
+               error.setContentText("Please provide a description for the appointment.");
+               error.showAndWait();
+
+           }
+           else if(locationTxt.getText().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a location for the appointment.");
+               error.showAndWait();
+
+           }
+           else if(TypeTxt.getText().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a type for the appointment.");
+               error.showAndWait();
+
+           }
+           else if (date.equals(null)){
+               System.out.println(date);
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a start/end date for the appointment.");
+               error.showAndWait();
+           }
+           else if (contactsComboBox.getSelectionModel().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a contact for the appointment.");
+               error.showAndWait();
+           }
+           else if (customerIDTxt.getText().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a customerID for the appointment.");
+               error.showAndWait();
+           }
+           else if (startTimeComboBox.getSelectionModel().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a start time for the appointment.");
+               error.showAndWait();
+           }
+           else if (endTimeComboBox.getSelectionModel().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a end time for the appointment.");
+               error.showAndWait();
+           }
+           else if (userIDComboBox.getSelectionModel().isEmpty()){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Please provide a userID for the appointment.");
                error.showAndWait();
            }
            else {
