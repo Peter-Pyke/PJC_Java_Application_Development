@@ -100,46 +100,18 @@ public class ConvertTime {
      * @param endDate end date from end date picker
      * */
     public static boolean hoursOfOperation(String startTime, String endTime, LocalDate startDate, LocalDate endDate){
-        try {
+
             LocalTime open = LocalTime.of(8, 00);
             LocalTime close = LocalTime.of(22, 00);
             LocalTime myStartTime1 = ConvertTime.getStartESTTime(startTime, startDate);
             LocalTime myEndTime1 = ConvertTime.getEndESTTime(endTime, endDate);
-            System.out.println(myEndTime1 + "endtime");
-            System.out.println(myStartTime1+" starttime");
-            if (myStartTime1.compareTo(open) < 0 || myStartTime1.compareTo(close) >= 0) {
-               return true;
-            }
-            else if (myEndTime1.compareTo(open) < 0 || myEndTime1.compareTo(close) > 0) {
+            if (myStartTime1.isBefore(open) || myStartTime1.isAfter(close) || myEndTime1.isAfter(close) || myEndTime1.isBefore(open)) {
                return true;
             }
             else {
                 return false;
             }
-        } catch (NullPointerException e) {
-            return true;
-            //NullPointerException is going to happen if they select date before time.
-        }
-        /*
-        LocalTime open = LocalTime.of(8, 00);
-        LocalTime close = LocalTime.of(22, 00);
 
-        LocalTime myStartTime = ConvertTime.getStartESTTime(startTime,startDate);
-        System.out.println(myStartTime);
-        LocalTime myEndTime = ConvertTime.getEndESTTime(endTime,endDate);
-        System.out.println(myEndTime);
-        if (myStartTime.compareTo(open) < 0 || myStartTime.compareTo(close) >= 0 || myEndTime.compareTo(open) < 0 || myEndTime.compareTo(close) > 0) {
-            System.out.println(myStartTime.compareTo(open) + "start time to open");
-            System.out.println(myStartTime.compareTo(close) +"start time to close");
-            System.out.println(myEndTime.compareTo(open)+ "endtime to open");
-            System.out.println(myEndTime.compareTo(close) + "endtime to close");
-
-            return false;
-        }
-        else{
-            return true;
-        }
-         */
     }
     /**
      * The getLocalDateTimeFromDataBase method returns a timestamp converted from UTC time
@@ -165,5 +137,12 @@ public class ConvertTime {
         String myString = myTime.format(myFormatter);
         return myString;
     }
-
+    public static LocalDateTime dateTimeToGMT(LocalDateTime selectedDateTime){
+        ZoneId localZone = TimeZone.getDefault().toZoneId();
+        ZoneId gmtZone = ZoneId.of("GMT");
+        ZonedDateTime localToZoned = selectedDateTime.atZone(localZone);
+        Instant myInstant = localToZoned.toInstant();
+        LocalDateTime localGMT = LocalDateTime.ofInstant(myInstant,gmtZone);
+        return localGMT;
+    }
 }

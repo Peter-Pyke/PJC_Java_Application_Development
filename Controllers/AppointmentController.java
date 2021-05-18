@@ -131,62 +131,77 @@ public class AppointmentController implements Initializable {
  * the selected appointment with the new information given by the user.
  * */
     public void upDateApp() throws SQLException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH':'mm':'ss");
-        LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(),startDatePicker.getValue());
-        LocalTime selectedEndTime = ConvertTime.endTimeToGMT(endTimeComboBox.getSelectionModel().getSelectedItem(), endDatePicker.getValue());
-        String startTimeGMT = selectedStartTime.format(formatter);
-        String endTimeGMT = selectedEndTime.format(formatter);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy'-'MM'-'dd HH':'mm':'ss");
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh':'mm a");
+            LocalDateTime selectedStart = LocalDateTime.of(startDatePicker.getValue(), LocalTime.parse(startTimeComboBox.getValue(), formatter2));
+            LocalDateTime selectedStartToGMT = ConvertTime.dateTimeToGMT(selectedStart);
+            LocalDateTime selectedEnd = LocalDateTime.of(endDatePicker.getValue(), LocalTime.parse(endTimeComboBox.getValue(), formatter2));
+            LocalDateTime selectedEndToGMT = ConvertTime.dateTimeToGMT(selectedEnd);
 
-        String startTime = startTimeComboBox.getSelectionModel().getSelectedItem();
-        String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
-        LocalDate startDate = startDatePicker.getValue();
-        LocalDate endDate = endDatePicker.getValue();
 
-        if(selectedStartTime.compareTo(selectedEndTime) < 0 && ConvertTime.hoursOfOperation(startTime,endTime,startDate,endDate)) {
-            Connection conn = DBConnection.getConnection();
+            String startTime = startTimeComboBox.getSelectionModel().getSelectedItem();
+            String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
+            LocalDate startDate = startDatePicker.getValue();
+            LocalDate endDate = endDatePicker.getValue();
+            resultForOverLap = false;
+            checkForOverLapUpdate();
+            if (resultForOverLap) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Customer already has an appointment at this time!");
+                error.showAndWait();
+            } else if (ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate)) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Times must be within operating hours");
+                error.showAndWait();
+            } else if (selectedStart.isAfter(selectedEnd)) {
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Start Time must be before End Time.");
+                error.showAndWait();
+            } else {
+                Connection conn = DBConnection.getConnection();
 
-            String sqlStatement = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?,"
-                    + " Start = ?, End = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? "
-                    + "WHERE Appointment_ID =?;";
+                String sqlStatement = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?,"
+                        + " Start = ?, End = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? "
+                        + "WHERE Appointment_ID =?;";
 
-            DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
+                DBPreparedStatement.setPreparedStatement(conn, sqlStatement);
 
-            PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
+                PreparedStatement ps = DBPreparedStatement.getPreparedStatement();
 
-            String title = titleTxt.getText();
-            String description = descriptionTxtArea.getText();
-            String location = locationTxt.getText();
-            String type = TypeTxt.getText();
-            String start = startDatePicker.getValue().toString() + " " + startTimeGMT;
-            String end = endDatePicker.getValue().toString() + " " + endTimeGMT;
-            String lastUpdatedBy = userNameApp;
-            int customerID = Integer.valueOf(customerIDTxt.getText());
-            int userID = userIDComboBox.getSelectionModel().getSelectedItem().getUserID();
-            int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
-            int AppointmentID = Integer.valueOf(appointmentIDTxt.getText());
+                String title = titleTxt.getText();
+                String description = descriptionTxtArea.getText();
+                String location = locationTxt.getText();
+                String type = TypeTxt.getText();
+                String start = selectedStartToGMT.format(formatter);
+                String end = selectedEndToGMT.format(formatter);
+                String lastUpdatedBy = userNameApp;
+                int customerID = Integer.valueOf(customerIDTxt.getText());
+                int userID = userIDComboBox.getSelectionModel().getSelectedItem().getUserID();
+                int contactID = contactsComboBox.getSelectionModel().getSelectedItem().getContactID();
+                int AppointmentID = Integer.valueOf(appointmentIDTxt.getText());
 
-            //key-value map
-            ps.setString(1, title);
-            ps.setString(2, description);
-            ps.setString(3, location);
-            ps.setString(4, type);
-            ps.setString(5, start);
-            ps.setString(6, end);
-            ps.setString(7, lastUpdatedBy);
-            ps.setInt(8, customerID);
-            ps.setInt(9, userID);
-            ps.setInt(10, contactID);
-            ps.setInt(11, AppointmentID);
+                //key-value map
+                ps.setString(1, title);
+                ps.setString(2, description);
+                ps.setString(3, location);
+                ps.setString(4, type);
+                ps.setString(5, start);
+                ps.setString(6, end);
+                ps.setString(7, lastUpdatedBy);
+                ps.setInt(8, customerID);
+                ps.setInt(9, userID);
+                ps.setInt(10, contactID);
+                ps.setInt(11, AppointmentID);
 
-            ps.execute();
-            setUpTable();
-        }
-        else {
-            Alert error = new Alert(Alert.AlertType.WARNING);
-            error.setTitle("Warning Dialog");
-            error.setContentText("Start Date/Time must be before End Date/Time and Times must be within operating hours");
-            error.getDialogPane().setPrefWidth(800);
-            error.showAndWait();
+                ps.execute();
+                filterTableByCustomer();
+            }
+        }catch(NullPointerException e){
+            e.printStackTrace();
         }
     }
     /**
@@ -194,37 +209,34 @@ public class AppointmentController implements Initializable {
      * */
     public void addApp() {
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy'-'MM'-'dd HH':'mm':'ss");
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("hh':'mm a");
+            LocalDateTime selectedStart = LocalDateTime.of(startDatePicker.getValue(), LocalTime.parse(startTimeComboBox.getValue(),formatter2));
+            LocalDateTime selectedStartToGMT = ConvertTime.dateTimeToGMT(selectedStart);
+            LocalDateTime selectedEnd = LocalDateTime.of(endDatePicker.getValue(), LocalTime.parse(endTimeComboBox.getValue(), formatter2));
+            LocalDateTime selectedEndToGMT = ConvertTime.dateTimeToGMT(selectedEnd);
+
+            String startTime = startTimeComboBox.getSelectionModel().getSelectedItem();
+            String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
+            LocalDate startDate = startDatePicker.getValue();
+            LocalDate endDate = endDatePicker.getValue();
             resultForOverLap = false;
-            checkForOverLap();
+            checkForOverLapAdd();
              if(resultForOverLap){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Customer already has an appointment at this time!");
                 error.showAndWait();
 
-            }
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH':'mm':'ss");
-            LocalTime selectedStartTime = ConvertTime.startTimeToGMT(startTimeComboBox.getSelectionModel().getSelectedItem(), startDatePicker.getValue());
-            LocalTime selectedEndTime = ConvertTime.endTimeToGMT(endTimeComboBox.getSelectionModel().getSelectedItem(), endDatePicker.getValue());
-            String startTimeGMT = selectedStartTime.format(formatter);
-            String endTimeGMT = selectedEndTime.format(formatter);
-
-            String startTime = startTimeComboBox.getSelectionModel().getSelectedItem();
-            String endTime = endTimeComboBox.getSelectionModel().getSelectedItem();
-            LocalDate startDate = startDatePicker.getValue();
-            LocalDate endDate = endDatePicker.getValue();
-            System.out.println(ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate));
-            if (selectedStartTime.isAfter(selectedEndTime)){
+            } else if (selectedStart.isAfter(selectedEnd)){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Start Time must be before End Time.");
-                error.getDialogPane().setPrefWidth(800);
                 error.showAndWait();
             } else if (ConvertTime.hoursOfOperation(startTime, endTime, startDate, endDate)) {
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Times must be within operating hours");
-                error.getDialogPane().setPrefWidth(800);
                 error.showAndWait();
             } else {
                 Connection conn = DBConnection.getConnection();
@@ -239,8 +251,8 @@ public class AppointmentController implements Initializable {
                 String description = descriptionTxtArea.getText();
                 String location = locationTxt.getText();
                 String type = TypeTxt.getText();
-                String start = startDatePicker.getValue().toString() + " " + startTimeGMT;
-                String end = endDatePicker.getValue().toString() + " " + endTimeGMT;
+                String start = selectedStartToGMT.format(formatter);
+                String end = selectedEndToGMT.format(formatter);
                 String createdBy = userNameApp;
                 String lastUpdatedBy = userNameApp;
                 int customerID = Integer.valueOf(customerIDTxt.getText());
@@ -266,6 +278,9 @@ public class AppointmentController implements Initializable {
         }
         catch (SQLException e){
             e.printStackTrace();
+        }
+        catch(NullPointerException i){
+            i.printStackTrace();
         }
     }
     /***
@@ -319,13 +334,8 @@ public class AppointmentController implements Initializable {
      * that pulls all the appointments with the customer id you select.
      */
     public void filterTableByCustomer() {
-        int customerID;
-        if(customerComboBox.getSelectionModel().isEmpty()){
-            customerID = appointmentTableView.getSelectionModel().getSelectedItem().getCustomerID();
-        }
-        else{
-            customerID = customerComboBox.getSelectionModel().getSelectedItem().getCustomerID();
-        }
+        int customerID = Integer.valueOf(customerIDTxt.getText());
+
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
         FilteredList<Appointments> selectedCustomerAppointments = new FilteredList<>(allAppointments, i -> i.getCustomerID() == customerID);
         appointmentTableView.setItems(selectedCustomerAppointments);
@@ -380,7 +390,7 @@ public class AppointmentController implements Initializable {
         customerIDCol.setCellValueFactory(new PropertyValueFactory<>("CustomerID"));
     }
     /**
-     * The insertUserID method sets the UserID text field with the userID of whoever is loggen in.
+     * The insertUserID method sets the UserID text field with the userID of whoever is logged in.
      * */
     public void insertUserID(){
         ObservableList<Users> allUsers = DBUsers.getAllUsers();
@@ -397,7 +407,7 @@ public class AppointmentController implements Initializable {
     }
     /**
      * The insertCustomerID method sets the CustomerID text field with the Id of the customer either selected
-     * in the customer combo box or the customer assoicated with the appointment selected in the table.
+     * in the customer combo box or the customer associated with the appointment selected in the table.
      * */
     public void insertCustomerID(){
             customerIDTxt.setText(String.valueOf(customerComboBox.getSelectionModel().getSelectedItem().getCustomerID()));
@@ -407,16 +417,52 @@ public class AppointmentController implements Initializable {
      * and checks it against all the appointments in the data base that customer already has to ensure there is
      * no overlapping appointments.
      * */
-    public void checkForOverLap() {
+    public void checkForOverLapAdd() {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
+            String customerIDTXT = customerIDTxt.getText();
+
+            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+            //Getting start date and time to compare
+            LocalDate dateStart = startDatePicker.getValue();
+            LocalTime timeStart = LocalTime.parse(startTimeComboBox.getValue(), formatter);
+
+            //Getting end date and time to compare
+            LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
+
+        /*
+        Loops through all appointments to find the ones associated with the selected customer.
+        When it finds an appointment for that customer it checks the start time against the times chosen
+        in the start and end combo boxes. If the start time of the appointment to be saved is the same as
+        an exciting appointment or if it is between the start and end time of an exciting appointment a
+        Warning message will appear telling the user that the customer has an appointment at that time already.
+         */
+            for (int i = 0; i < allAppointments.size(); i++) {
+                Appointments selectedAppointment = allAppointments.get(i);
+                LocalDate date = selectedAppointment.getStart().toLocalDateTime().toLocalDate();
+                LocalTime timeStart2 = selectedAppointment.getStart().toLocalDateTime().toLocalTime();
+                LocalTime timeEnd2 = selectedAppointment.getEnd().toLocalDateTime().toLocalTime();
+                int customerIDFromApp = selectedAppointment.getCustomerID();
+                String customerIDFromAppString = String.valueOf(customerIDFromApp);
+                if (customerIDFromAppString.equals(customerIDTXT) && dateStart.equals(date)) {
+                    if ((timeStart.isAfter(timeStart2) && timeStart.isBefore(timeEnd2)) || timeStart2.equals(timeStart) || (timeStart2.isAfter(timeStart) && timeStart2.isBefore(timeEnd))) {
+                        resultForOverLap = true;
+                    }
+                }
+            }
+        }
+    /**
+     * The checkForOverLapUpdate method is almost the same as the checkForOverLapAdd method with one exception
+     * this method allows you to overlap the appointment you are updating. For example if you have a appointment
+     * at 1pm to 2pm and you want to change it to 1:30pm to 2pm that would not be considered an overlap in this method.
+     * */
+    public void checkForOverLapUpdate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh':'mm a");
         String customerIDTXT = customerIDTxt.getText();
-        ZoneId utcTime = ZoneId.of("UTC");
-        ZoneId myTime = ZonedDateTime.now().getZone();
         ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
+
         //Getting start date and time to compare
         LocalDate dateStart = startDatePicker.getValue();
         LocalTime timeStart = LocalTime.parse(startTimeComboBox.getValue(), formatter);
-
 
         //Getting end date and time to compare
         LocalTime timeEnd = LocalTime.parse(endTimeComboBox.getValue(), formatter);
@@ -435,15 +481,18 @@ public class AppointmentController implements Initializable {
             LocalTime timeEnd2 = selectedAppointment.getEnd().toLocalDateTime().toLocalTime();
             int customerIDFromApp = selectedAppointment.getCustomerID();
             String customerIDFromAppString = String.valueOf(customerIDFromApp);
+            int appID = selectedAppointment.getAppointmentID();
+            String appIdString = String.valueOf(appID);
             if (customerIDFromAppString.equals(customerIDTXT) && dateStart.equals(date)) {
-
-                if ((timeStart.isAfter(timeStart2) && timeStart.isBefore(timeEnd2)) || timeStart2.equals(timeStart) || (timeStart2.isAfter(timeStart) && timeStart2.isBefore(timeEnd))) {
+                String appIdCompare = String.valueOf(appointmentTableView.getSelectionModel().getSelectedItem().getAppointmentID());
+                if (((timeStart.isAfter(timeStart2) && timeStart.isBefore(timeEnd2)) || timeStart2.equals(timeStart) || (timeStart2.isAfter(timeStart) && timeStart2.isBefore(timeEnd))) && !(appIdCompare.equals(appIdString))) {
                     resultForOverLap = true;
                 }
-
             }
         }
     }
+
+
     //-------------------------------------ON ACTION METHODS-----------------------------------------------------------
     /**
      * The onActionAppAddBtn method contains the actions to be taken when the add button is clicked inside the
@@ -454,6 +503,8 @@ public class AppointmentController implements Initializable {
     void onActionAppAddBtn(ActionEvent event) {
         try {
             LocalDate date = startDatePicker.getValue();
+            Contacts contact = contactsComboBox.getValue();
+            Users user = userIDComboBox.getValue();
            ObservableList<Integer> appointmentIDs = FXCollections.observableArrayList();
            ObservableList<Appointments> allAppointments = DBAppointments.getAllAppointments();
 
@@ -499,13 +550,12 @@ public class AppointmentController implements Initializable {
 
            }
            else if (date.equals(null)){
-               System.out.println(date);
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
                error.setContentText("Please provide a start/end date for the appointment.");
                error.showAndWait();
            }
-           else if (contactsComboBox.getSelectionModel().isEmpty()){
+           else if (contact.equals(null)){
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
                error.setContentText("Please provide a contact for the appointment.");
@@ -529,7 +579,13 @@ public class AppointmentController implements Initializable {
                error.setContentText("Please provide a end time for the appointment.");
                error.showAndWait();
            }
-           else if (userIDComboBox.getSelectionModel().isEmpty()){
+           else if(startTimeComboBox.getValue().equals(endTimeComboBox.getValue())){
+               Alert error = new Alert(Alert.AlertType.WARNING);
+               error.setTitle("Warning Dialog");
+               error.setContentText("Start and End Time can't be the same!");
+               error.showAndWait();
+           }
+           else if (user.equals(null)){
                Alert error = new Alert(Alert.AlertType.WARNING);
                error.setTitle("Warning Dialog");
                error.setContentText("Please provide a userID for the appointment.");
@@ -673,10 +729,83 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionAppUpdateBtn(ActionEvent event) {
         try {
+            LocalDate date = startDatePicker.getValue();
+            Contacts contact = contactsComboBox.getValue();
+            Users user = userIDComboBox.getValue();
             if(appointmentTableView.getSelectionModel().isEmpty()){
                 Alert error = new Alert(Alert.AlertType.WARNING);
                 error.setTitle("Warning Dialog");
                 error.setContentText("Please Select Appointment from Table!");
+                error.showAndWait();
+            }
+            else if(titleTxt.getText().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a title for the appointment.");
+                error.showAndWait();
+
+            }
+            else if(descriptionTxtArea.getText().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a description for the appointment.");
+                error.showAndWait();
+
+            }
+            else if(locationTxt.getText().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a location for the appointment.");
+                error.showAndWait();
+
+            }
+            else if(TypeTxt.getText().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a type for the appointment.");
+                error.showAndWait();
+
+            }
+            else if (date.equals(null)){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a start/end date for the appointment.");
+                error.showAndWait();
+            }
+            else if (contact.equals(null)){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a contact for the appointment.");
+                error.showAndWait();
+            }
+            else if (customerIDTxt.getText().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a customerID for the appointment.");
+                error.showAndWait();
+            }
+            else if (startTimeComboBox.getSelectionModel().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a start time for the appointment.");
+                error.showAndWait();
+            }
+            else if (endTimeComboBox.getSelectionModel().isEmpty()){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a end time for the appointment.");
+                error.showAndWait();
+            }
+            else if(startTimeComboBox.getValue().equals(endTimeComboBox.getValue())){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Start and End Time can't be the same!");
+                error.showAndWait();
+            }
+            else if (user.equals(null)){
+                Alert error = new Alert(Alert.AlertType.WARNING);
+                error.setTitle("Warning Dialog");
+                error.setContentText("Please provide a userID for the appointment.");
                 error.showAndWait();
             }
             else {
@@ -695,7 +824,7 @@ public class AppointmentController implements Initializable {
      * */
     @FXML
     void onActionMonthRBtn(ActionEvent event) {
-    filterTableByMonth();
+        filterTableByMonth();
     }
     /**
      * The onActionWeekRBtn method calls the filterTableByWeek method which sets the table up with only the
@@ -747,8 +876,8 @@ public class AppointmentController implements Initializable {
     @FXML
     void onActionCustomerComboBox(ActionEvent event){
         try {
-            filterTableByCustomer();
             insertCustomerID();
+            filterTableByCustomer();
         }
         catch(NullPointerException e){
             //Do nothing. NullPointer will be thrown when combo box is cleared due to no customer being selected.
